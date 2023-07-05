@@ -20,29 +20,20 @@
     var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="1.C语言变量的分布 ：C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码：  #include &lt;stdio.h&gt;  int g1&#x3D;0, g2&#x3D;0, g3&#x3D;0;  int main()  &amp;#123;  static int s1&#x3D;0, s2&#x3D;0, s3&#x3D;0;  int">
+  <meta name="description" content="APC注入的原理是利用当线程被唤醒时APC中的注册函数会被执行的机制，并以此去执行我们的DLL加载代码，进而完成DLL注入的目的，其具体流程如下：     1）当EXE里某个线程执行到SleepEx()或者WaitForSingleObjectEx()时，系统就会产生一个软中断（或者是Messagebox弹窗的时候不点OK的时候也能注入）。     2）当线程再次被唤醒时，此线程会首先执行APC队">
 <meta property="og:type" content="article">
-<meta property="og:title" content="栈基础知识">
-<meta property="og:url" content="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.html">
+<meta property="og:title" content="dll注入之APC注入">
+<meta property="og:url" content="http://zwjsfdbb.top/2017/09/16/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/index.html">
 <meta property="og:site_name" content="fengchuiguo">
-<meta property="og:description" content="1.C语言变量的分布 ：C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码：  #include &lt;stdio.h&gt;  int g1&#x3D;0, g2&#x3D;0, g3&#x3D;0;  int main()  &amp;#123;  static int s1&#x3D;0, s2&#x3D;0, s3&#x3D;0;  int">
+<meta property="og:description" content="APC注入的原理是利用当线程被唤醒时APC中的注册函数会被执行的机制，并以此去执行我们的DLL加载代码，进而完成DLL注入的目的，其具体流程如下：     1）当EXE里某个线程执行到SleepEx()或者WaitForSingleObjectEx()时，系统就会产生一个软中断（或者是Messagebox弹窗的时候不点OK的时候也能注入）。     2）当线程再次被唤醒时，此线程会首先执行APC队">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://i.imgur.com/Pbbtyit.png">
-<meta property="og:image" content="http://i.imgur.com/kFjeO8n.png">
-<meta property="og:image" content="http://i.imgur.com/jNcKasB.png">
-<meta property="og:image" content="http://i.imgur.com/pQm0oAL.png">
-<meta property="og:image" content="http://i.imgur.com/qBPQTjK.png">
-<meta property="og:image" content="http://i.imgur.com/9CBEnex.png">
-<meta property="og:image" content="http://i.imgur.com/S0M3SMC.png">
-<meta property="og:image" content="http://i.imgur.com/S0ptRZH.png">
-<meta property="article:published_time" content="2017-07-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2017-07-10T03:43:57.414Z">
+<meta property="article:published_time" content="2017-09-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2017-10-25T07:05:57.305Z">
 <meta property="article:author" content="fengchuiguo">
 <meta property="article:tag" content="逆向">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://i.imgur.com/Pbbtyit.png">
 
-<link rel="canonical" href="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+<link rel="canonical" href="http://zwjsfdbb.top/2017/09/16/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/">
 
 
 <script id="page-configurations">
@@ -55,7 +46,7 @@
   };
 </script>
 
-  <title>栈基础知识 | fengchuiguo</title>
+  <title>dll注入之APC注入 | fengchuiguo</title>
   
 
 
@@ -198,7 +189,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/09/16/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -211,7 +202,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          栈基础知识
+          dll注入之APC注入
         </h1>
 
         <div class="post-meta">
@@ -220,7 +211,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2017-07-10 11:43:57" itemprop="dateModified" datetime="2017-07-10T11:43:57+08:00">2017-07-10</time>
+                <time title="修改时间：2017-10-25 15:05:57" itemprop="dateModified" datetime="2017-10-25T15:05:57+08:00">2017-10-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -243,113 +234,149 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="1-C语言变量的分布-："><a href="#1-C语言变量的分布-：" class="headerlink" title="1.C语言变量的分布 ："></a>1.C语言变量的分布 ：</h3><p>C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码： </p>
-<pre><code>#include &lt;stdio.h&gt; 
-int g1=0, g2=0, g3=0; 
-int main() 
-&#123; 
-static int s1=0, s2=0, s3=0; 
-int v1=0, v2=0, v3=0; 
+        <p>APC注入的原理是利用当线程被唤醒时APC中的注册函数会被执行的机制，并以此去执行我们的DLL加载代码，进而完成DLL注入的目的，其具体流程如下：</p>
+<p>    1）当EXE里某个线程执行到SleepEx()或者WaitForSingleObjectEx()时，系统就会产生一个软中断（或者是Messagebox弹窗的时候不点OK的时候也能注入）。</p>
+<p>    2）当线程再次被唤醒时，此线程会首先执行APC队列中的被注册的函数。</p>
+<p>    3）利用QueueUserAPC()这个API可以在软中断时向线程的APC队列插入一个函数指针，如果我们插入的是Loadlibrary()执行函数的话，就能达到注入DLL的目的。<br>程序如下:</p>
+<pre><code>// TESTAPC2.cpp : 定义控制台应用程序的入口点。
+//
 
-//打印出各个变量的内存地址 
-
-printf(&quot;0x%08x\n&quot;,&amp;v1); //打印各本地变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;v2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;v3); 
-printf(&quot;0x%08x\n&quot;,&amp;g1); //打印各全局变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;g2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;g3); 
-printf(&quot;0x%08x\n&quot;,&amp;s1); //打印各静态变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;s2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;s3); 
-system(&quot;pause&quot;);
-return 0; 
-&#125; 
-</code></pre>
-<p>可以看出本地变量和全局&#x2F;静态变量的分布完全不同，相差甚远，这是因为他们分布在不同类型的区域。<br>进程的内存空间分为：代码区，静态数据区和动态数据区。全局和静态变量分配在静态数据区，本地变量分配在动态数据区，即”堆栈“，<br><img src="http://i.imgur.com/Pbbtyit.png"></p>
-<h3 id="2-栈的存储"><a href="#2-栈的存储" class="headerlink" title="2. 栈的存储"></a>2. 栈的存储</h3><pre><code>    #include &lt;stdio.h&gt; 
-    void __stdcall func(int param1,int param2,int param3) 
-    &#123; 
-    int var1=param1; 
-    int var2=param2; 
-    int var3=param3; 
-    printf(&quot;0x%08x\n&quot;,&amp;parameter1); //打印出各个变量的内存地址 
-    printf(&quot;0x%08x\n&quot;,&amp;parameter2); 
-    printf(&quot;0x%08x\n\n&quot;,&amp;parameter3); 
-    printf(&quot;0x%08x\n&quot;,&amp;var1); 
-    printf(&quot;0x%08x\n&quot;,&amp;var2); 
-    printf(&quot;0x%08x\n\n&quot;,&amp;var3); 
-    return; 
-    &#125; 
-    int main() 
-    &#123; 
-    func(1,2,3); 
-    return 0; 
-    &#125; 
-</code></pre>
-<p><img src="http://i.imgur.com/kFjeO8n.png"></p>
-<p>函数的参数是从右向左传递，即先压栈parameter 3，然后parameter 2，最后才是parameter 1，然后是函数的返回地址，然后就是本地变量var1，var2,var3</p>
-<h3 id="3-程序进入main-函数-，栈帧的保存和关闭"><a href="#3-程序进入main-函数-，栈帧的保存和关闭" class="headerlink" title="3.程序进入main()函数 ，栈帧的保存和关闭"></a>3.程序进入main()函数 ，栈帧的保存和关闭</h3><p>例如：</p>
-<pre><code>int main（）
+#include &quot;stdafx.h&quot;
+#include &lt;string&gt;
+#include&lt;windows.h&gt;
+#include&lt;shlwapi.h&gt;
+#include&lt;tlhelp32.h&gt;
+#include&lt;winternl.h&gt;
+#pragma comment(lib,&quot;shlwapi.lib&quot;)
+#pragma comment(lib,&quot;ntdll.lib&quot;)
+using namespace std;
+//根据进程名获取PID
+DWORD GetPidFormName(wstring wsProcessname)
 &#123;
-return0；
-&#125;
-汇编代码为：
-push ebp;   保存进入main()函数时其他初始化函数的栈底
-move ebp,esp; 把当前esp的值作为栈底
-sub esp ,40h 开辟栈空间，作为局部变量的存储空间
-push ebx
-push  esi
-push  edi  保存寄存器的值
-LEA edi ,[ebp-40h]  取出此函数可用栈空间首地址  
-mov ecx,10h            设置ecx寄存器的值
-mov eax ,occcccccch  把局部变量初始化为0xcccccccch
-rep stos  dword ptr [edi]   根据ecx的值，把eax的内容，以四字节为单位写到edi指向的内存
-xor eax,eax    设置返回值为0
-pop  edi  
-pop esi
-pop ebx   弹出压入寄存器的值
-add esp,40h  降低esp,局部空间释放
-cmp ebp,esp 检查栈平衡
-call _chkesp()  进入栈错误检查函数
-mov esp.ebp  还原esp
-pop ebp         还原ebp
-ret
-</code></pre>
-<h3 id="4-简单的分配栈帧及溢出修改相邻变量"><a href="#4-简单的分配栈帧及溢出修改相邻变量" class="headerlink" title="4.  简单的分配栈帧及溢出修改相邻变量"></a>4.  简单的分配栈帧及溢出修改相邻变量</h3><p>例如：</p>
-<pre><code>    #include &lt;windows.h&gt;
-     
-    #define PASSWORD &quot;1234567&quot;
-     
-    int verify_password(char *password)&#123;
-        int authenticated;
-        char buffer[8];
-        authenticated = strcmp(password,PASSWORD);
-        strcpy(buffer,password);
-        return authenticated;
-    &#125;
-     
-    int main(int argc, char* argv[])
+    HANDLE hSnaoshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (hSnaoshot == INVALID_HANDLE_VALUE)
     &#123;
-        int valid_flag = 0;
-        char password[1024];
-        FILE *fp;
-        if (!(fp=fopen(&quot;password.txt&quot;,&quot;rw+&quot;)))&#123;
-            return 0;
+        return false;
+    &#125;
+    PROCESSENTRY32W pe = &#123; sizeof(pe) &#125;;
+    BOOL bok;
+    for (bok = Process32FirstW(hSnaoshot, &amp;pe); bok; bok = Process32NextW(hSnaoshot,&amp;pe))
+    &#123;
+        wstring wsNowProcName = pe.szExeFile;
+        if (StrStrI(wsNowProcName.c_str(), wsProcessname.c_str()) != NULL)
+        &#123;
+            CloseHandle(hSnaoshot);
+            return pe.th32ProcessID;
         &#125;
-        fscanf(fp,&quot;%s&quot;,password);
-        valid_flag = verify_password(password);
-        if(valid_flag)&#123;
-            printf(&quot;incorrect password!\n&quot;);
-        &#125;else&#123;
-            printf(&quot;Congratulation! You have passed the verification !\n&quot;);
-        &#125;
-        Sleep(-1);
-        return 1;
+    &#125;
+    CloseHandle(hSnaoshot);
+    return 0;
+&#125;
+//dll 文件注入到进程wsProcessname
+BOOL Injection_APC(const wstring &amp;wsProcessname, const WCHAR wcCacheInDllPath[])
+&#123;
+    DWORD dwProcessId = GetPidFormName(wsProcessname);
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwProcessId);
+    if (!hProcess)
+    &#123;
+        return FALSE;
+    &#125;
+    PVOID lpData = VirtualAllocEx(hProcess, NULL, 1024, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    DWORD dwRet;
+    if (lpData)
+    &#123;
+        //在远程进程申请空间写入待注入dll 的路径
+        WriteProcessMemory(hProcess, lpData, (LPVOID)wcCacheInDllPath,MAX_PATH, &amp;dwRet);
+        CloseHandle(hProcess);
+    &#125;
+    //开始注入
+    THREADENTRY32 te = &#123; sizeof(te) &#125;;
+    HANDLE handleSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);//遍历系统中所有线程
+    if (handleSnap == INVALID_HANDLE_VALUE)
+    &#123;
+        return false;
+    &#125;
+    bool bstat = false;
+    if (Thread32First(handleSnap, &amp;te))
+    &#123;
+        do &#123;
+            if (te.th32OwnerProcessID == dwProcessId)
+            &#123;
+                HANDLE handleThread = OpenThread(THREAD_ALL_ACCESS, FALSE, te.th32ThreadID);
+                if (handleThread)
+                &#123;
+                    DWORD dwRet = QueueUserAPC((PAPCFUNC)LoadLibraryW, handleThread, (ULONG_PTR)lpData);
+                &#125;
+                if (dwRet &gt; 0)
+                &#123;
+                    bstat = TRUE;
+                &#125;
+                CloseHandle(handleThread);
+            &#125;
+        &#125; while (Thread32Next(handleSnap, &amp;te));
+        CloseHandle(handleSnap);
+        return bstat;
+    &#125;
+
+    &#125;
+    int main()
+    &#123;
+        Injection_APC(L&quot;testapc.exe&quot;, L&quot;testapcdll.dll&quot;);
+        return 0;
     &#125;
 </code></pre>
-<p>用OD调试：<br>进入main()主函数，找到验证密码的函数调用位置，进入到函数具体代码处：<br><img src="http://i.imgur.com/jNcKasB.png"><br><img src="http://i.imgur.com/pQm0oAL.png"><br><img src="http://i.imgur.com/qBPQTjK.png"></p>
-<p>前面部分就是栈分配局部变量空间和初始化的过程，然后就是字符串的计较，最后是字符串的复制，分析可得栈溢出在这一部分，在指令008D1409处把函数的返回值（EAX储存的是返回值）存在了EBP-0XC处，下面就是strocpy的操作，char buffer[8]分配了八个字节的存储空间，但是password.txt的密码如图为24个字节，知错执行strcpy的时候，把buffer 附近的变量空间也给覆盖了，比如返回值的。以上过程如图所示<br><img src="http://i.imgur.com/9CBEnex.png"><br><img src="http://i.imgur.com/S0M3SMC.png"><br><img src="http://i.imgur.com/S0ptRZH.png"></p>
+<p>测试exe程序：</p>
+<pre><code>    #include&lt;windows.h&gt;
+    int main()
+    &#123;
+        MessageBox(NULL, L&quot;start&quot;, L&quot;tit&quot;, MB_OK);
+        SleepEx(1000 * 60 * 5, true);
+        MessageBox(NULL, L&quot;end&quot;, L&quot;tit&quot;, MB_OK);
+        Sleep(-1);
+    &#125;
+</code></pre>
+<p>测试dll 程序：</p>
+<pre><code>#include&lt;windows.h&gt;
+#include&quot;dll.h&quot;
+BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, void* lpReserved)
+&#123;
+    switch (dwReason)
+    &#123;
+        // 动态链接库映射到某个进程的地址空间
+    case DLL_PROCESS_ATTACH:
+        MessageBox(NULL, L&quot;in apc ok~&quot;, L&quot;tit&quot;, MB_OK);
+        /**
+        * 当DLL刚被加载时触发（LoadLibrary），此处专门用来做初始化工作，
+        * 如果初始化失败可以返回 false 这样DLL就不会被继续加载了
+        **/
+        break;
+
+        // 应用程序创建新的线程
+    case DLL_THREAD_ATTACH:
+
+        break;
+
+        // 应用程序某个线程正常终止
+    case DLL_THREAD_DETACH:
+
+        break;
+
+        // 动态链接库将被卸载
+    case DLL_PROCESS_DETACH:
+        /**
+        * 当DLL将要被卸载时触发（FreeLibrary）,此处专门用来做清理工作
+        * 如关闭文件，释放内存空间等
+        **/
+        break;
+    &#125;
+    return 1;
+&#125;
+/*
+void helloDLL(void)
+&#123;
+//MessageBox(NULL, TEXT(&quot;Hello DLL~&quot;), TEXT(&quot;Title&quot;), MB_OK);
+&#125;*/
+</code></pre>
 
     </div>
 
@@ -385,7 +412,7 @@ ret
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="栈基础知识">http://zwjsfdbb.top/2017/07/10/栈基础知识/</a>
+    <a href="http://zwjsfdbb.top/2017/09/16/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/" title="dll注入之APC注入">http://zwjsfdbb.top/2017/09/16/dll之APC注入/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -404,10 +431,13 @@ ret
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2017/07/15/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/" rel="next" title="esp脱壳+文件大小自校验">
-      esp脱壳+文件大小自校验 <i class="fa fa-chevron-right"></i>
+    <a href="/2017/08/03/dll%E5%8A%A0%E8%BD%BD%E5%92%8C%E5%8A%AB%E6%8C%81/" rel="prev" title="dll加载和劫持">
+      <i class="fa fa-chevron-left"></i> dll加载和劫持
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/11/05/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/" rel="next" title="重装系统后hexo 博客恢复">
+      重装系统后hexo 博客恢复 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -468,7 +498,6 @@ ret
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-C%E8%AF%AD%E8%A8%80%E5%8F%98%E9%87%8F%E7%9A%84%E5%88%86%E5%B8%83-%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1.C语言变量的分布 ：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%A0%88%E7%9A%84%E5%AD%98%E5%82%A8"><span class="nav-number">2.</span> <span class="nav-text">2. 栈的存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%A8%8B%E5%BA%8F%E8%BF%9B%E5%85%A5main-%E5%87%BD%E6%95%B0-%EF%BC%8C%E6%A0%88%E5%B8%A7%E7%9A%84%E4%BF%9D%E5%AD%98%E5%92%8C%E5%85%B3%E9%97%AD"><span class="nav-number">3.</span> <span class="nav-text">3.程序进入main()函数 ，栈帧的保存和关闭</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%AE%80%E5%8D%95%E7%9A%84%E5%88%86%E9%85%8D%E6%A0%88%E5%B8%A7%E5%8F%8A%E6%BA%A2%E5%87%BA%E4%BF%AE%E6%94%B9%E7%9B%B8%E9%82%BB%E5%8F%98%E9%87%8F"><span class="nav-number">4.</span> <span class="nav-text">4.  简单的分配栈帧及溢出修改相邻变量</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -598,7 +627,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'hexo_discuss',
       owner       : 'scuzhangzhang',
       admin       : ['scuzhangzhang'],
-      id          : '2f417eaa37951d67fe6387dec7962873',
+      id          : '9b99a33af7b125661040306d8267f767',
         language: 'zh-CN',
       distractionFreeMode: false
     });

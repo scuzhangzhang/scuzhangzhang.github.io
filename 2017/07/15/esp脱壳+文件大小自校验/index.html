@@ -20,29 +20,29 @@
     var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="1.C语言变量的分布 ：C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码：  #include &lt;stdio.h&gt;  int g1&#x3D;0, g2&#x3D;0, g3&#x3D;0;  int main()  &amp;#123;  static int s1&#x3D;0, s2&#x3D;0, s3&#x3D;0;  int">
+  <meta name="description" content="###步骤如下 1.查壳由图可见，显然有壳  2.找oep(ESP定律) 程序加载进OD，F8单步运行，右边寄存器窗口发现只有esp的值在变，符合ESP定律。在寄存器位置右键，点击HW-break下硬件断点。然后F9运行到断点处，到达跳转到oep 的前一步，单步运行，遇到如下图：右键分析点击在模块中删除分析，即得到OEP.在oep处右键用ollydump脱壳当前进程。复制当前oep.  3.脱壳(">
 <meta property="og:type" content="article">
-<meta property="og:title" content="栈基础知识">
-<meta property="og:url" content="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.html">
+<meta property="og:title" content="esp脱壳+文件大小自校验">
+<meta property="og:url" content="http://zwjsfdbb.top/2017/07/15/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/index.html">
 <meta property="og:site_name" content="fengchuiguo">
-<meta property="og:description" content="1.C语言变量的分布 ：C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码：  #include &lt;stdio.h&gt;  int g1&#x3D;0, g2&#x3D;0, g3&#x3D;0;  int main()  &amp;#123;  static int s1&#x3D;0, s2&#x3D;0, s3&#x3D;0;  int">
+<meta property="og:description" content="###步骤如下 1.查壳由图可见，显然有壳  2.找oep(ESP定律) 程序加载进OD，F8单步运行，右边寄存器窗口发现只有esp的值在变，符合ESP定律。在寄存器位置右键，点击HW-break下硬件断点。然后F9运行到断点处，到达跳转到oep 的前一步，单步运行，遇到如下图：右键分析点击在模块中删除分析，即得到OEP.在oep处右键用ollydump脱壳当前进程。复制当前oep.  3.脱壳(">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://i.imgur.com/Pbbtyit.png">
-<meta property="og:image" content="http://i.imgur.com/kFjeO8n.png">
-<meta property="og:image" content="http://i.imgur.com/jNcKasB.png">
-<meta property="og:image" content="http://i.imgur.com/pQm0oAL.png">
-<meta property="og:image" content="http://i.imgur.com/qBPQTjK.png">
-<meta property="og:image" content="http://i.imgur.com/9CBEnex.png">
-<meta property="og:image" content="http://i.imgur.com/S0M3SMC.png">
-<meta property="og:image" content="http://i.imgur.com/S0ptRZH.png">
-<meta property="article:published_time" content="2017-07-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2017-07-10T03:43:57.414Z">
+<meta property="og:image" content="http://i.imgur.com/56OEUZ6.png">
+<meta property="og:image" content="http://i.imgur.com/7VfQh3T.png">
+<meta property="og:image" content="http://i.imgur.com/CaYz7wj.png">
+<meta property="og:image" content="http://i.imgur.com/o84YxcW.png">
+<meta property="og:image" content="http://i.imgur.com/Ah6wEjD.png">
+<meta property="og:image" content="http://i.imgur.com/3X4dGg6.png">
+<meta property="og:image" content="http://i.imgur.com/nIXhd5Y.png">
+<meta property="og:image" content="http://i.imgur.com/UEFRdvd.png">
+<meta property="article:published_time" content="2017-07-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2017-07-15T02:25:06.406Z">
 <meta property="article:author" content="fengchuiguo">
 <meta property="article:tag" content="逆向">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://i.imgur.com/Pbbtyit.png">
+<meta name="twitter:image" content="http://i.imgur.com/56OEUZ6.png">
 
-<link rel="canonical" href="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+<link rel="canonical" href="http://zwjsfdbb.top/2017/07/15/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/">
 
 
 <script id="page-configurations">
@@ -55,7 +55,7 @@
   };
 </script>
 
-  <title>栈基础知识 | fengchuiguo</title>
+  <title>esp脱壳+文件大小自校验 | fengchuiguo</title>
   
 
 
@@ -198,7 +198,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/15/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -211,7 +211,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          栈基础知识
+          esp脱壳+文件大小自校验
         </h1>
 
         <div class="post-meta">
@@ -220,7 +220,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2017-07-10 11:43:57" itemprop="dateModified" datetime="2017-07-10T11:43:57+08:00">2017-07-10</time>
+                <time title="修改时间：2017-07-15 10:25:06" itemprop="dateModified" datetime="2017-07-15T10:25:06+08:00">2017-07-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -243,113 +243,74 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="1-C语言变量的分布-："><a href="#1-C语言变量的分布-：" class="headerlink" title="1.C语言变量的分布 ："></a>1.C语言变量的分布 ：</h3><p>C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码： </p>
-<pre><code>#include &lt;stdio.h&gt; 
-int g1=0, g2=0, g3=0; 
-int main() 
-&#123; 
-static int s1=0, s2=0, s3=0; 
-int v1=0, v2=0, v3=0; 
-
-//打印出各个变量的内存地址 
-
-printf(&quot;0x%08x\n&quot;,&amp;v1); //打印各本地变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;v2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;v3); 
-printf(&quot;0x%08x\n&quot;,&amp;g1); //打印各全局变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;g2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;g3); 
-printf(&quot;0x%08x\n&quot;,&amp;s1); //打印各静态变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;s2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;s3); 
-system(&quot;pause&quot;);
-return 0; 
-&#125; 
-</code></pre>
-<p>可以看出本地变量和全局&#x2F;静态变量的分布完全不同，相差甚远，这是因为他们分布在不同类型的区域。<br>进程的内存空间分为：代码区，静态数据区和动态数据区。全局和静态变量分配在静态数据区，本地变量分配在动态数据区，即”堆栈“，<br><img src="http://i.imgur.com/Pbbtyit.png"></p>
-<h3 id="2-栈的存储"><a href="#2-栈的存储" class="headerlink" title="2. 栈的存储"></a>2. 栈的存储</h3><pre><code>    #include &lt;stdio.h&gt; 
-    void __stdcall func(int param1,int param2,int param3) 
-    &#123; 
-    int var1=param1; 
-    int var2=param2; 
-    int var3=param3; 
-    printf(&quot;0x%08x\n&quot;,&amp;parameter1); //打印出各个变量的内存地址 
-    printf(&quot;0x%08x\n&quot;,&amp;parameter2); 
-    printf(&quot;0x%08x\n\n&quot;,&amp;parameter3); 
-    printf(&quot;0x%08x\n&quot;,&amp;var1); 
-    printf(&quot;0x%08x\n&quot;,&amp;var2); 
-    printf(&quot;0x%08x\n\n&quot;,&amp;var3); 
-    return; 
-    &#125; 
-    int main() 
-    &#123; 
-    func(1,2,3); 
-    return 0; 
-    &#125; 
-</code></pre>
-<p><img src="http://i.imgur.com/kFjeO8n.png"></p>
-<p>函数的参数是从右向左传递，即先压栈parameter 3，然后parameter 2，最后才是parameter 1，然后是函数的返回地址，然后就是本地变量var1，var2,var3</p>
-<h3 id="3-程序进入main-函数-，栈帧的保存和关闭"><a href="#3-程序进入main-函数-，栈帧的保存和关闭" class="headerlink" title="3.程序进入main()函数 ，栈帧的保存和关闭"></a>3.程序进入main()函数 ，栈帧的保存和关闭</h3><p>例如：</p>
-<pre><code>int main（）
-&#123;
-return0；
-&#125;
-汇编代码为：
-push ebp;   保存进入main()函数时其他初始化函数的栈底
-move ebp,esp; 把当前esp的值作为栈底
-sub esp ,40h 开辟栈空间，作为局部变量的存储空间
-push ebx
-push  esi
-push  edi  保存寄存器的值
-LEA edi ,[ebp-40h]  取出此函数可用栈空间首地址  
-mov ecx,10h            设置ecx寄存器的值
-mov eax ,occcccccch  把局部变量初始化为0xcccccccch
-rep stos  dword ptr [edi]   根据ecx的值，把eax的内容，以四字节为单位写到edi指向的内存
-xor eax,eax    设置返回值为0
-pop  edi  
-pop esi
-pop ebx   弹出压入寄存器的值
-add esp,40h  降低esp,局部空间释放
-cmp ebp,esp 检查栈平衡
-call _chkesp()  进入栈错误检查函数
-mov esp.ebp  还原esp
-pop ebp         还原ebp
-ret
-</code></pre>
-<h3 id="4-简单的分配栈帧及溢出修改相邻变量"><a href="#4-简单的分配栈帧及溢出修改相邻变量" class="headerlink" title="4.  简单的分配栈帧及溢出修改相邻变量"></a>4.  简单的分配栈帧及溢出修改相邻变量</h3><p>例如：</p>
-<pre><code>    #include &lt;windows.h&gt;
-     
-    #define PASSWORD &quot;1234567&quot;
-     
-    int verify_password(char *password)&#123;
-        int authenticated;
-        char buffer[8];
-        authenticated = strcmp(password,PASSWORD);
-        strcpy(buffer,password);
-        return authenticated;
-    &#125;
-     
-    int main(int argc, char* argv[])
-    &#123;
-        int valid_flag = 0;
-        char password[1024];
-        FILE *fp;
-        if (!(fp=fopen(&quot;password.txt&quot;,&quot;rw+&quot;)))&#123;
-            return 0;
-        &#125;
-        fscanf(fp,&quot;%s&quot;,password);
-        valid_flag = verify_password(password);
-        if(valid_flag)&#123;
-            printf(&quot;incorrect password!\n&quot;);
-        &#125;else&#123;
-            printf(&quot;Congratulation! You have passed the verification !\n&quot;);
-        &#125;
-        Sleep(-1);
-        return 1;
-    &#125;
-</code></pre>
-<p>用OD调试：<br>进入main()主函数，找到验证密码的函数调用位置，进入到函数具体代码处：<br><img src="http://i.imgur.com/jNcKasB.png"><br><img src="http://i.imgur.com/pQm0oAL.png"><br><img src="http://i.imgur.com/qBPQTjK.png"></p>
-<p>前面部分就是栈分配局部变量空间和初始化的过程，然后就是字符串的计较，最后是字符串的复制，分析可得栈溢出在这一部分，在指令008D1409处把函数的返回值（EAX储存的是返回值）存在了EBP-0XC处，下面就是strocpy的操作，char buffer[8]分配了八个字节的存储空间，但是password.txt的密码如图为24个字节，知错执行strcpy的时候，把buffer 附近的变量空间也给覆盖了，比如返回值的。以上过程如图所示<br><img src="http://i.imgur.com/9CBEnex.png"><br><img src="http://i.imgur.com/S0M3SMC.png"><br><img src="http://i.imgur.com/S0ptRZH.png"></p>
+        <p>###步骤如下</p>
+<p>1.查壳<br>由图可见，显然有壳</p>
+<p><img src="http://i.imgur.com/56OEUZ6.png"></p>
+<p>2.找oep(ESP定律)</p>
+<p>程序加载进OD，F8单步运行，右边寄存器窗口发现只有esp的值在变，符合ESP定律。<br>在寄存器位置右键，点击HW-break下硬件断点。然后F9运行到断点处，到达跳转到oep 的前一步，单步运行，遇到如下图：右键分析点击在模块中删除分析，即得到OEP.在oep处右键用ollydump脱壳当前进程。复制当前oep.</p>
+<p><img src="http://i.imgur.com/7VfQh3T.png"><br><img src="http://i.imgur.com/CaYz7wj.png"></p>
+<p>3.脱壳(LordPE)</p>
+<p>在lordPE中打开样本程序，选中右键纠正镜像大小，再右键完全脱壳。<br><img src="http://i.imgur.com/o84YxcW.png"></p>
+<p>4.修复导入表(ImportREC)</p>
+<p> 在ImportREC中打开目标进程即样本进程，然后右边选项中输入之前在OD中选中的OEP，点击IAT自动搜索，然后点击获取导入表。</p>
+<p><img src="http://i.imgur.com/Ah6wEjD.png"></p>
+<p>5.文件大小自检</p>
+<p>脱壳以后双击没得反应，可能是有文件大小自检校验，脱壳后的程序载入OD，在GetFileSize函数下断点，在插件中选API断点设置工具-&gt;常用API断点。选中文件类的GetFileSize.然后F9运行程序，到断点处停下，在堆栈中右键反汇编跟随，找到调用这个函数的位置，然后下断点，把刚刚的那个断点删除。在断点后发现是几个cmp ,很明显是比较文件大小，故而把这两个ｃｍｐ右键二进制－＞用ｎｏｐ填充。然后复制到可执行文件，保存文件。再次点击程序，发现正常运行。<br><img src="http://i.imgur.com/3X4dGg6.png"></p>
+<p><img src="http://i.imgur.com/nIXhd5Y.png"></p>
+<p><img src="http://i.imgur.com/UEFRdvd.png"></p>
+<p>**<br>注：esp 定律**</p>
+<p>ESP定律算是我们在脱壳当中最常使用的方法之一，也特别适合像我一样的新手！而今天文章说的是ESP脱壳的原理和分析！只有知道原理了，我们的技术才能走得列远！</p>
+<p>一.准备知识<br>在我们开始讨论ESP定律之前，我先给你讲解一下一些简单的汇编知识。</p>
+<p>1.call</p>
+<p>这个命令是访问子程序的一个汇编基本指令。也许你说，这个我早就知道了！别急请继续看完。call真正的意义是什么呢？我们可以这样来理解：</p>
+<p>1.向堆栈中压入下一行程序的地址；<br>2.JMP到call的子程序地址处。</p>
+<p>例如：</p>
+<p>代码:</p>
+<p>00401029.E8 DA240A00 call 004A3508<br>0040102E.5A pop edx</p>
+<p>在执行了00401029以后，程序会将0040102E压入堆栈，然后JMP到004A3508地址处！</p>
+<p>2.RETN</p>
+<p>与call对应的就是RETN了。对于RETN我们可以这样来理解：</p>
+<p>1.将当前的ESP中指向的地址出栈；</p>
+<p>2.JMP到这个地址。</p>
+<p>这个就完成了一次调用子程序的过程。在这里关键的地方是：如果我们要返回父程序，则当我们在堆栈中进行堆栈的操作的时候，一定要保证在RETN这条指令之前，ESP指向的是我们压入栈中的地址。这也就是著名的“堆栈平衡”原理！</p>
+<p>3.狭义ESP定律</p>
+<p>ESP定律的原理就是“堆栈平衡”原理。</p>
+<p>让我们来到程序的入口处看看吧！</p>
+<p>1.这个是加了ASPACK壳的入口时各个寄存器的值！</p>
+<p>代码:</p>
+<p>EAX 00000000</p>
+<p>ECX 0012FFB0</p>
+<p>EDX 7FFE0304 &#x2F;&#x2F;堆栈值</p>
+<p>EBX 7FFDF000 &#x2F;&#x2F;堆栈值</p>
+<p>ESP 0012FFC4</p>
+<p>EBP 0012FFF0</p>
+<p>ESI 77F57D70 ntdll.77F57D70</p>
+<p>EDI 77F944A8 ntdll.77F944A8</p>
+<p>EIP 0040D000 ASPACK.<ModuleEntryPoint></p>
+<p>2.这个是ASPACK壳JMP到OEP后的寄存器的值！</p>
+<p>代码:</p>
+<p>EAX 004010CC ASPACK.004010CC</p>
+<p>ECX 0012FFB0</p>
+<p>EDX 7FFE0304 &#x2F;&#x2F;堆栈值</p>
+<p>EBX 7FFDF000 &#x2F;&#x2F;堆栈值</p>
+<p>ESP 0012FFC4</p>
+<p>EBP 0012FFF0</p>
+<p>ESI 77F57D70 ntdll.77F57D70</p>
+<p>EDI 77F944A8 ntdll.77F944A8</p>
+<p>EIP 004010CC ASPACK.004010CC</p>
+<p>呵呵~是不是除了EIP不同以外，eax保存当前OEP值，其他都一模一样啊！</p>
+<p>为什么会这样呢？我们来看看</p>
+<p>0040D000 A&gt; 60 pushad &#x2F;&#x2F;注意这里ESP&#x3D;0012FFC4</p>
+<p>0040D001 E8 00000000 call ASPACK.0040D006 &#x2F;&#x2F;ESP&#x3D;0012FFA4</p>
+<p>PUSHAD就是把所有寄存器压栈！我们在到壳的最后看看：</p>
+<p>代码:</p>
+<p>0040D558 61 popad &#x2F;&#x2F;ESP&#x3D;0012FFA4</p>
+<p>0040D559 75 08 jnz short ASPACK.0040D563 &#x2F;&#x2F;注意这里ESP&#x3D;0012FFC4</p>
+<p>也就是说当我们对ESP的0012FFA4下硬件访问断点之后。当程序要通过堆栈访问这些值，从而恢复原来寄存器的值，准备跳向苦苦寻觅的OEP的时候，OD帮助我们中断下来。</p>
+<p>小结：我们可以把壳假设为一个子程序，当壳把代码解压前和解压后，他必须要做的是遵循堆栈平衡的原理。</p>
+<p>因为大家对ESP理解各有异同，但是，大同小异！一般理解可以为：</p>
+<p>1、在命令行下断hr esp-4（此时的ESP就是OD载入后当前显示的值）</p>
+<p>2、hr ESP(关键标志下一行代码所指示的ESP值(单步通过)) </p>
 
     </div>
 
@@ -385,7 +346,7 @@ ret
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="栈基础知识">http://zwjsfdbb.top/2017/07/10/栈基础知识/</a>
+    <a href="http://zwjsfdbb.top/2017/07/15/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/" title="esp脱壳+文件大小自校验">http://zwjsfdbb.top/2017/07/15/esp脱壳+文件大小自校验/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -404,10 +365,13 @@ ret
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2017/07/15/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/" rel="next" title="esp脱壳+文件大小自校验">
-      esp脱壳+文件大小自校验 <i class="fa fa-chevron-right"></i>
+    <a href="/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="prev" title="栈基础知识">
+      <i class="fa fa-chevron-left"></i> 栈基础知识
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/03/dll%E5%8A%A0%E8%BD%BD%E5%92%8C%E5%8A%AB%E6%8C%81/" rel="next" title="dll加载和劫持">
+      dll加载和劫持 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -468,7 +432,6 @@ ret
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-C%E8%AF%AD%E8%A8%80%E5%8F%98%E9%87%8F%E7%9A%84%E5%88%86%E5%B8%83-%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1.C语言变量的分布 ：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%A0%88%E7%9A%84%E5%AD%98%E5%82%A8"><span class="nav-number">2.</span> <span class="nav-text">2. 栈的存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%A8%8B%E5%BA%8F%E8%BF%9B%E5%85%A5main-%E5%87%BD%E6%95%B0-%EF%BC%8C%E6%A0%88%E5%B8%A7%E7%9A%84%E4%BF%9D%E5%AD%98%E5%92%8C%E5%85%B3%E9%97%AD"><span class="nav-number">3.</span> <span class="nav-text">3.程序进入main()函数 ，栈帧的保存和关闭</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%AE%80%E5%8D%95%E7%9A%84%E5%88%86%E9%85%8D%E6%A0%88%E5%B8%A7%E5%8F%8A%E6%BA%A2%E5%87%BA%E4%BF%AE%E6%94%B9%E7%9B%B8%E9%82%BB%E5%8F%98%E9%87%8F"><span class="nav-number">4.</span> <span class="nav-text">4.  简单的分配栈帧及溢出修改相邻变量</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -598,7 +561,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'hexo_discuss',
       owner       : 'scuzhangzhang',
       admin       : ['scuzhangzhang'],
-      id          : '2f417eaa37951d67fe6387dec7962873',
+      id          : 'affce75dd6d653ec451f31c6bff7ae59',
         language: 'zh-CN',
       distractionFreeMode: false
     });

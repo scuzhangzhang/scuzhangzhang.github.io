@@ -20,29 +20,20 @@
     var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="1.C语言变量的分布 ：C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码：  #include &lt;stdio.h&gt;  int g1&#x3D;0, g2&#x3D;0, g3&#x3D;0;  int main()  &amp;#123;  static int s1&#x3D;0, s2&#x3D;0, s3&#x3D;0;  int">
+  <meta name="description" content="序言介绍：为了应对层出不穷的反虚拟机技术，本文实现一种真机搭建cuckoo的方式，结合国家网路中心的clonezila来实现分析机器的还原。 1.硬件准备*ubuntu16.04服务器一台(可在虚拟机中实现） *win7或者winxp一台 *交换机一台  2.服务器搭建&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;我选择的目前最新的ubuntu">
 <meta property="og:type" content="article">
-<meta property="og:title" content="栈基础知识">
-<meta property="og:url" content="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.html">
+<meta property="og:title" content="cuckoo真机分析环境(clonezilla)">
+<meta property="og:url" content="http://zwjsfdbb.top/2023/07/05/cuckoo%E7%9C%9F%E6%9C%BA%E5%88%86%E6%9E%90%E7%8E%AF%E5%A2%83/index.html">
 <meta property="og:site_name" content="fengchuiguo">
-<meta property="og:description" content="1.C语言变量的分布 ：C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码：  #include &lt;stdio.h&gt;  int g1&#x3D;0, g2&#x3D;0, g3&#x3D;0;  int main()  &amp;#123;  static int s1&#x3D;0, s2&#x3D;0, s3&#x3D;0;  int">
+<meta property="og:description" content="序言介绍：为了应对层出不穷的反虚拟机技术，本文实现一种真机搭建cuckoo的方式，结合国家网路中心的clonezila来实现分析机器的还原。 1.硬件准备*ubuntu16.04服务器一台(可在虚拟机中实现） *win7或者winxp一台 *交换机一台  2.服务器搭建&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;我选择的目前最新的ubuntu">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://i.imgur.com/Pbbtyit.png">
-<meta property="og:image" content="http://i.imgur.com/kFjeO8n.png">
-<meta property="og:image" content="http://i.imgur.com/jNcKasB.png">
-<meta property="og:image" content="http://i.imgur.com/pQm0oAL.png">
-<meta property="og:image" content="http://i.imgur.com/qBPQTjK.png">
-<meta property="og:image" content="http://i.imgur.com/9CBEnex.png">
-<meta property="og:image" content="http://i.imgur.com/S0M3SMC.png">
-<meta property="og:image" content="http://i.imgur.com/S0ptRZH.png">
-<meta property="article:published_time" content="2017-07-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2017-07-10T03:43:57.414Z">
+<meta property="article:published_time" content="2023-07-05T15:27:24.776Z">
+<meta property="article:modified_time" content="2017-04-02T16:22:44.372Z">
 <meta property="article:author" content="fengchuiguo">
-<meta property="article:tag" content="逆向">
+<meta property="article:tag" content="恶意代码">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://i.imgur.com/Pbbtyit.png">
 
-<link rel="canonical" href="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+<link rel="canonical" href="http://zwjsfdbb.top/2023/07/05/cuckoo%E7%9C%9F%E6%9C%BA%E5%88%86%E6%9E%90%E7%8E%AF%E5%A2%83/">
 
 
 <script id="page-configurations">
@@ -55,7 +46,7 @@
   };
 </script>
 
-  <title>栈基础知识 | fengchuiguo</title>
+  <title>cuckoo真机分析环境(clonezilla) | fengchuiguo</title>
   
 
 
@@ -198,7 +189,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/05/cuckoo%E7%9C%9F%E6%9C%BA%E5%88%86%E6%9E%90%E7%8E%AF%E5%A2%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -211,7 +202,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          栈基础知识
+          cuckoo真机分析环境(clonezilla)
         </h1>
 
         <div class="post-meta">
@@ -220,7 +211,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2017-07-10 11:43:57" itemprop="dateModified" datetime="2017-07-10T11:43:57+08:00">2017-07-10</time>
+                <time title="修改时间：2017-04-03 00:22:44" itemprop="dateModified" datetime="2017-04-03T00:22:44+08:00">2017-04-03</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -228,7 +219,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                  <a href="/categories/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81/" itemprop="url" rel="index"><span itemprop="name">恶意代码</span></a>
                 </span>
             </span>
 
@@ -243,113 +234,73 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="1-C语言变量的分布-："><a href="#1-C语言变量的分布-：" class="headerlink" title="1.C语言变量的分布 ："></a>1.C语言变量的分布 ：</h3><p>C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码： </p>
-<pre><code>#include &lt;stdio.h&gt; 
-int g1=0, g2=0, g3=0; 
-int main() 
-&#123; 
-static int s1=0, s2=0, s3=0; 
-int v1=0, v2=0, v3=0; 
-
-//打印出各个变量的内存地址 
-
-printf(&quot;0x%08x\n&quot;,&amp;v1); //打印各本地变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;v2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;v3); 
-printf(&quot;0x%08x\n&quot;,&amp;g1); //打印各全局变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;g2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;g3); 
-printf(&quot;0x%08x\n&quot;,&amp;s1); //打印各静态变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;s2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;s3); 
-system(&quot;pause&quot;);
-return 0; 
-&#125; 
+        <p>序言介绍：为了应对层出不穷的反虚拟机技术，本文实现一种真机搭建cuckoo的方式，结合国家网路中心的clonezila来实现分析机器的还原。</p>
+<h1 id="1-硬件准备"><a href="#1-硬件准备" class="headerlink" title="1.硬件准备"></a>1.硬件准备</h1><pre><code>*ubuntu16.04服务器一台(可在虚拟机中实现）
+*win7或者winxp一台
+*交换机一台
 </code></pre>
-<p>可以看出本地变量和全局&#x2F;静态变量的分布完全不同，相差甚远，这是因为他们分布在不同类型的区域。<br>进程的内存空间分为：代码区，静态数据区和动态数据区。全局和静态变量分配在静态数据区，本地变量分配在动态数据区，即”堆栈“，<br><img src="http://i.imgur.com/Pbbtyit.png"></p>
-<h3 id="2-栈的存储"><a href="#2-栈的存储" class="headerlink" title="2. 栈的存储"></a>2. 栈的存储</h3><pre><code>    #include &lt;stdio.h&gt; 
-    void __stdcall func(int param1,int param2,int param3) 
-    &#123; 
-    int var1=param1; 
-    int var2=param2; 
-    int var3=param3; 
-    printf(&quot;0x%08x\n&quot;,&amp;parameter1); //打印出各个变量的内存地址 
-    printf(&quot;0x%08x\n&quot;,&amp;parameter2); 
-    printf(&quot;0x%08x\n\n&quot;,&amp;parameter3); 
-    printf(&quot;0x%08x\n&quot;,&amp;var1); 
-    printf(&quot;0x%08x\n&quot;,&amp;var2); 
-    printf(&quot;0x%08x\n\n&quot;,&amp;var3); 
-    return; 
-    &#125; 
-    int main() 
-    &#123; 
-    func(1,2,3); 
-    return 0; 
-    &#125; 
+<h1 id="2-服务器搭建"><a href="#2-服务器搭建" class="headerlink" title="2.服务器搭建"></a>2.服务器搭建</h1><p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;我选择的目前最新的ubuntu16.04，内置python2.7比较方便,当然也可以选择其他版本的系统，或者centos应该也可以，不过最好用ubuntu,因为资料较多，cuckoo官方资料也是用cuckoo搭建的。</p>
+<p><strong>1.安装python2.7</strong></p>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;这是cuckoo所需要的，如果你的系统内置了python2.7那就不用安装了，安装步骤网上教程一大堆，不再赘述。查看python版本 python -V，一般内置pip安装工具，没有的话另外安装一下。</p>
+<p><strong>2.安装依赖库</strong></p>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;1.安装相关的依赖库</p>
+<pre><code>    sudo apt-get install python python-pip python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libjpeg-dev
 </code></pre>
-<p><img src="http://i.imgur.com/kFjeO8n.png"></p>
-<p>函数的参数是从右向左传递，即先压栈parameter 3，然后parameter 2，最后才是parameter 1，然后是函数的返回地址，然后就是本地变量var1，var2,var3</p>
-<h3 id="3-程序进入main-函数-，栈帧的保存和关闭"><a href="#3-程序进入main-函数-，栈帧的保存和关闭" class="headerlink" title="3.程序进入main()函数 ，栈帧的保存和关闭"></a>3.程序进入main()函数 ，栈帧的保存和关闭</h3><p>例如：</p>
-<pre><code>int main（）
-&#123;
-return0；
-&#125;
-汇编代码为：
-push ebp;   保存进入main()函数时其他初始化函数的栈底
-move ebp,esp; 把当前esp的值作为栈底
-sub esp ,40h 开辟栈空间，作为局部变量的存储空间
-push ebx
-push  esi
-push  edi  保存寄存器的值
-LEA edi ,[ebp-40h]  取出此函数可用栈空间首地址  
-mov ecx,10h            设置ecx寄存器的值
-mov eax ,occcccccch  把局部变量初始化为0xcccccccch
-rep stos  dword ptr [edi]   根据ecx的值，把eax的内容，以四字节为单位写到edi指向的内存
-xor eax,eax    设置返回值为0
-pop  edi  
-pop esi
-pop ebx   弹出压入寄存器的值
-add esp,40h  降低esp,局部空间释放
-cmp ebp,esp 检查栈平衡
-call _chkesp()  进入栈错误检查函数
-mov esp.ebp  还原esp
-pop ebp         还原ebp
-ret
+<p>然后去<a target="_blank" rel="noopener" href="https://cuckoosandbox.org/">cuckoog官网</a>或者<a target="_blank" rel="noopener" href="https://github.com/cuckoosandbox/cuckoo">github</a>下载cuckoo最新版本,然后解压打开cuckoo文件夹，有个requiremens.txt的文件夹，这需要全部下载，可以用python的pip进行安装，其中其中的 pefile 需要从 Google Code 上下载，由于大陆网络限制，需要自备梯子，登上梯子后执行以下批量安装命令：</p>
+<pre><code>pip install -r requirements.txt
 </code></pre>
-<h3 id="4-简单的分配栈帧及溢出修改相邻变量"><a href="#4-简单的分配栈帧及溢出修改相邻变量" class="headerlink" title="4.  简单的分配栈帧及溢出修改相邻变量"></a>4.  简单的分配栈帧及溢出修改相邻变量</h3><p>例如：</p>
-<pre><code>    #include &lt;windows.h&gt;
-     
-    #define PASSWORD &quot;1234567&quot;
-     
-    int verify_password(char *password)&#123;
-        int authenticated;
-        char buffer[8];
-        authenticated = strcmp(password,PASSWORD);
-        strcpy(buffer,password);
-        return authenticated;
-    &#125;
-     
-    int main(int argc, char* argv[])
-    &#123;
-        int valid_flag = 0;
-        char password[1024];
-        FILE *fp;
-        if (!(fp=fopen(&quot;password.txt&quot;,&quot;rw+&quot;)))&#123;
-            return 0;
-        &#125;
-        fscanf(fp,&quot;%s&quot;,password);
-        valid_flag = verify_password(password);
-        if(valid_flag)&#123;
-            printf(&quot;incorrect password!\n&quot;);
-        &#125;else&#123;
-            printf(&quot;Congratulation! You have passed the verification !\n&quot;);
-        &#125;
-        Sleep(-1);
-        return 1;
-    &#125;
+<p>或者先把pefile安装源码下载，手动安装，然后把它从requirements.txt里删除，然后用pip命令安装，个人建议用第二种方法。</p>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;2.Host 机需要可以嗅探网络数据包，需要安装 tcpdump ，如果本机没有，则执行以下命令安装 tcpdump：</p>
+<pre><code>    **apt-get install tcpdump**
 </code></pre>
-<p>用OD调试：<br>进入main()主函数，找到验证密码的函数调用位置，进入到函数具体代码处：<br><img src="http://i.imgur.com/jNcKasB.png"><br><img src="http://i.imgur.com/pQm0oAL.png"><br><img src="http://i.imgur.com/qBPQTjK.png"></p>
-<p>前面部分就是栈分配局部变量空间和初始化的过程，然后就是字符串的计较，最后是字符串的复制，分析可得栈溢出在这一部分，在指令008D1409处把函数的返回值（EAX储存的是返回值）存在了EBP-0XC处，下面就是strocpy的操作，char buffer[8]分配了八个字节的存储空间，但是password.txt的密码如图为24个字节，知错执行strcpy的时候，把buffer 附近的变量空间也给覆盖了，比如返回值的。以上过程如图所示<br><img src="http://i.imgur.com/9CBEnex.png"><br><img src="http://i.imgur.com/S0M3SMC.png"><br><img src="http://i.imgur.com/S0ptRZH.png"></p>
+<p>如果系统没启用 root 账户，由于 tcpdump 的执行需要 root 权限，则需要以下配置：</p>
+<pre><code>    **$ sudo setcap cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump**
+</code></pre>
+<p>如果系统里没有setcap命令，则需要安装 libpcap包：</p>
+<pre><code>    **$ sudo apt-get install libcap2-bin**
+</code></pre>
+<p>如果需要启用内存镜像分析，需要安装 volatility：</p>
+<pre><code>    **apt-get install volatility**
+</code></pre>
+<p><strong>3.cuckoo配置文件的修改</strong></p>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;主要修改的文件有：cuckoo.conf,physical.conf,auliary.conf.重点修改前两个。</p>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;1.修改cuckoo.conf</p>
+<pre><code>version_check = on 这个其实可以关掉，不然一直检查，如果你版本稍微低了一下就报错。
+machinery = physical 这个地方改成physical
+ip = 192.168.56.1 根据你的实际情况填写
+vm_state = 60  根据你的电脑实际还原时间填写
+</code></pre>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;2.修改physical.conf<br>    user &#x3D; username<br>    password &#x3D; password 根据你的分析机填写<br>    interface &#x3D; eth0根据你的网卡填写<br>    ip &#x3D; 192.168.56.101根据你的分析机填写</p>
+<p><strong>4.安装drbl</strong></p>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;1. 设置静态ip地址，直接在桌面设置及可以了。</p>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;2.安装drbl金钥</p>
+<pre><code>wget -q http://drbl.nchc.org.tw/GPG-KEY-DRBL -O- | sudo apt-key add -
+</code></pre>
+<p> &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;3.添加drbl源(根据自己的系统版本修改一下）</p>
+<pre><code>vi /etc/apt/sources.list
+deb http://free.nchc.org.tw/ubuntu xenial main restricted universe multiverse
+deb http://free.nchc.org.tw/drbl-core drbl stable
+</code></pre>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;3.安装drbl</p>
+<pre><code>sudo apt-get update
+sudo apt-get install drbl 
+</code></pre>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;4.设置drblserver</p>
+<pre><code>sudo drblsrv -i
+</code></pre>
+<p>提示!当有yes&#x2F;no选项的时候，预设的值是大写的字母。例如 (y&#x2F;N), 预设值是 “N”, 当你按 “Enter”的时候，程式使用的值就是 “N”。如果你不确认选用那个好的时候，直接按”Enter”键是一个保险的方式.感觉不保险的话，去搜一下，很多介绍的，在这不赘述。</p>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;5.设置环境</p>
+<pre><code>sudo drblpush -i
+</code></pre>
+<p>提示!当有yes&#x2F;no选项的时候，预设的值是大写的字母。例如 (y&#x2F;N), 预设值是 “N”, 当你按 “Enter”的时候，程式使用的值就是 “N”。如果你不确认选用那个好的时候，直接按”Enter”键是一个保险的方式.感觉不保险的话，去搜一下，很多介绍的，一般都差不多。<strong>注意有一点，搜集网卡的时候尽量选择实时收集，然后收集完，注意查看是否有文件在相应目录，还有注意系统读取网卡文件的名字的命名方式，比如我的网卡为ens33,所以网卡文件为macadr-ens33.txt,但是系统读取文件的时候可能会去查找以macadr-eth开头的文件，所以遇到这种情况的话，去手动创建一个这样的文件就可以了。还有就是配置的时候尽量切到&#x2F;etc&#x2F;drbl目录下进行操作。</strong></p>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;6.现在基本上drbl就设置好了。</p>
+<p><strong>5。网路设置</strong></p>
+<p>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;由于我在虚拟机上搭建的服务器，所以我选择桥接模式，桥接到物理机有线网卡上，然后外接到交换机，然后分析机器也接到交换机，构成一个物理的局域网环境。</p>
+<h1 id="3-分析机设置"><a href="#3-分析机设置" class="headerlink" title="3.分析机设置"></a>3.分析机设置</h1><p>1.首先安装python2.7，去python官网下载就好了。</p>
+<p>2.关闭防火墙，自动更新，uac。</p>
+<p>3.设置python运行权限为管理员。</p>
+<p>4.设置固定ip.(注意此时的ip不要和clonezila给他分配的ip一致，否则在还原的时候，网络捕捉模块会抓取太多还原时候的无用包，从而导致分析报告异常庞大。）</p>
+<p>**到此整个环境搭建就已经差不多了。注意需要熟悉drbl的使用方法才能使用此环境。此外还需要把drbl还原分析机的指令加入到cuckoo的源代码里去。文件具体为：scheduler库文件，添加到让分析机关机指令的前面位置。</p>
 
     </div>
 
@@ -385,7 +336,7 @@ ret
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="栈基础知识">http://zwjsfdbb.top/2017/07/10/栈基础知识/</a>
+    <a href="http://zwjsfdbb.top/2023/07/05/cuckoo%E7%9C%9F%E6%9C%BA%E5%88%86%E6%9E%90%E7%8E%AF%E5%A2%83/" title="cuckoo真机分析环境(clonezilla)">http://zwjsfdbb.top/2023/07/05/cuckoo真机分析环境/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -396,7 +347,7 @@ ret
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"># 逆向</a>
+              <a href="/tags/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81/" rel="tag"># 恶意代码</a>
           </div>
 
         
@@ -404,11 +355,11 @@ ret
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2017/07/15/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/" rel="next" title="esp脱壳+文件大小自校验">
-      esp脱壳+文件大小自校验 <i class="fa fa-chevron-right"></i>
+    <a href="/2017/11/15/dns%E6%B1%A1%E6%9F%93%E7%9A%84%E8%A7%A3%E5%86%B3/" rel="prev" title="dns污染的解决">
+      <i class="fa fa-chevron-left"></i> dns污染的解决
     </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -468,7 +419,7 @@ ret
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-C%E8%AF%AD%E8%A8%80%E5%8F%98%E9%87%8F%E7%9A%84%E5%88%86%E5%B8%83-%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1.C语言变量的分布 ：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%A0%88%E7%9A%84%E5%AD%98%E5%82%A8"><span class="nav-number">2.</span> <span class="nav-text">2. 栈的存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%A8%8B%E5%BA%8F%E8%BF%9B%E5%85%A5main-%E5%87%BD%E6%95%B0-%EF%BC%8C%E6%A0%88%E5%B8%A7%E7%9A%84%E4%BF%9D%E5%AD%98%E5%92%8C%E5%85%B3%E9%97%AD"><span class="nav-number">3.</span> <span class="nav-text">3.程序进入main()函数 ，栈帧的保存和关闭</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%AE%80%E5%8D%95%E7%9A%84%E5%88%86%E9%85%8D%E6%A0%88%E5%B8%A7%E5%8F%8A%E6%BA%A2%E5%87%BA%E4%BF%AE%E6%94%B9%E7%9B%B8%E9%82%BB%E5%8F%98%E9%87%8F"><span class="nav-number">4.</span> <span class="nav-text">4.  简单的分配栈帧及溢出修改相邻变量</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%A1%AC%E4%BB%B6%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">1.硬件准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA"><span class="nav-number">2.</span> <span class="nav-text">2.服务器搭建</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%88%86%E6%9E%90%E6%9C%BA%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">3.分析机设置</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -598,7 +549,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'hexo_discuss',
       owner       : 'scuzhangzhang',
       admin       : ['scuzhangzhang'],
-      id          : '2f417eaa37951d67fe6387dec7962873',
+      id          : 'ac356fb5d114a167822c9cc3a9454102',
         language: 'zh-CN',
       distractionFreeMode: false
     });
