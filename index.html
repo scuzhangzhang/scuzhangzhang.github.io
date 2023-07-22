@@ -183,6 +183,178 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/20/curl_loader%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/07/20/curl_loader%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB/" class="post-title-link" itemprop="url">Curl_loader 泛洪攻击</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-20 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-20T00:00:00+08:00">2023-07-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DDos/" itemprop="url" rel="index"><span itemprop="name">DDos</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1、安装过程</p>
+<p>下载链接 ：<a target="_blank" rel="noopener" href="https://master.dl.sourceforge.net/project/curl-loader/curl-loader/curl-loader-0.56/curl-loader-0.56.tar.bz2?viasf=1">https://master.dl.sourceforge.net/project/curl-loader/curl-loader/curl-loader-0.56/curl-loader-0.56.tar.bz2?viasf=1</a></p>
+<p>安装依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install openssl -y</span><br><span class="line">yum install openssl-devel -y</span><br></pre></td></tr></table></figure>
+
+<p>解压并make</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -xjf curl-loader-0.56.tar.bz2</span><br><span class="line">cd curl-loader-0.56</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<p>2、使用步骤</p>
+<p>配置文件  示例  参考链接：<a target="_blank" rel="noopener" href="https://curl-loader.sourceforge.net/doc/faq.html">https://curl-loader.sourceforge.net/doc/faq.html</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">10k.conf</span><br><span class="line">########### GENERAL SECTION ################################</span><br><span class="line">BATCH_NAME= 10K        # 名称</span><br><span class="line">CLIENTS_NUM_MAX=10000  # 最大一万个客户端</span><br><span class="line">CLIENTS_NUM_START=100  # 从100个客户端开始</span><br><span class="line">CLIENTS_RAMPUP_INC=50  # 每次增加50</span><br><span class="line">INTERFACE   =eth0   # 网卡</span><br><span class="line">NETMASK=16         # 掩码</span><br><span class="line">IP_ADDR_MIN= 192.168.1.1    # 伪装的IP起始</span><br><span class="line">IP_ADDR_MAX= 192.168.53.255  #Actually - this is for self-control</span><br><span class="line">CYCLES_NUM= -1   # 循环次数 -1代表无限循环</span><br><span class="line">URLS_NUM= 1      # URL的数量</span><br><span class="line"></span><br><span class="line">########### URL SECTION ####################################</span><br><span class="line"></span><br><span class="line">URL=http://localhost/index.html</span><br><span class="line">#URL=http://localhost/ACE-INSTALL.html</span><br><span class="line">URL_SHORT_NAME=&quot;local-index&quot;</span><br><span class="line">REQUEST_TYPE=GET</span><br><span class="line">TIMER_URL_COMPLETION = 5000      # In msec. When positive, Now it is enforced by cancelling url fetch on timeout</span><br><span class="line">TIMER_AFTER_URL_SLEEP =20   # 请求发的间歇</span><br></pre></td></tr></table></figure>
+
+<p>使用命令</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/07/20/curl_loader%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/13/Docker%E7%8E%AF%E5%A2%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/07/13/Docker%E7%8E%AF%E5%A2%83/" class="post-title-link" itemprop="url">Docker环境</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-13 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-13T00:00:00+08:00">2023-07-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index"><span itemprop="name">web</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="1、Docker基本概念"><a href="#1、Docker基本概念" class="headerlink" title="1、Docker基本概念"></a>1、Docker基本概念</h4><p>一个非常轻量级的虚拟环境，没有独立IP，依赖于宿主机。 Docker之间可以互相通信。外部设备无法访问Docker，必须把端口映射给宿主机。</p>
+<p>注意事项：</p>
+<ul>
+<li>尽量让一个容器做一件事情</li>
+<li>尽量使用挂载的方式把数据文件挂载到容器中</li>
+<li>尽量不要使用交互环境来直接操作容器，而是在宿主机上执行命令。</li>
+</ul>
+<h4 id="2、Docker-环境安装"><a href="#2、Docker-环境安装" class="headerlink" title="2、Docker 环境安装"></a>2、Docker 环境安装</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">yum install -y net-tools</span><br><span class="line">yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line">yum-config-manager --add-rep http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br><span class="line">yum makecache fast</span><br><span class="line">yum install -y docker-ce</span><br><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、配置拉取的镜像源"><a href="#3、配置拉取的镜像源" class="headerlink" title="3、配置拉取的镜像源"></a>3、配置拉取的镜像源</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vim/etc/docker/daemon.json </span><br><span class="line">添加</span><br><span class="line">&#123;</span><br><span class="line">    &quot;registry-mirrors&quot;:[</span><br><span class="line">     &quot;https://registry.docker-cn.com&quot;,</span><br><span class="line">     &quot;http://hub-mirror.c.163.com&quot;,</span><br><span class="line">     &quot;https://docker.mirrors.ustc.edu.cn&quot;</span><br><span class="line">     ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行docker info</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230711224747265.png" alt="image-20230711224747265"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/07/13/Docker%E7%8E%AF%E5%A2%83/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/11/LNMP%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -258,6 +430,90 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/07/11/LNMP%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/04/20/%E9%98%B2%E7%81%AB%E5%A2%99%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/04/20/%E9%98%B2%E7%81%AB%E5%A2%99%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5_new/" class="post-title-link" itemprop="url">防火墙安全应急</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-04-20 00:00:00" itemprop="dateCreated datePublished" datetime="2023-04-20T00:00:00+08:00">2023-04-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="防火墙安全应急"><a href="#防火墙安全应急" class="headerlink" title="防火墙安全应急"></a>防火墙安全应急</h3><p>背景</p>
+<p>通过SSH远程登录失败多次，通过防火墙将其屏蔽，并发送通知</p>
+<p>1、如何判断SSH远程登录失败</p>
+<p>通过查看&#x2F;var&#x2F;log&#x2F;secure 查看，如下即为登录失败的情况，如果多次出现，则可以判定为非法登录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Apr 20 22:16:40 192 sshd[5101]: Failed password for root from 192.168.101.15 port 50632 ssh2</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">failedcount=$(cat /var/log/secure |grep &quot;Failed password&quot;|wc -l)</span><br><span class="line">if [ $failedcount -gt 2 ]; then</span><br><span class="line">   echo &quot;too many count&quot;</span><br><span class="line">   ip=$(cat /var/log/secure |grep &quot;Failed&quot; |awk &#x27;&#123;print $11&#125;&#x27; |uniq)</span><br><span class="line">   status_fire=$(firewall-cmd --state)</span><br><span class="line">   if [ $status_fire != &quot;running&quot; ]; then</span><br><span class="line">      systemctl start firewalld</span><br><span class="line">   fi</span><br><span class="line">   firewall-cmd --add-rich-rule=&#x27;rule family=ipv4 source address=&quot;$ip&quot; drop&#x27;</span><br><span class="line">   echo &quot;$ip 被防火墙阻止&quot;</span><br><span class="line">   </span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>pkill 可根据进程名kill 掉进程</p>
+<p>who 可以看到哪些人登录了</p>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230420224036355.png" alt="image-20230420224036355"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/04/20/%E9%98%B2%E7%81%AB%E5%A2%99%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5_new/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -923,128 +1179,11 @@ void helloDLL(void)
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="post-title-link" itemprop="url">栈基础知识</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-10 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-10T00:00:00+08:00">2017-07-10</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="1-C语言变量的分布-："><a href="#1-C语言变量的分布-：" class="headerlink" title="1.C语言变量的分布 ："></a>1.C语言变量的分布 ：</h3><p>C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码： </p>
-<pre><code>#include &lt;stdio.h&gt; 
-int g1=0, g2=0, g3=0; 
-int main() 
-&#123; 
-static int s1=0, s2=0, s3=0; 
-int v1=0, v2=0, v3=0; 
-
-//打印出各个变量的内存地址 
-
-printf(&quot;0x%08x\n&quot;,&amp;v1); //打印各本地变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;v2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;v3); 
-printf(&quot;0x%08x\n&quot;,&amp;g1); //打印各全局变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;g2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;g3); 
-printf(&quot;0x%08x\n&quot;,&amp;s1); //打印各静态变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;s2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;s3); 
-system(&quot;pause&quot;);
-return 0; 
-&#125; 
-</code></pre>
-<p>可以看出本地变量和全局&#x2F;静态变量的分布完全不同，相差甚远，这是因为他们分布在不同类型的区域。<br>进程的内存空间分为：代码区，静态数据区和动态数据区。全局和静态变量分配在静态数据区，本地变量分配在动态数据区，即”堆栈“，<br><img src="http://i.imgur.com/Pbbtyit.png"></p>
-<h3 id="2-栈的存储"><a href="#2-栈的存储" class="headerlink" title="2. 栈的存储"></a>2. 栈的存储</h3><pre><code>    #include &lt;stdio.h&gt; 
-    void __stdcall func(int param1,int param2,int param3) 
-    &#123; 
-    int var1=param1; 
-    int var2=param2; 
-    int var3=param3; 
-    printf(&quot;0x%08x\n&quot;,&amp;parameter1); //打印出各个变量的内存地址 
-    printf(&quot;0x%08x\n&quot;,&amp;parameter2); 
-    printf(&quot;0x%08x\n\n&quot;,&amp;parameter3); 
-    printf(&quot;0x%08x\n&quot;,&amp;var1); 
-    printf(&quot;0x%08x\n&quot;,&amp;var2); 
-    printf(&quot;0x%08x\n\n&quot;,&amp;var3); 
-    return; 
-    &#125; 
-    int main() 
-    &#123; 
-    func(1,2,3); 
-    return 0; 
-    &#125; 
-</code></pre>
-<p><img src="http://i.imgur.com/kFjeO8n.png"></p>
-<p>函数的参数是从右向左传递，即先压栈parameter 3，然后parameter 2，最后才是parameter 1，然后是函数的返回地址，然后就是本地变量var1，var2,var3</p>
-<h3 id="3-程序进入main-函数-，栈帧的保存和关闭"><a href="#3-程序进入main-函数-，栈帧的保存和关闭" class="headerlink" title="3.程序进入main()函数 ，栈帧的保存和关闭"></a>3.程序进入main()函数 ，栈帧的保存和关闭</h3><p>例如：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
@@ -1109,20 +1248,20 @@ return 0;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -22,26 +22,26 @@
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="fengchuiguo">
-<meta property="og:url" content="http://zwjsfdbb.top/archives/2017/07/index.html">
+<meta property="og:url" content="http://zwjsfdbb.top/page/2/index.html">
 <meta property="og:site_name" content="fengchuiguo">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="fengchuiguo">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://zwjsfdbb.top/archives/2017/07/">
+<link rel="canonical" href="http://zwjsfdbb.top/page/2/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : false,
+    isHome : true,
     isPost : false,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | fengchuiguo</title>
+  <title>fengchuiguo</title>
   
 
 
@@ -177,91 +177,133 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
 
-  
-  
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 11 篇日志。 继续努力。</span>
-      </div>
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="post-title-link" itemprop="url">栈基础知识</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-07-10 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-10T00:00:00+08:00">2017-07-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2017</span>
+          <h3 id="1-C语言变量的分布-："><a href="#1-C语言变量的分布-：" class="headerlink" title="1.C语言变量的分布 ："></a>1.C语言变量的分布 ：</h3><p>C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码： </p>
+<pre><code>#include &lt;stdio.h&gt; 
+int g1=0, g2=0, g3=0; 
+int main() 
+&#123; 
+static int s1=0, s2=0, s3=0; 
+int v1=0, v2=0, v3=0; 
+
+//打印出各个变量的内存地址 
+
+printf(&quot;0x%08x\n&quot;,&amp;v1); //打印各本地变量的内存地址 
+printf(&quot;0x%08x\n&quot;,&amp;v2); 
+printf(&quot;0x%08x\n\n&quot;,&amp;v3); 
+printf(&quot;0x%08x\n&quot;,&amp;g1); //打印各全局变量的内存地址 
+printf(&quot;0x%08x\n&quot;,&amp;g2); 
+printf(&quot;0x%08x\n\n&quot;,&amp;g3); 
+printf(&quot;0x%08x\n&quot;,&amp;s1); //打印各静态变量的内存地址 
+printf(&quot;0x%08x\n&quot;,&amp;s2); 
+printf(&quot;0x%08x\n\n&quot;,&amp;s3); 
+system(&quot;pause&quot;);
+return 0; 
+&#125; 
+</code></pre>
+<p>可以看出本地变量和全局&#x2F;静态变量的分布完全不同，相差甚远，这是因为他们分布在不同类型的区域。<br>进程的内存空间分为：代码区，静态数据区和动态数据区。全局和静态变量分配在静态数据区，本地变量分配在动态数据区，即”堆栈“，<br><img src="http://i.imgur.com/Pbbtyit.png"></p>
+<h3 id="2-栈的存储"><a href="#2-栈的存储" class="headerlink" title="2. 栈的存储"></a>2. 栈的存储</h3><pre><code>    #include &lt;stdio.h&gt; 
+    void __stdcall func(int param1,int param2,int param3) 
+    &#123; 
+    int var1=param1; 
+    int var2=param2; 
+    int var3=param3; 
+    printf(&quot;0x%08x\n&quot;,&amp;parameter1); //打印出各个变量的内存地址 
+    printf(&quot;0x%08x\n&quot;,&amp;parameter2); 
+    printf(&quot;0x%08x\n\n&quot;,&amp;parameter3); 
+    printf(&quot;0x%08x\n&quot;,&amp;var1); 
+    printf(&quot;0x%08x\n&quot;,&amp;var2); 
+    printf(&quot;0x%08x\n\n&quot;,&amp;var3); 
+    return; 
+    &#125; 
+    int main() 
+    &#123; 
+    func(1,2,3); 
+    return 0; 
+    &#125; 
+</code></pre>
+<p><img src="http://i.imgur.com/kFjeO8n.png"></p>
+<p>函数的参数是从右向左传递，即先压栈parameter 3，然后parameter 2，最后才是parameter 1，然后是函数的返回地址，然后就是本地变量var1，var2,var3</p>
+<h3 id="3-程序进入main-函数-，栈帧的保存和关闭"><a href="#3-程序进入main-函数-，栈帧的保存和关闭" class="headerlink" title="3.程序进入main()函数 ，栈帧的保存和关闭"></a>3.程序进入main()函数 ，栈帧的保存和关闭</h3><p>例如：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2017-07-15T00:00:00+08:00"
-              content="2017-07-15">
-          07-15
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2017/07/15/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/" itemprop="url">
-            <span itemprop="name">esp脱壳+文件大小自校验</span>
-          </a>
-      </div>
-
-    </header>
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
   </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2017-07-11T00:00:00+08:00"
-              content="2017-07-11">
-          07-11
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2017/07/11/cuckoo%E7%9C%9F%E6%9C%BA%E5%88%86%E6%9E%90%E7%8E%AF%E5%A2%83/" itemprop="url">
-            <span itemprop="name">cuckoo真机分析环境(clonezilla)</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2017-07-10T00:00:00+08:00"
-              content="2017-07-10">
-          07-10
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2017/07/10/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" itemprop="url">
-            <span itemprop="name">栈基础知识</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-
-    </div>
-  </div>
   
   
   
 
+
   
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
 
 
 
