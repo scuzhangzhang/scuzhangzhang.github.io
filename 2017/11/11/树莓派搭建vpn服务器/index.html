@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1.此篇是在前篇搭建树莓派透明代理的基础上完成的， 2.树莓派尽量设置成静态ip，具体如下 sudo vim &#x2F;etc&#x2F;dhcpcd.conf 填写以下内容  interface eth0  static ip_address&#x3D;ip  static routers&#x3D;网关  static domain_name_servers&#x3D;223.5.5.5  3.安装openvpn sudo apt-get">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树莓派搭建vpn服务器">
+<meta property="og:url" content="http://zwjsfdbb.top/2017/11/11/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/index.html">
+<meta property="og:site_name" content="fengchuiguo">
+<meta property="og:description" content="1.此篇是在前篇搭建树莓派透明代理的基础上完成的， 2.树莓派尽量设置成静态ip，具体如下 sudo vim &#x2F;etc&#x2F;dhcpcd.conf 填写以下内容  interface eth0  static ip_address&#x3D;ip  static routers&#x3D;网关  static domain_name_servers&#x3D;223.5.5.5  3.安装openvpn sudo apt-get">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-11-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-27T14:03:58.193Z">
+<meta property="article:author" content="fengchuiguo">
+<meta property="article:tag" content="杂学">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zwjsfdbb.top/2017/11/11/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>树莓派搭建vpn服务器 | fengchuiguo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fengchuiguo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/11/11/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          树莓派搭建vpn服务器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-11 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-11T00:00:00+08:00">2017-11-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>1.此篇是在前篇搭建树莓派透明代理的基础上完成的，</p>
+<p>2.树莓派尽量设置成静态ip，具体如下</p>
+<pre><code>sudo vim /etc/dhcpcd.conf
+填写以下内容
+
+interface eth0
+
+static ip_address=ip
+
+static routers=网关
+
+static domain_name_servers=223.5.5.5
+</code></pre>
+<p>3.安装openvpn</p>
+<pre><code>sudo apt-get install openvpn
+</code></pre>
+<p>4.下载easy-rsa</p>
+<pre><code>cd /etc/openvpn
+wget --no-check-certificate https://github.com/OpenVPN/easy-rsa/releases/download/2.2.2/EasyRSA-2.2.2.tgz
+tar -xzvf EasyRSA-2.2.2.tgz
+mv EasyRSA-2.2.2 easy-rsa
+</code></pre>
+<p>5.配置easy-rsa</p>
+<pre><code>cd /etc/openvpn/easy-rsa
+vim vars    # 打开easy-rsa配置文件
+修改一下内容
+export EASY_RSA=&quot;/etc/openvpn/easy-rsa&quot;
+export KEY_SIZE=1024 #默认的2048太大，要运算很久
+加载配置
+source ./vars
+</code></pre>
+<p>6.生成ca密钥</p>
+<pre><code>./clean-all      # 先清空所有密钥
+./build-ca       # 创建自己的证书
+所有内容直接回车就可以了。这时keys文件夹下会多了ca.crt,和ca.key文件
+</code></pre>
+<p>7.生成服务器密钥</p>
+<pre><code>./build-key-server servername # servername为你自己设置的服务器名字
+会出现很多让填写的地方，注意下面三个其他的默认就好
+Common Name 常用名必须是你方才所设置的服务器名，默认设置如此。
+A challenge password? 网上说必须留空，我也照办了，不晓得为什么
+Sign the certificate? [y/n] 必须填y
+</code></pre>
+<p>8.生成客户端密钥</p>
+<pre><code>./build-key-pass client1   # 命令中client1是客户端的名字
+Enter PEM pass phrase 这个要记住，这是客户端使用vpn时的密码，会让输入两次。
+这时keys下又会多出三个文件client1.csr client1.crt client.key
+</code></pre>
+<p>9.生成dh</p>
+<pre><code>./build-dh
+到此密钥生成部分就完成了。
+</code></pre>
+<p>10.openvpn 服务器配置	</p>
+<pre><code># 复制一个模板过来先
+cp /usr/share/doc/openvpn/examples/sample-config-files/server.conf /etc/openvpn/server.conf
+vim /etc/openvpn/server.conf
+下面是我的配置
+
+port 1194   #Openvpn服务使用的端口
+proto tcp   #使用udp协议传输
+dev tun     #使用隧道
+
+ca /etc/openvpn/easy-rsa/keys/ca.crt        #ca公钥路径
+cert /etc/openvpn/easy-rsa/keys/server.crt  #服务器公钥路径
+key /etc/openvpn/easy-rsa/keys/server.key   #服务器私钥路径
+dh /etc/openvpn/easy-rsa/keys/dh1024.pem    #dh
+
+server 10.10.20.0 255.255.255.0   #客户端连接后，所在的子网段
+
+ifconfig-pool-persist ipp.txt   #客户端使用固定的子网地址，这里可以不配置
+
+push &quot;redirect-gateway def1 bypass-dhcp&quot;    #网关重定向，客户端的流量都会经由OpenvpnServer
+#配置DNS
+push &quot;dhcp-option DNS 202.141.162.123&quot;
+push &quot;dhcp-option DNS 202.38.93.153 
+
+client-to-client
+
+duplicate-cn    #允许客户端的CommonName重复，因为我们填的都是默认值
+
+keepalive 10 120
+
+comp-lzo    #启动数据压缩
+
+user nobody     #Openvpn进程运行时所属的用户，这里为了安全
+group nogroup   #Openvpn进程运行时所属的组，这里为了安全
+
+persist-key     #一直保存key，避免权限问题导致不能再次读取
+persist-tun     #一直保持隧道，原因同上
+
+status /etc/openvpn/easy-rsa/keys/openvpn-status.log   #Openvpn运行状态Log，就在Openvpn目录下，会自动生成
+
+log openvpn.log             #Openvpn运行Log，也在Openvpn目录下，会自动生成
+
+verb 3                      #log的等级
+</code></pre>
+<p>11.此时可以测试一下了</p>
+<pre><code>openvpn server.conf
+service openvpn restart
+不报错就是成功了
+</code></pre>
+<p>12.客户端配置</p>
+<pre><code>cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/clientconfig/client.conf
+vim /etc/openvpn/clientconfig/client.conf
+我的配置如下：
+# 里面注释也很详细，这里贴出我精简后的结果
+client      #标明是客户端配置
+dev tun     #使用隧道
+proto tcp   #使用UDP
+
+remote 192.168.19.149 1194   #树莓派外网IP（使用动态域名绑定） + 端口
+comp-lzo        
+
+ca ca.crt       #ca公钥
+cert wxlnb.crt  #客户端公钥
+key wxlnb.key   #客户端私钥
+
+verb 3  #log等级
+</code></pre>
+<p>13.防火墙规则我就改了一点</p>
+<pre><code>iptables -t nat -A PREROUTING -i tun0 -p tcp -j REDSOCKS
+</code></pre>
+<p>14.测试</p>
+<pre><code>在其他Windows机器上，下载openvpn 安装，然后把ca.crt,client.conf（就是刚刚那个client.conf）,client1.crt,client1.key复制到config 文件夹下。
+</code></pre>
+<p>参考链接</p>
+<pre><code>1.http://www.smartmcu.com/article-246-1.html
+2.http://blog.csdn.net/wxlguitar/article/details/51175872
+</code></pre>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="fengchuiguo 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="fengchuiguo 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>fengchuiguo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zwjsfdbb.top/2017/11/11/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/" title="树莓派搭建vpn服务器">http://zwjsfdbb.top/2017/11/11/树莓派搭建vpn服务器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9D%82%E5%AD%A6/" rel="tag"># 杂学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/11/05/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/" rel="prev" title="重装系统后hexo 博客恢复">
+      <i class="fa fa-chevron-left"></i> 重装系统后hexo 博客恢复
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/11/15/dns%E6%B1%A1%E6%9F%93%E7%9A%84%E8%A7%A3%E5%86%B3/" rel="next" title="dns污染的解决">
+      dns污染的解决 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">fengchuiguo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fengchuiguo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ba624f1112450ac0437d',
+      clientSecret: '815911bc627d433d1f233c833883b96e335ea413',
+      repo        : 'hexo_discuss',
+      owner       : 'scuzhangzhang',
+      admin       : ['scuzhangzhang'],
+      id          : '0c292074bf2f38c70c9fdf77941c2953',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

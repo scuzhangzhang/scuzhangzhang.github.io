@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1、获取打开文件的全路径（1）方法：获取进程PEB中的命令行参数信息（问题：如果先打开文件比如word.exe再打开文件，会出现获取不到的情况）步骤：  遍历进程获取打开文件的可执行文件的进程  HANDLE hSnapProcess &#x3D; CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);  if (hSnapProcess &#x3D;&amp;#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="获取打开文件的全路径（1）">
+<meta property="og:url" content="http://zwjsfdbb.top/2018/04/12/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%881%EF%BC%89/index.html">
+<meta property="og:site_name" content="fengchuiguo">
+<meta property="og:description" content="1、获取打开文件的全路径（1）方法：获取进程PEB中的命令行参数信息（问题：如果先打开文件比如word.exe再打开文件，会出现获取不到的情况）步骤：  遍历进程获取打开文件的可执行文件的进程  HANDLE hSnapProcess &#x3D; CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);  if (hSnapProcess &#x3D;&amp;#">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230704222649697.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230704222723161.png">
+<meta property="article:published_time" content="2018-04-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-27T14:32:16.549Z">
+<meta property="article:author" content="fengchuiguo">
+<meta property="article:tag" content="编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230704222649697.png">
+
+<link rel="canonical" href="http://zwjsfdbb.top/2018/04/12/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%881%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>获取打开文件的全路径（1） | fengchuiguo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fengchuiguo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%881%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          获取打开文件的全路径（1）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="1、获取打开文件的全路径（1）"><a href="#1、获取打开文件的全路径（1）" class="headerlink" title="1、获取打开文件的全路径（1）"></a>1、获取打开文件的全路径（1）</h4><p>方法：获取进程PEB中的命令行参数信息（问题：如果先打开文件比如word.exe再打开文件，会出现获取不到的情况）<br>步骤：</p>
+<ul>
+<li><h5 id="遍历进程获取打开文件的可执行文件的进程"><a href="#遍历进程获取打开文件的可执行文件的进程" class="headerlink" title="遍历进程获取打开文件的可执行文件的进程"></a>遍历进程获取打开文件的可执行文件的进程</h5><p>  HANDLE hSnapProcess &#x3D; CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);<br>  if (hSnapProcess &#x3D;&#x3D; INVALID_HANDLE_VALUE)<br>  {<br>  return;<br>  }<br>  PROCESSENTRY32W ProcessEntry;<br>  ProcessEntry.dwSize &#x3D; sizeof(ProcessEntry);<br>  BOOL bret &#x3D; Process32FirstW(hSnapProcess, &amp;ProcessEntry);<br>  WCHAR wszProcessInfo[MAX_PATH] &#x3D; { 0 };</p>
+<p>  do<br>  {<br>  WCHAR Name[MAX_PATH] &#x3D; { 0 };<br><br>  if (!lstrcmp(ProcessEntry.szExeFile, L”POWERPNT.EXE”)| !lstrcmp(ProcessEntry.szExeFile, L”WINWORD.EXE”))<br>  {<br>      HANDLE hProcess &#x3D; OpenProcess(PROCESS_ALL_ACCESS, false, ProcessEntry.th32ProcessID);<br>      do something<br>      CloseHandle(hProcess);<br><br>  }<br>  } while (Process32NextW(hSnapProcess, &amp;ProcessEntry));</p>
+</li>
+<li><h5 id="利用ntdll-dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory-函数原型如下："><a href="#利用ntdll-dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory-函数原型如下：" class="headerlink" title="利用ntdll.dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory,函数原型如下："></a>利用ntdll.dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory,函数原型如下：</h5><p> NTSTATUS WINAPI NtQueryInformationProcess(<br>   <em>In</em>      HANDLE           ProcessHandle,<br>   <em>In</em>      PROCESSINFOCLASS ProcessInformationClass,<br>   <em>Out</em>     PVOID            ProcessInformation,<br>   <em>In</em>      ULONG            ProcessInformationLength,<br>   <em>Out_opt</em> PULONG           ReturnLength<br> );</p>
+</li>
+</ul>
+<p>第一个参数是进程句柄，第二个参数是获取的进程的信息类型，这里我们选择ProcessBasicInformation,<br>msdn 的声明如下，会返回一个PEB结构体。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230704222649697.png" alt="image-20230704222649697"></p>
+<p>第三个参数是输出参数，当参数2是ProcessBasicInformation时，会返回一个<br>PROCESS_BASIC_INFORMATION 结构，结构如下，</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230704222723161.png" alt="image-20230704222723161"></p>
+<pre><code>status = NtQueryInformationProcess(hProcess,
+                ProcessBasicInformation,
+                &amp;pbi,
+                sizeof(PROCESS_BASIC_INFORMATION),
+                &amp;ReturnLength);
+</code></pre>
+<ul>
+<li><h5 id="获取到PROCESS-BASIC-INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，"><a href="#获取到PROCESS-BASIC-INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，" class="headerlink" title="获取到PROCESS_BASIC_INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，"></a>获取到PROCESS_BASIC_INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，</h5><p>   ReadProcessMemory(hProcess, pbi.PebBaseAddress, &amp;peb, sizeof(PEB), 0)  ReadProcessMemory的函数原型如下：</p>
+<p>   BOOL WINAPI ReadProcessMemory(<br> <em>In</em>  HANDLE  hProcess,<br> <em>In</em>  LPCVOID lpBaseAddress,<br> <em>Out</em> LPVOID  lpBuffer,<br> <em>In</em>  SIZE_T  nSize,<br> <em>Out</em> SIZE_T  *lpNumberOfBytesRead<br>   );</p>
+</li>
+<li><h5 id="通过ReadProcessMemory-获取进程的PEB以后，PEB的结构如下："><a href="#通过ReadProcessMemory-获取进程的PEB以后，PEB的结构如下：" class="headerlink" title="通过ReadProcessMemory 获取进程的PEB以后，PEB的结构如下："></a>通过ReadProcessMemory 获取进程的PEB以后，PEB的结构如下：</h5><p>  typedef struct _PEB {<br>  BOOLEAN                 InheritedAddressSpace;<br>  BOOLEAN                 ReadImageFileExecOptions;<br>  BOOLEAN                 BeingDebugged;<br>  BOOLEAN                 Spare;<br>  HANDLE                  Mutant;<br>  PVOID                   ImageBaseAddress;<br>  PPEB_LDR_DATA           LoaderData;<br>  PRTL_USER_PROCESS_PARAMETERS ProcessParameters;<br>  PVOID                   SubSystemData;<br>  PVOID                   ProcessHeap;<br>  PVOID                   FastPebLock;<br>  PPEBLOCKROUTINE         FastPebLockRoutine;<br>  PPEBLOCKROUTINE         FastPebUnlockRoutine;<br>  ULONG                   EnvironmentUpdateCount;<br>  PVOID*                  KernelCallbackTable;<br>  PVOID                   EventLogSection;<br>  PVOID                   EventLog;<br>  PPEB_FREE_BLOCK         FreeList;<br>  ULONG                   TlsExpansionCounter;<br>  PVOID                   TlsBitmap;<br>  ULONG                   TlsBitmapBits[0x2];<br>  PVOID                   ReadOnlySharedMemoryBase;<br>  PVOID                   ReadOnlySharedMemoryHeap;<br>  PVOID*                  ReadOnlyStaticServerData;<br>  PVOID                   AnsiCodePageData;<br>  PVOID                   OemCodePageData;<br>  PVOID                   UnicodeCaseTableData;<br>  ULONG                   NumberOfProcessors;<br>  ULONG                   NtGlobalFlag;<br>  BYTE                    Spare2[0x4];<br>  LARGE_INTEGER           CriticalSectionTimeout;<br>  ULONG                   HeapSegmentReserve;<br>  ULONG                   HeapSegmentCommit;<br>  ULONG                   HeapDeCommitTotalFreeThreshold;<br>  ULONG                   HeapDeCommitFreeBlockThreshold;<br>  ULONG                   NumberOfHeaps;<br>  ULONG                   MaximumNumberOfHeaps;<br>  PVOID*                  *ProcessHeaps;<br>  PVOID                   GdiSharedHandleTable;<br>  PVOID                   ProcessStarterHelper;<br>  PVOID                   GdiDCAttributeList;<br>  PVOID                   LoaderLock;<br>  ULONG                   OSMajorVersion;<br>  ULONG                   OSMinorVersion;<br>  ULONG                   OSBuildNumber;<br>  ULONG                   OSPlatformId;<br>  ULONG                   ImageSubSystem;<br>  ULONG                   ImageSubSystemMajorVersion;<br>  ULONG                   ImageSubSystemMinorVersion;<br>  ULONG                   GdiHandleBuffer[0x22];<br>  ULONG                   PostProcessInitRoutine;<br>  ULONG                   TlsExpansionBitmap;<br>  BYTE                    TlsExpansionBitmapBits[0x80];<br>  ULONG                   SessionId;<br>  } PEB, *PPEB;</p>
+</li>
+</ul>
+<p>如图标红位置为进程的参数信息，再次调用ReadProcessMemory  获取参数信息，<br>ReadProcessMemory(hProcess, peb.ProcessParameters, &amp;upps, sizeof(RTL_USER_PROCESS_PARAMETERS), 0))<br> 其中upps是一个RTL_USER_PROCESS_PARAMETERS 的结构体，定义如下：<br>    typedef struct _RTL_USER_PROCESS_PARAMETERS<br>    {<br>        ULONG MaximumLength;<br>        ULONG Length;</p>
+<pre><code>    ULONG Flags;
+    ULONG DebugFlags;
+
+    HANDLE ConsoleHandle;
+    ULONG ConsoleFlags;
+    HANDLE StandardInput;
+    HANDLE StandardOutput;
+    HANDLE StandardError;
+
+    CURDIR CurrentDirectory;
+    UNICODE_STRING DllPath;
+    UNICODE_STRING ImagePathName;
+    UNICODE_STRING CommandLine;
+    PVOID Environment;
+
+    ULONG StartingX;
+    ULONG StartingY;
+    ULONG CountX;
+    ULONG CountY;
+    ULONG CountCharsX;
+    ULONG CountCharsY;
+    ULONG FillAttribute;
+
+    ULONG WindowFlags;
+    ULONG ShowWindowFlags;
+    UNICODE_STRING WindowTitle;
+    UNICODE_STRING DesktopInfo;
+    UNICODE_STRING ShellInfo;
+    UNICODE_STRING RuntimeData;
+    RTL_DRIVE_LETTER_CURDIR CurrentDirectories[RTL_MAX_DRIVE_LETTERS];
+
+    ULONG EnvironmentSize;
+    ULONG EnvironmentVersion;
+    PVOID PackageDependencyData; //8+
+    ULONG ProcessGroupId;
+   // ULONG LoaderThreads;
+&#125; RTL_USER_PROCESS_PARAMETERS, *PRTL_USER_PROCESS_PARAMETERS;
+</code></pre>
+<p>如上标红位置为命令行信息，UNICODE_STRING同样是一个结构体，定义如下：</p>
+<pre><code>typedef struct _UNICODE_STRING 
+&#123;
+    USHORT Length;
+    USHORT MaximumLength;
+    PWSTR  Buffer;
+&#125; UNICODE_STRING;
+typedef UNICODE_STRING *PUNICODE_STRING;
+</code></pre>
+<p>再次调用ReadProcessMemory获取命令行字符串信息，存入buffer中</p>
+<pre><code>ReadProcessMemory(hProcess, upps.CommandLine.Buffer, buffer, upps.CommandLine.Length, 0); 
+</code></pre>
+<p>到这完整的进程命令行信息就获取到了。通过字符串处理就可以得到相应的打开的文件的全路径了 。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="fengchuiguo 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="fengchuiguo 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>fengchuiguo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zwjsfdbb.top/2018/04/12/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%881%EF%BC%89/" title="获取打开文件的全路径（1）">http://zwjsfdbb.top/2018/04/12/获取打开的文件的全路径（1）/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag"># 编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/12/12/linux%20usb%20wifi%E8%AE%BE%E7%BD%AEAP%20%E6%A8%A1%E5%BC%8F%20/" rel="prev" title="linux usb wifi设置AP 模式">
+      <i class="fa fa-chevron-left"></i> linux usb wifi设置AP 模式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/04/12/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%882)/" rel="next" title="获取打开的文件的全路径（2）">
+      获取打开的文件的全路径（2） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E3%80%81%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%881%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">1、获取打开文件的全路径（1）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E8%BF%9B%E7%A8%8B%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E7%9A%84%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E7%9A%84%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">遍历进程获取打开文件的可执行文件的进程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%A9%E7%94%A8ntdll-dll%E4%B8%AD%E4%B8%80%E4%B8%AA%E6%9C%AA%E5%85%AC%E5%BC%80%E7%9A%84%E5%87%BD%E6%95%B0NtQueryInformationProcess%EF%BC%8C%E8%8E%B7%E5%8F%96%E8%BF%9B%E7%A8%8B%E4%BF%A1%E6%81%AF%E7%84%B6%E5%90%8E%E5%8E%BB%E8%AF%BB%E5%AF%B9%E6%96%B9%E8%BF%9B%E7%A8%8BReadProcessMemory-%E5%87%BD%E6%95%B0%E5%8E%9F%E5%9E%8B%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">利用ntdll.dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory,函数原型如下：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%88%B0PROCESS-BASIC-INFORMATION%E7%BB%93%E6%9E%84%E4%BD%93%E4%BB%A5%E5%90%8E%EF%BC%8C%E7%94%B1%E4%B8%8A%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%87%BA%E7%9A%84%E5%AE%83%E7%9A%84%E7%AC%AC%E4%BA%8C%E4%B8%AA%E6%88%90%E5%91%98%E5%B0%B1%E6%98%AF%E6%8C%87%E5%90%91%E8%BF%9B%E7%A8%8BPEB%E7%BB%93%E6%9E%84%E4%BD%93%E7%9A%84%E6%8C%87%E9%92%88%EF%BC%8C%E6%AD%A4%E6%97%B6%E8%B0%83%E7%94%A8ReadProcessMemory%EF%BC%8C%E8%8E%B7%E5%8F%96%E8%BF%9B%E7%A8%8BPEB%EF%BC%8C"><span class="nav-number">1.3.</span> <span class="nav-text">获取到PROCESS_BASIC_INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%80%9A%E8%BF%87ReadProcessMemory-%E8%8E%B7%E5%8F%96%E8%BF%9B%E7%A8%8B%E7%9A%84PEB%E4%BB%A5%E5%90%8E%EF%BC%8CPEB%E7%9A%84%E7%BB%93%E6%9E%84%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">通过ReadProcessMemory 获取进程的PEB以后，PEB的结构如下：</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">fengchuiguo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fengchuiguo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ba624f1112450ac0437d',
+      clientSecret: '815911bc627d433d1f233c833883b96e335ea413',
+      repo        : 'hexo_discuss',
+      owner       : 'scuzhangzhang',
+      admin       : ['scuzhangzhang'],
+      id          : 'f68c4752578d615d61ab3d685d93053a',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

@@ -28,9 +28,9 @@
 <meta property="og:description" content="一.dll加载顺序  DLL查找路径基础  &amp;emsp;&amp;emsp;应用程序可以通过以下方式控制一个DLL的加载路径：使用全路径加载、使用DLL重定向、使用manifest文件。如果上述三种方式均未指定，系统查找DLL的顺序将按照本部分描述的顺序进行。 &amp;emsp;&amp;emsp;对于以下两种情况的DLL，系统将不会查找，而是直接加载： &amp;emsp;&amp;e">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2017-08-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2017-10-25T06:47:34.290Z">
+<meta property="article:modified_time" content="2023-07-27T14:33:50.161Z">
 <meta property="article:author" content="fengchuiguo">
-<meta property="article:tag" content="网络">
+<meta property="article:tag" content="逆向">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://zwjsfdbb.top/2017/08/03/dll%E5%8A%A0%E8%BD%BD%E5%92%8C%E5%8A%AB%E6%8C%81/">
@@ -220,7 +220,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">网络</span></a>
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
                 </span>
             </span>
 
@@ -243,17 +243,19 @@
 <p>&amp;emsp;&amp;emsp;对于以下两种情况的DLL，系统将不会查找，而是直接加载：</p>
 <p>&amp;emsp;&amp;emsp;a. 对于已经加载到内存中的同名DLL，系统使用已经加载的DLL，并且忽略待加载DLL的路径。（注意对某个进程而言，系统已经加载的DLL一定是唯一的存在于某个目录下。）</p>
 <p>&amp;emsp;&amp;emsp;b. 如果该DLL存在于某个Windows版本的已知DLL列表（unkown DLL）中，系统使用已知DLL的拷贝（包括已知DLL的依赖项）。已知DLL列表可以从如下注册表项看到：HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\KnownDLLs。</p>
-<p>&amp;emsp;&amp;emsp;这里有个比较坑的地方，对于有依赖项的DLL（即使使用全路径指定DLL位置），系统查找其所依赖DLL的方法是按照实际的模块名称来的，因此如果加载的DLL不在系统查找顺序目录下，那么动态加载该DLL（LoadLibrary）会返回一个”找不到模块”的错误。
- </p>
+<p>&amp;emsp;&amp;emsp;这里有个比较坑的地方，对于有依赖项的DLL（即使使用全路径指定DLL位置），系统查找其所依赖DLL的方法是按照实际的模块名称来的，因此如果加载的DLL不在系统查找顺序目录下，那么动态加载该DLL（LoadLibrary）会返回一个”找不到模块”的错误。</p>
 <p>2.系统标准DLL查找顺序</p>
-<p>&amp;emsp;&amp;emsp;系统使用的标准DLL查找顺序依赖于是否设置了”安全DLL查找模式”（safe DLL search mode）。”安全DLL查找模式”会将用户当前目录置于查找顺序的后边。<br>“安全DLL查找模式”默认是启用的，禁用的话，可以将注册表项HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\SafeDllSearchMode设为0。调用SetDllDirectory函数可以禁用”安全DLL查找模式”，并修改DLL查找顺序。<br>Windows XP下，”安全DLL查找模式”默认是禁用的，需要启用该项的话，在注册表中新建一个SafeDllSearchMode子项，并赋值为1即可。”安全DLL查找模式”从Windows XP SP2开始，默认是启用的。
- </p>
+<p>&amp;emsp;&amp;emsp;系统使用的标准DLL查找顺序依赖于是否设置了”安全DLL查找模式”（safe DLL search mode）。”安全DLL查找模式”会将用户当前目录置于查找顺序的后边。<br>“安全DLL查找模式”默认是启用的，禁用的话，可以将注册表项HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\SafeDllSearchMode设为0。调用SetDllDirectory函数可以禁用”安全DLL查找模式”，并修改DLL查找顺序。<br>Windows XP下，”安全DLL查找模式”默认是禁用的，需要启用该项的话，在注册表中新建一个SafeDllSearchMode子项，并赋值为1即可。”安全DLL查找模式”从Windows XP SP2开始，默认是启用的。</p>
 <p>&amp;emsp;&amp;emsp;启用”安全DLL查找模式”时，查找顺序如下：</p>
 <ul>
 <li>a . 应用程序所在目录；</li>
 <li>b. 系统目录。GetSystemDirectory返回的目录，通常是系统盘\Windows\System32；<br>c. 16位系统目录。该项只是为了向前兼容的处理，可以不考虑；<br>d. Windows目录。GetWindowsDirectory返回的目录，通常是系统盘\Windows；<br>e. 当前目录。GetCurrentDirectory返回的目录；<br>f. 环境变量PATH中所有目录。</li>
 </ul>
-<p> <br>如果”安全DLL查找模式”被禁用，查找顺序如下：<br>a. 应用程序所在目录；<br>b. 当前目录。GetCurrentDirectory返回的目录；<br>c. 系统目录。GetSystemDirectory返回的目录，通常是系统盘\Windows\System32；<br>d. 16位系统目录。该项只是为了向前兼容的处理，可以不考虑；<br>e. Windows目录。GetWindowsDirectory返回的目录，通常是系统盘\Windows；<br>f. 环境变量PATH中所有目录。<br> <br>3. 修改系统DLL查找顺序<br>系统使用的标准DLL查找顺序可以通过以下两种方式调整：<br>3.1 使用LOAD_WITH_ALTERED_SEARCH_PATH标志调用LoadLibraryEx函数；<br>这种方式调用LoadLibraryEx函数，需要设置lpFileName参数（绝对路径）。与标准查找策略不同的是，使用LOAD_WITH_ALTERED_SEARCH_PATH标志调用LoadLibraryEx函数的DLL查找顺序将”查找应用程序所在目录”修改为lpFileName指定的目录。<br>3.2 调用SetDllDirectory函数。<br>注意：SetDllDirectory函数在Windows XP SP1开始支持的。<br>函数SetDllDirectory在调用参数lpPathName是一个路径时，可支持修改DLL搜索路径。修改之后的搜索顺序如下：<br>a. 应用程序所在目录；<br>b. 函数SetDllDirectory参数lpPathName给定的目录；<br>c. 系统目录。GetSystemDirectory返回的目录，通常是系统盘\Windows\System32；<br>d. 16位系统目录。该项只是为了向前兼容的处理，可以不考虑；<br>e. Windows目录。GetWindowsDirectory返回的目录，通常是系统盘\Windows；<br>f. 环境变量PATH中所有目录。<br>如果lpPathName参数为空字符串，这样就会把当前目录从DLL搜索路径中去掉。<br>如果用NULL参数调用SetDllDirectory函数，可以恢复按照系统注册表的”安全DLL查找模式”来查找DLL。<br> <br>当然win8或者windows server 2012提供更多的可定制方法，这个可以参考MSDN上介绍。比如：SetDefaultDllDirectories、 AddDllDirectory、RemoveDllDirectory。</p>
+<p>如果”安全DLL查找模式”被禁用，查找顺序如下：<br>a. 应用程序所在目录；<br>b. 当前目录。GetCurrentDirectory返回的目录；<br>c. 系统目录。GetSystemDirectory返回的目录，通常是系统盘\Windows\System32；<br>d. 16位系统目录。该项只是为了向前兼容的处理，可以不考虑；<br>e. Windows目录。GetWindowsDirectory返回的目录，通常是系统盘\Windows；<br>f. 环境变量PATH中所有目录。</p>
+<ol start="3">
+<li>修改系统DLL查找顺序<br>系统使用的标准DLL查找顺序可以通过以下两种方式调整：<br>3.1 使用LOAD_WITH_ALTERED_SEARCH_PATH标志调用LoadLibraryEx函数；<br>这种方式调用LoadLibraryEx函数，需要设置lpFileName参数（绝对路径）。与标准查找策略不同的是，使用LOAD_WITH_ALTERED_SEARCH_PATH标志调用LoadLibraryEx函数的DLL查找顺序将”查找应用程序所在目录”修改为lpFileName指定的目录。<br>3.2 调用SetDllDirectory函数。<br>注意：SetDllDirectory函数在Windows XP SP1开始支持的。<br>函数SetDllDirectory在调用参数lpPathName是一个路径时，可支持修改DLL搜索路径。修改之后的搜索顺序如下：<br>a. 应用程序所在目录；<br>b. 函数SetDllDirectory参数lpPathName给定的目录；<br>c. 系统目录。GetSystemDirectory返回的目录，通常是系统盘\Windows\System32；<br>d. 16位系统目录。该项只是为了向前兼容的处理，可以不考虑；<br>e. Windows目录。GetWindowsDirectory返回的目录，通常是系统盘\Windows；<br>f. 环境变量PATH中所有目录。<br>如果lpPathName参数为空字符串，这样就会把当前目录从DLL搜索路径中去掉。<br>如果用NULL参数调用SetDllDirectory函数，可以恢复按照系统注册表的”安全DLL查找模式”来查找DLL。</li>
+</ol>
+<p>当然win8或者windows server 2012提供更多的可定制方法，这个可以参考MSDN上介绍。比如：SetDefaultDllDirectories、 AddDllDirectory、RemoveDllDirectory。</p>
 <p>4.为了测试计算机系统的dll 加载顺序可以通过一个程序加载一个不存在的dll,然后用process monitor 来监控加载的行为。</p>
 <pre><code>#include &lt;windows.h&gt;
 #include &lt;iostream&gt;
@@ -461,7 +463,7 @@ void WINAPIV Init(LPVOID pParam)
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag"># 网络</a>
+              <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"># 逆向</a>
           </div>
 
         
@@ -470,12 +472,12 @@ void WINAPIV Init(LPVOID pParam)
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2017/07/15/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/" rel="prev" title="esp脱壳+文件大小自校验">
-      <i class="fa fa-chevron-left"></i> esp脱壳+文件大小自校验
+    <a href="/2017/08/01/%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84crackme/" rel="prev" title="一个简单的crackme">
+      <i class="fa fa-chevron-left"></i> 一个简单的crackme
     </a></div>
       <div class="post-nav-item">
-    <a href="/2017/09/16/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/" rel="next" title="dll注入之APC注入">
-      dll注入之APC注入 <i class="fa fa-chevron-right"></i>
+    <a href="/2017/08/06/%E8%BF%9B%E7%A8%8B%E6%9B%BF%E6%8D%A2%E7%9A%84%E4%B8%80%E7%A7%8D%E6%A3%80%E6%B5%8B%E6%96%B9%E5%BC%8F/" rel="next" title="进程替换的一种方式">
+      进程替换的一种方式 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -549,20 +551,20 @@ void WINAPIV Init(LPVOID pParam)
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">81</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

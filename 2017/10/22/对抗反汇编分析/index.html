@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="一、 样本基本信息 样本来源：恶意代码实战中的Lab15-03.exe。 二、分析过程 IDA 打开发现在00401016处有标红，IDA识别出了一些异常，仔细分析发现，把0x40148c写到了ebp+4的位置，而这个位置刚好是main函数返回地址的位置，通过改写此处的内容让main返回的时候执行0x40148c位置处的代码。  由此可看出主函数应该是非常正常，不会看出有什么恶意的地方。分析0x4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对抗反汇编分析">
+<meta property="og:url" content="http://zwjsfdbb.top/2017/10/22/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="fengchuiguo">
+<meta property="og:description" content="一、 样本基本信息 样本来源：恶意代码实战中的Lab15-03.exe。 二、分析过程 IDA 打开发现在00401016处有标红，IDA识别出了一些异常，仔细分析发现，把0x40148c写到了ebp+4的位置，而这个位置刚好是main函数返回地址的位置，通过改写此处的内容让main返回的时候执行0x40148c位置处的代码。  由此可看出主函数应该是非常正常，不会看出有什么恶意的地方。分析0x4">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.imgur.com/vd4KEI6.png">
+<meta property="og:image" content="https://i.imgur.com/Qtl0ZFP.png">
+<meta property="og:image" content="https://i.imgur.com/ng6kIn0.png">
+<meta property="og:image" content="https://i.imgur.com/d8PyGdS.png">
+<meta property="og:image" content="https://i.imgur.com/0TKYBzh.png">
+<meta property="og:image" content="https://i.imgur.com/KPoVtCC.png">
+<meta property="og:image" content="https://i.imgur.com/ue6meMj.png">
+<meta property="og:image" content="https://i.imgur.com/kijEK2T.png">
+<meta property="og:image" content="https://i.imgur.com/yhPNUnh.png">
+<meta property="og:image" content="https://i.imgur.com/KK9LVGS.png">
+<meta property="article:published_time" content="2017-10-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-22T06:40:31.931Z">
+<meta property="article:author" content="fengchuiguo">
+<meta property="article:tag" content="逆向">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/vd4KEI6.png">
+
+<link rel="canonical" href="http://zwjsfdbb.top/2017/10/22/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>对抗反汇编分析 | fengchuiguo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fengchuiguo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/22/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          对抗反汇编分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-22 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-22T00:00:00+08:00">2017-10-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一、 样本基本信息</p>
+<p>样本来源：恶意代码实战中的Lab15-03.exe。</p>
+<p>二、分析过程</p>
+<p>IDA 打开发现在00401016处有标红，IDA识别出了一些异常，仔细分析发现，把0x40148c写到了ebp+4的位置，而这个位置刚好是main函数返回地址的位置，通过改写此处的内容让main返回的时候执行0x40148c位置处的代码。</p>
+<p><img src="https://i.imgur.com/vd4KEI6.png" alt="xx1"></p>
+<p>由此可看出主函数应该是非常正常，不会看出有什么恶意的地方。分析0x40148c处的代码。你此处的代码在0x401496处，有明显标红，说明有反汇编异常，一般都是恶意代码作者故意制作的来影响反汇编的结果。此处是一个很明显的对抗反汇编，上一步是跳转到401497的位置，而这个位置是jmp 这条指令的中间，这显然是不可能的，在此处按d键，把代码转为数据显示，然后把401497后面的数据按c键再转回代码，注意对齐。然后把401496位置的数据改为nop,可以通过Edit-&gt;Patch Program-&gt;change word ,把E9改为90，然后按c转换为代码就可以了。效果如图</p>
+<p><img src="https://i.imgur.com/Qtl0ZFP.png"></p>
+<p>继续往下看，发现有一个除零异常出现 ，</p>
+<p><img src="https://i.imgur.com/ng6kIn0.png"></p>
+<p>显然恶意代码先把异常处理函数的地址存到FS寄存器，然后出发除零异常执行此处的函数。显此处显然异常处理函数的地址是0x4014c0，而0x4014c0位置处的IDA没有识别为代码。按c键来转换为代码，继续向下看，在0x4014D7位置处，又出现了一个与0x401496处的相似的异常，同样的方法进行处理，结果如图</p>
+<p><img src="https://i.imgur.com/d8PyGdS.png"></p>
+<p>这个估计就是恶意代码真正要做的事情的代码了。继续向下看，有个URLDownloadToFileA函数，显然很恶意。下面还有个反汇编异常先处理了，先D后C，然后结果如下，</p>
+<p><img src="https://i.imgur.com/0TKYBzh.png"></p>
+<p>到此整个代码就分析完了，主要是4014c0处是真正要关注的，下面分析这个位置的代码</p>
+<p><img src="https://i.imgur.com/KPoVtCC.png"><br><img src="https://i.imgur.com/ue6meMj.png"></p>
+<p>主要关注标红的位置，此处看不出什么来，在OD中实际执行一下来看。</p>
+<p>直接在0x40148c处下断点，然后直接f9运行到此处，若看到一堆数据，右键分析-&gt;从模块中删除分析就可以了，改写相应位置的异常按照IDA那样，实验过程发现se处理程序的确是0x4014c0但是程序并没有跳到那个位置而是终止了，没搞明白，为了真正看到0x4014c0处的具体执行情况。我选择直接编辑汇编代码。写入jmp 0x4014c0,</p>
+<p><img src="https://i.imgur.com/kijEK2T.png"></p>
+<p>发现在0x4014db处好像也是异常终止了，后改为</p>
+<p><img src="https://i.imgur.com/yhPNUnh.png"></p>
+<p>正常了、<br>然后在四个函数处下断点观察参数信息和返回信息，</p>
+<p><img src="https://i.imgur.com/KK9LVGS.png"></p>
+<p>0x401534明显是一个解密函数，然后把网址和文件就解密出来，然后URLDownloadToFileA下载，winexec 执行下载的文件。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="fengchuiguo 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="fengchuiguo 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>fengchuiguo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zwjsfdbb.top/2017/10/22/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/" title="对抗反汇编分析">http://zwjsfdbb.top/2017/10/22/对抗反汇编分析/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"># 逆向</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/10/20/iptables/" rel="prev" title="iptables">
+      <i class="fa fa-chevron-left"></i> iptables
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/11/05/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/" rel="next" title="重装系统后hexo 博客恢复">
+      重装系统后hexo 博客恢复 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">fengchuiguo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fengchuiguo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ba624f1112450ac0437d',
+      clientSecret: '815911bc627d433d1f233c833883b96e335ea413',
+      repo        : 'hexo_discuss',
+      owner       : 'scuzhangzhang',
+      admin       : ['scuzhangzhang'],
+      id          : 'b0e1a2a0b619e78130cf3baa350af3c5',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

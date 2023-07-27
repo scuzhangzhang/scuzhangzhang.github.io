@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="DNS 协议1、概念  DNS记录 A   : 主机记录，域名和IP的映射 CNAME ： 别名 SOA：权威名称服务器 NS：名称服务器 MX：邮件交换记录 SRV： 正在提供服务的 PTR:  反向指针    2、DNS查询  客户机访问www.baidu.com，根据自己的TCP&#x2F;IP参数，向自己的首选DNS服务器发送DNS请求  首选DNS服务器收到客户机的请求后，去查询自己的区域文件，找">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DNS">
+<meta property="og:url" content="http://zwjsfdbb.top/2023/03/26/DNS_new/index.html">
+<meta property="og:site_name" content="fengchuiguo">
+<meta property="og:description" content="DNS 协议1、概念  DNS记录 A   : 主机记录，域名和IP的映射 CNAME ： 别名 SOA：权威名称服务器 NS：名称服务器 MX：邮件交换记录 SRV： 正在提供服务的 PTR:  反向指针    2、DNS查询  客户机访问www.baidu.com，根据自己的TCP&#x2F;IP参数，向自己的首选DNS服务器发送DNS请求  首选DNS服务器收到客户机的请求后，去查询自己的区域文件，找">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327213240915.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327223920382.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327224042516.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327231322145.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327231418945.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327231509695.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327231539501.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327231033145.png">
+<meta property="article:published_time" content="2023-03-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-22T02:53:56.580Z">
+<meta property="article:author" content="fengchuiguo">
+<meta property="article:tag" content="网络安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327213240915.png">
+
+<link rel="canonical" href="http://zwjsfdbb.top/2023/03/26/DNS_new/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>DNS | fengchuiguo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fengchuiguo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/26/DNS_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DNS
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-26 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-26T00:00:00+08:00">2023-03-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="DNS-协议"><a href="#DNS-协议" class="headerlink" title="DNS 协议"></a>DNS 协议</h3><p>1、概念</p>
+<ul>
+<li>DNS记录<ul>
+<li>A   : 主机记录，域名和IP的映射</li>
+<li>CNAME ： 别名</li>
+<li>SOA：权威名称服务器</li>
+<li>NS：名称服务器</li>
+<li>MX：邮件交换记录</li>
+<li>SRV： 正在提供服务的</li>
+<li>PTR:  反向指针</li>
+</ul>
+</li>
+</ul>
+<p>2、DNS查询</p>
+<ul>
+<li><p>客户机访问<a target="_blank" rel="noopener" href="http://www.baidu.com,根据自己的tcp/IP%E5%8F%82%E6%95%B0%EF%BC%8C%E5%90%91%E8%87%AA%E5%B7%B1%E7%9A%84%E9%A6%96%E9%80%89DNS%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%91%E9%80%81DNS%E8%AF%B7%E6%B1%82">www.baidu.com，根据自己的TCP/IP参数，向自己的首选DNS服务器发送DNS请求</a></p>
+</li>
+<li><p>首选DNS服务器收到客户机的请求后，去查询自己的区域文件，找不到IP地址信息（将请求转发给根域服务器）；直接可以找到，则返回IP地址</p>
+</li>
+<li><p>根域服务器收到请求后，由于根域服务器只维护顶级域服务器，会响应顶级域名服务器IP（com）,首选DNS根据根域名服务器响应的信息，将请求转发到com顶级域</p>
+</li>
+<li><p>com顶级域收到请求，由于com顶级域只维护二级域信息，会响应二级域服务器IP，首选DNS根据顶级域响应的信息，将请求转发到baidu.com 二级域</p>
+</li>
+<li><p>baidu.com 二级域收到请求，baidu.com DNS服务器里面维护的是baidu.com 区域内的所有主机信息，包含了<a target="_blank" rel="noopener" href="http://www.baidu.com的信息,将ip地址响应给首选dns/">www.baidu.com的信息，将IP地址响应给首选DNS</a></p>
+</li>
+<li><p>首选DNS响应给主机。</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327213240915.png" alt="image-20230327213240915"></p>
+<p>3、 DNS配置 缓存DNS服务器 </p>
+<ul>
+<li><p>server2016上安装DNS服务，配置转发器</p>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327223920382.png" alt="image-20230327223920382"></p>
+</li>
+<li><p>将另一台主机DNS服务器设置为server2016的IP，随后nslookup 查询特定域名</p>
+</li>
+<li><p>wireshark抓包</p>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327224042516.png" alt="image-20230327224042516"></p>
+</li>
+<li><p>server2016这个缓存DNS服务器向转发器中的DNS服务器（192.168.10.1）转发DNS请求，192.168.10.1请求到以后，返回给server2016，server2016再响应client。</p>
+</li>
+</ul>
+<p>4、 DNS攻击</p>
+<p>环境：</p>
+<p>kali   192.168.101.8  攻击机器</p>
+<p>server2016  web服务器  192.168.101.6 提供web界面</p>
+<p>win10  192.168.101.11  被攻击的主机</p>
+<p>工具  Ettercap</p>
+<ul>
+<li><p>修改&#x2F;etc&#x2F;ettercap&#x2F;etter.dns  格式 要欺骗的域名 A + 目标IP</p>
+<p> <img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327231322145.png" alt="image-20230327231322145"></p>
+</li>
+<li><p>配置Ettercap，打开后扫描主机进行arp欺骗</p>
+<p>选择目标主机以及网关add to Target，随后点击ARP poisoning , 随后选择dns_spoof 进行欺骗。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327231418945.png" alt="image-20230327231418945"></p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327231509695.png" alt="image-20230327231509695"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327231539501.png" alt="image-20230327231539501"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327231033145.png" alt="image-20230327231033145"></p>
+<p>最后在目标主机访问woniu.com 被修改成了192.168.101.6 的web页面。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="fengchuiguo 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="fengchuiguo 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>fengchuiguo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zwjsfdbb.top/2023/03/26/DNS_new/" title="DNS">http://zwjsfdbb.top/2023/03/26/DNS_new/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" rel="tag"># 网络安全</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/03/23/DHCP_new/" rel="prev" title="DHCP">
+      <i class="fa fa-chevron-left"></i> DHCP
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/03/28/FTP_new/" rel="next" title="FTP">
+      FTP <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS-%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text">DNS 协议</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">fengchuiguo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fengchuiguo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ba624f1112450ac0437d',
+      clientSecret: '815911bc627d433d1f233c833883b96e335ea413',
+      repo        : 'hexo_discuss',
+      owner       : 'scuzhangzhang',
+      admin       : ['scuzhangzhang'],
+      id          : 'ea25b6f689388a207b53908e9ba672f3',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
