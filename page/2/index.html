@@ -183,7 +183,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/04/20/%E5%B1%8F%E8%94%BDSSH%E8%BF%9C%E7%A8%8B%E6%9A%B4%E5%8A%9B%E7%99%BB%E5%BD%95/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/10/17/%E7%BC%96%E7%A8%8B/python%E5%AD%A6%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -197,7 +197,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/04/20/%E5%B1%8F%E8%94%BDSSH%E8%BF%9C%E7%A8%8B%E6%9A%B4%E5%8A%9B%E7%99%BB%E5%BD%95/" class="post-title-link" itemprop="url">屏蔽SSH远程暴力登录</a>
+            <a href="/2023/10/17/%E7%BC%96%E7%A8%8B/python%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">Python补充学习</a>
         </h2>
 
         <div class="post-meta">
@@ -207,7 +207,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-04-20 00:00:00" itemprop="dateCreated datePublished" datetime="2023-04-20T00:00:00+08:00">2023-04-20</time>
+              <time title="创建时间：2023-10-17 00:00:00" itemprop="dateCreated datePublished" datetime="2023-10-17T00:00:00+08:00">2023-10-17</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -215,7 +215,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
                 </span>
             </span>
 
@@ -230,19 +230,25 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h4 id="1、背景"><a href="#1、背景" class="headerlink" title="1、背景"></a>1、背景</h4><p>通过SSH远程登录失败多次，通过防火墙将其屏蔽，并发送通知</p>
-<h4 id="2、分析问题-解决过程"><a href="#2、分析问题-解决过程" class="headerlink" title="2、分析问题-解决过程"></a>2、分析问题-解决过程</h4><p>如何判断SSH远程登录失败</p>
-<p>通过查看&#x2F;var&#x2F;log&#x2F;secure 查看，如下即为登录失败的情况，如果多次出现，则可以判定为非法登录</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Apr 20 22:16:40 192 sshd[5101]: Failed password for root from 192.168.101.15 port 50632 ssh2</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+          <h2 id="python-补充学习"><a href="#python-补充学习" class="headerlink" title="python 补充学习"></a>python 补充学习</h2><p>1、函数参数（可变长参数）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 可变长参数 *args 代表可选参数，**kwargs 代表可选字典参数</span><br><span class="line">def test_args(a,b,*args,**kwargs):</span><br><span class="line">    print(a+b)</span><br><span class="line">    print(args)</span><br><span class="line">    print(kwargs)</span><br><span class="line">    return args,kwargs</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># Press the green button in the gutter to run the script.</span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    print_hi(&#x27;PyCharm&#x27;)</span><br><span class="line">    test_args(10,20,&#x27;xxx&#x27;,&#x27;xx1&#x27;,name=&#x27;xx11&#x27;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">failedcount=$(cat /var/log/secure |grep &quot;Failed password&quot;|wc -l)</span><br><span class="line">if [ $failedcount -gt 2 ]; then</span><br><span class="line">   echo &quot;too many count&quot;</span><br><span class="line">   ip=$(cat /var/log/secure |grep &quot;Failed&quot; |awk &#x27;&#123;print $11&#125;&#x27; |uniq)</span><br><span class="line">   status_fire=$(firewall-cmd --state)</span><br><span class="line">   if [ $status_fire != &quot;running&quot; ]; then</span><br><span class="line">      systemctl start firewalld</span><br><span class="line">   fi</span><br><span class="line">   firewall-cmd --add-rich-rule=&#x27;rule family=ipv4 source address=&quot;$ip&quot; drop&#x27;</span><br><span class="line">   echo &quot;$ip 被防火墙阻止&quot;</span><br><span class="line">   </span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>2、自动化操作</p>
+<ul>
+<li>selenium  操作浏览器</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 1 安装chromedriver.exe  参考 https://blog.csdn.net/qq_35462334/article/details/133806824</span></span><br><span class="line"> <span class="comment"># 2 安装selenium  pip install selenium</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.by <span class="keyword">import</span> By</span><br><span class="line"></span><br><span class="line">driver = webdriver.Chrome()</span><br><span class="line">driver.get(<span class="string">&quot;http://www.woniunote.com/&quot;</span>)</span><br><span class="line"><span class="comment"># 可利用以下多个方法来定位元素</span></span><br><span class="line"><span class="comment"># By.ID  By.XPATH By.LINK_TEXT BY.PARTIAL_LINK_TEXT By.NAME BY.TAG_NAME BY.CLASS_NAME BY.CSS_SELECTOR</span></span><br><span class="line">a_tag_list = driver.find_elements(By.XPATH, <span class="string">&#x27;//*[@id=&quot;loginmenu&quot;]&#x27;</span>)</span><br><span class="line">driver.close()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>pkill 可根据进程名kill 掉进程</p>
-<p>who 可以看到哪些人登录了</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230420224036355.png" alt="image-20230420224036355"></p>
+<ul>
+<li>windows元素自动化   uiautomation 操作计算器</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># UIAutomation 识别windows元素 自动操控</span></span><br><span class="line"><span class="comment"># 1、利用uispy 查看元素</span></span><br><span class="line"><span class="comment"># 2、定位元素</span></span><br><span class="line"><span class="keyword">import</span> uiautomation</span><br><span class="line"></span><br><span class="line">calc = uiautomation.WindowControl(Name=<span class="string">&#x27;计算器&#x27;</span>)</span><br><span class="line">calc.ButtonControl(AutomationId=<span class="string">&#x27;num1Button&#x27;</span>).Click()</span><br><span class="line">calc.ButtonControl(AutomationId=<span class="string">&#x27;plusButton&#x27;</span>).Click()</span><br><span class="line">calc.ButtonControl(Name=<span class="string">&#x27;三&#x27;</span>).Click()</span><br><span class="line">calc.ButtonControl(AutomationId=<span class="string">&#x27;equalButton&#x27;</span>).Click()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>  <img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20231022113623154.png" alt="image-20231022113623154"></p>
+
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/04/20/%E5%B1%8F%E8%94%BDSSH%E8%BF%9C%E7%A8%8B%E6%9A%B4%E5%8A%9B%E7%99%BB%E5%BD%95/#more" rel="contents">
+              <a class="btn" href="/2023/10/17/%E7%BC%96%E7%A8%8B/python%E5%AD%A6%E4%B9%A0/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -266,7 +272,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/04/18/Linux%20%E6%96%87%E4%BB%B6%E7%9B%91%E6%8E%A7_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/31/Web%E6%B8%97%E9%80%8F/Web%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -280,7 +286,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/04/18/Linux%20%E6%96%87%E4%BB%B6%E7%9B%91%E6%8E%A7_new/" class="post-title-link" itemprop="url">Linux 文件监控小脚本</a>
+            <a href="/2023/07/31/Web%E6%B8%97%E9%80%8F/Web%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="post-title-link" itemprop="url">Web 基础知识</a>
         </h2>
 
         <div class="post-meta">
@@ -290,7 +296,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-04-18 00:00:00" itemprop="dateCreated datePublished" datetime="2023-04-18T00:00:00+08:00">2023-04-18</time>
+              <time title="创建时间：2023-07-31 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-31T00:00:00+08:00">2023-07-31</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -298,7 +304,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
                 </span>
             </span>
 
@@ -313,237 +319,57 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="Linux文件监控小脚本"><a href="#Linux文件监控小脚本" class="headerlink" title="Linux文件监控小脚本"></a>Linux文件监控小脚本</h3><p>1、通过md5sum 对比</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">计算root目录下所有文件的md5 并重定向到origin_md5</span></span><br><span class="line">find /root/* --type f |xargs md5sum &gt; origin_md5</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">检查文件有没有被修改，导致md5变化</span></span><br><span class="line">mdsum -c orign_md5</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230418221659638.png" alt="image-20230418221659638"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230418221719095.png" alt="image-20230418221719095"></p>
-<p>2、通过diff 命令比较内容的修改，目录里面文件的新增也可以检测到</p>
-<p>修改了xxx</p>
-<p>.&#x2F;origin&#x2F;anaconda-ks.cfg: OK<br>.&#x2F;origin&#x2F;monitor.sh: OK<br>.&#x2F;origin&#x2F;test.txt: OK<br>.&#x2F;origin&#x2F;xxx: FAILED<br>md5sum: WARNING: 1 computed checksum did NOT match</p>
-<p>删除了xxx</p>
-<p>.&#x2F;origin&#x2F;anaconda-ks.cfg: OK<br>.&#x2F;origin&#x2F;monitor.sh: OK<br>.&#x2F;origin&#x2F;test.txt: OK<br>md5sum: .&#x2F;origin&#x2F;xxx: No such file or directory<br>.&#x2F;origin&#x2F;xxx: FAILED open or read<br>md5sum: WARNING: 1 listed file could not be read</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/04/18/Linux%20%E6%96%87%E4%BB%B6%E7%9B%91%E6%8E%A7_new/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/04/06/Linux%E5%9F%BA%E7%A1%80_new/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/04/06/Linux%E5%9F%BA%E7%A1%80_new/" class="post-title-link" itemprop="url">Linux基础</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-04-06 00:00:00" itemprop="dateCreated datePublished" datetime="2023-04-06T00:00:00+08:00">2023-04-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="Linux-基础"><a href="#Linux-基础" class="headerlink" title="Linux 基础"></a>Linux 基础</h3><p>1、Centos 7 软件安装</p>
+          <h3 id="一、HTML语言"><a href="#一、HTML语言" class="headerlink" title="一、HTML语言"></a>一、HTML语言</h3><p>1、HTML 超文本标记语言，由一系列事先约定好的标记、属性和内容组成。</p>
 <ul>
-<li><p>rpm 安装</p>
-<ul>
-<li>rpm -ivh 软件包</li>
-<li>rpm -e 软件包</li>
-<li>rpm -qa |grep 软件包</li>
+<li>文本：设置字体、大小、颜色</li>
+<li>图片：设置边框、大小、位置</li>
+<li>超链接：图片文本都可以添加超链接</li>
+<li>表格：行列的结构化数据，设置大小、背景</li>
+<li>表单：文本框、下拉框、单选框、复选框、按钮、文本域等</li>
+<li>多媒体：视频、音频</li>
 </ul>
-</li>
-<li><p>源码安装</p>
-<ul>
-<li><p>寻找configure setup.sh install.sh </p>
-<ul>
-<li>.&#x2F;configure</li>
-<li>make </li>
-<li>make install</li>
-</ul>
-<p>发现缺少依赖，但是系统已经安装对应的软件，可以尝试安装一下-devel,如pcre-devel</p>
-</li>
-</ul>
-</li>
-<li><p>yum 安装</p>
-<ul>
-<li>yum list</li>
-<li>yum install</li>
-<li>yum repolist  列出当前的源</li>
-<li>yum deplist  查看依赖库</li>
-<li>yum erase 软件包</li>
-</ul>
-</li>
-</ul>
-<p>2、相关命令</p>
-<p>net-tools 以及iproute2 两套网络相关命令体系</p>
-<ul>
-<li><p>ip addr add 192.168.101.111&#x2F;24 dev ens33</p>
-<p>ifconfig ens33 192.168.101.111</p>
-<p>临时增加一个IP地址，一个网卡可以绑定多个IP地址</p>
-</li>
-<li><p>ss -anl</p>
-<p>netstat -anlop  列出当前端口占用情况</p>
-</li>
-<li><p>traceroute 跟踪路由</p>
-</li>
-<li><p>curl -O  url   </p>
-</li>
-<li><p>wget -O xxx URL </p>
-</li>
-<li><p>tcpdump</p>
-<ul>
-<li>tcpdump tcp and dst port 80 -i ens33 -w xx.pcap</li>
-</ul>
-</li>
-</ul>
-<p>3、Linux 命令</p>
-<ul>
-<li><p>tee  命令同时打印到控制台以及文件中</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230408212824118.png" alt="image-20230408212824118"></p>
-</li>
-<li><p>1&gt;file  2&gt;file </p>
-<p>1 代表正确的重定向，2代表错误的重定向</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230408213006439.png" alt="image-20230408213006439"></p>
-</li>
-<li><p>关于参数的判断语句</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">if [ &quot;$#&quot; -ne 1 ]; then</span><br><span class="line">echo &quot;参数错误，输入过多 或者未输入参数&quot;</span><br><span class="line">exit 1</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [ -e &quot;$filename&quot; ]; then </span><br><span class="line">grep -n &quot;root&quot; $filename</span><br><span class="line">else</span><br><span class="line">echo &quot;文件不存在&quot;</span><br><span class="line">exit 1</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>2、CSS：  Cascade Style Sheet  层叠样式表，用于对页面元素进行布局和美化</p>
+<p>3、JavaScript： 浏览器中运行的解释型编程语言，用于进行页面的交互。</p>
+<h3 id="二、HTML基本元素的使用"><a href="#二、HTML基本元素的使用" class="headerlink" title="二、HTML基本元素的使用"></a>二、HTML基本元素的使用</h3><h4 id="1、各个元素的简单使用"><a href="#1、各个元素的简单使用" class="headerlink" title="1、各个元素的简单使用"></a>1、各个元素的简单使用</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;title&gt;This is a demo Html&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt; </span><br><span class="line">   &lt;!-- 文本 --&gt;</span><br><span class="line">   &lt;div style=&quot;font-family: 宋体 ;font-size:20px&quot;&gt;12314&lt;/div&gt;</span><br><span class="line">   &lt;!-- 图片 --&gt;</span><br><span class="line">   &lt;img src=&quot;img/20230213-1.png&quot; width=&quot;500px&quot;&gt;&lt;br/&gt;</span><br><span class="line">   &lt;!-- 超链接 使用target=&quot;_blank&quot; 打开新的标签页 --&gt;</span><br><span class="line">   &lt;a href=&quot;http://www.baidu.com&quot; target=&quot;_blank&quot;&gt;百度&lt;/a&gt;</span><br><span class="line">    &lt;!-- 表格 --&gt;</span><br><span class="line">    &lt;table width=&quot;500&quot; height=&quot;100&quot; border=&quot;1&quot;&gt;</span><br><span class="line">        &lt;tr&gt;</span><br><span class="line">            &lt;td&gt;&lt;/td&gt;</span><br><span class="line">            &lt;td&gt;&lt;/td&gt;</span><br><span class="line">        &lt;tr&gt;</span><br><span class="line">            &lt;td&gt;&lt;/td&gt;</span><br><span class="line">            &lt;td&gt;&lt;/td&gt;</span><br><span class="line">        &lt;/tr&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">    &lt;!-- 文本框 --&gt;</span><br><span class="line">    &lt;input type=&quot;text&quot;  placeholder=&quot;请输入用户名&quot;&gt;</span><br><span class="line">    &lt;!-- 密码 --&gt;</span><br><span class="line">    &lt;input type=&quot;password&quot;&gt;</span><br><span class="line">    &lt;!-- 按钮 --&gt;</span><br><span class="line">    &lt;input type=&quot;button&quot; value=&quot;登录&quot;&gt;</span><br><span class="line">    &lt;!-- 下拉框 --&gt;</span><br><span class="line">    &lt;select&gt;</span><br><span class="line">        &lt;option&gt;选项1&lt;/option&gt;</span><br><span class="line">        &lt;option selected&gt;选项2&lt;/option&gt;</span><br><span class="line">    &lt;/select&gt;</span><br><span class="line">    &lt;!-- 按钮 --&gt;</span><br><span class="line">    &lt;button&gt;点我&lt;/button&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
 
-<p>注意[] 前后的空格 $ 必须加引号</p>
-<p>关于判断文件以及目录的参数</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">-e filename     如果 filename 存在，则为真            [ -e /var/log/syslog ]</span><br><span class="line">-d filename     如果 filename 为目录，则为真          [ -d /tmp/mydir ]</span><br><span class="line"></span><br><span class="line">-f filename     如果 filename 为常规文件，则为真      [ -f /usr/bin/grep ]</span><br><span class="line"></span><br><span class="line">-L filename     如果 filename 为符号链接，则为真      [ -L /usr/bin/grep ]</span><br><span class="line"></span><br><span class="line">-r filename     如果 filename 可读，则为真            [ -r /var/log/syslog ]</span><br><span class="line"></span><br><span class="line">-w filename     如果 filename 可写，则为真            [ -w /var/mytmp.txt ]</span><br><span class="line"></span><br><span class="line">-x filename     如果 filename 可执行，则为真          [ -L /usr/bin/grep ]</span><br><span class="line"></span><br><span class="line">-s filename     如果 filename 长度不为零，则为真          [ -s /usr/bin/grep ]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>引号</p>
-<ul>
-<li><p>双引号 变量会被引用</p>
-</li>
-<li><p>单引号，变量不会被引用</p>
-</li>
-<li><p>反引号，把里面的内容当作一个命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">引号相关</span></span><br><span class="line"></span><br><span class="line">echo &quot;环境变量的路径： $PATH&quot;</span><br><span class="line">echo &#x27;环境变量的路径： $PATH&#x27;</span><br><span class="line">echo `date &quot;+%Y-%M-%D&quot;`</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">output</span> </span><br><span class="line">环境变量的路径： /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin</span><br><span class="line">环境变量的路径： $PATH</span><br><span class="line">2023-10-04/08/23</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>$? 非零代表上一条命令失败</p>
-</li>
-<li><p>$0 代表脚本的名称，$1 是第一个参数</p>
-</li>
-<li><p>$@ 和$* 返回脚本的参数，前者是多个字符串，或者是一个字符串</p>
-</li>
-<li><p>expr 数字命令  必须有空格，不能处理小数</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@192 ~]# expr 10+20</span><br><span class="line">10+20</span><br><span class="line">[root@192 ~]# expr 10 + 20</span><br><span class="line">30expr 10 + 10</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>逻辑运算</p>
-<ul>
-<li><p>a  与</p>
-</li>
-<li><p>-o 或</p>
-</li>
-<li><p>!  非</p>
-</li>
-</ul>
-</li>
-<li><p>字符串</p>
-<ul>
-<li><p>-z  为空字符串</p>
-</li>
-<li><p>-n 为非空字符串</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@192 ~]# [ -z $xxx ]</span><br><span class="line">[root@192 ~]# echo $?</span><br><span class="line">1</span><br><span class="line">[root@192 ~]# [ -n $xxx ]</span><br><span class="line">[root@192 ~]# echo $?</span><br><span class="line">0</span><br><span class="line">[root@192 ~]# echo $xxx</span><br><span class="line">12345</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>数值比较</p>
-<ul>
-<li><pre><code class="shell">-eq   数值相等
 
--ne  数值不等
 
--le  小于等于
+<h4 id="2、CSS选择器"><a href="#2、CSS选择器" class="headerlink" title="2、CSS选择器"></a>2、CSS选择器</h4><ul>
+<li><p>标签选择器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">td&#123;</span><br><span class="line">    background-color: grey;/* 设置背景色*/</span><br><span class="line">     margin: auto;            /* 设置容器水平居中*/</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 
--ge 大于等于
 
--gt 大于
+</li>
+<li><p>类选择器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.button&#123;</span><br><span class="line">       background-color: grey;/* 设置背景色*/</span><br><span class="line">       margin: auto;            /* 设置容器水平居中*/</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
 
--lt 小于
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 循环语句</span><br><span class="line"></span><br><span class="line">  ```shell</span><br><span class="line">  - #!/usr/bin/bash</span><br><span class="line">    # for </span><br><span class="line">    sum=0</span><br><span class="line">    for i in &#123;1..100&#125;; do</span><br><span class="line">       #sum=`expr $sum + $i`</span><br><span class="line">       #let sum=sum+i</span><br><span class="line">       ((sum=sum+i))</span><br><span class="line">    done</span><br><span class="line">    echo &quot;$sum&quot;</span><br><span class="line">    while []; do</span><br><span class="line">    	xxxx</span><br><span class="line">    done</span><br><span class="line">   </span><br><span class="line">  # 后面那个1是步长,双圆括号用在这很好</span><br><span class="line">  #for i in &#123;1..100..1&#125;; do</span><br><span class="line">  for ((i=0;i&lt;=100;i++)); do</span><br><span class="line">     let sum+=i</span><br><span class="line">  done </span><br><span class="line">  echo &quot;sum is $sum&quot;</span><br><span class="line">   </span><br><span class="line">  # while</span><br><span class="line">  #!/usr/bin/bash</span><br><span class="line">  i=0</span><br><span class="line">  sum=0</span><br><span class="line">  while [ $i -lt 10 ]; do</span><br><span class="line">      let sum=sum+i</span><br><span class="line">      let i++</span><br><span class="line">  done</span><br><span class="line">  echo &quot;$sum&quot;</span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>ID选择器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#button&#123;</span><br><span class="line">          background-color: grey;/* 设置背景色*/</span><br><span class="line">          margin: auto;            /* 设置容器水平居中*/</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>属性选择器</p>
+<pre><code>    div [type=&quot;button&quot;]&#123;
+        background-color: #7fffd4;
+        width: 25%;
+        text-align: center;
+        font-size: 30px;
+    &#125;
 </code></pre>
 </li>
-</ul>
-</li>
-<li><p>函数</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- function add()&#123;</span><br><span class="line">  let sum=$1+$2 # 参数取值方式</span><br><span class="line">  echo &quot;$sum&quot;  # 相当于返回值</span><br><span class="line">  &#125;</span><br><span class="line"><span class="meta prompt_">  #</span><span class="language-bash">result=$(add 100 200)</span></span><br><span class="line">  result=`add 100 200`  #两种赋值方式</span><br><span class="line">  echo $result</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>关于括号的一些用法</p>
-<ul>
-<li><p>(()) 双圆括号，用于运算，可以替代expr，数学运算</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">line=1</span><br><span class="line">((line+=3))</span><br><span class="line">echo $line  # 4</span><br></pre></td></tr></table></figure>
+<li><p>组合选择器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#button td&#123;</span><br><span class="line">            background-color: #7fffd4;</span><br><span class="line">            width: 25%;</span><br><span class="line">            text-align: center;</span><br><span class="line">            font-size: 30px;</span><br><span class="line">           &#125;</span><br></pre></td></tr></table></figure>
 
 
 </li>
-<li><p>${} 可以去特定参数或变量的值 ${1}</p>
-</li>
-<li><p>$() 可以代替反引号执行圆括号中的命令</p>
-</li>
-<li><p>$[] 用于整数运算，也可以代替expr</p>
-</li>
+<li><p>伪类选择器</p>
+   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 设置悬停效果</span><br><span class="line">.button div:hover&#123;</span><br><span class="line">	background-color: #7fffd4;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ul>
-</li>
-</ul>
-<p>​		示例 用了阶乘</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function jiecheng()&#123;</span><br><span class="line">   sum=1</span><br><span class="line">   for ((i=1;i&lt;=$1;i++)); do</span><br><span class="line">       let sum=sum*$i</span><br><span class="line">       #echo $sum </span><br><span class="line">   done</span><br><span class="line">   echo $sum</span><br><span class="line">&#125;</span><br><span class="line">if [ $# != 1 ];then</span><br><span class="line">   echo &quot;usage jiecheng number&quot;</span><br><span class="line">   exit 1</span><br><span class="line">fi</span><br><span class="line">result=$(jiecheng $1)</span><br><span class="line">echo $result</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/04/06/Linux%E5%9F%BA%E7%A1%80_new/#more" rel="contents">
+              <a class="btn" href="/2023/07/31/Web%E6%B8%97%E9%80%8F/Web%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -567,7 +393,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/04/05/Windows%E9%98%B2%E7%81%AB%E5%A2%99_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/20/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/curl_loader%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -581,7 +407,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/04/05/Windows%E9%98%B2%E7%81%AB%E5%A2%99_new/" class="post-title-link" itemprop="url">Windows防火墙</a>
+            <a href="/2023/07/20/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/curl_loader%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB/" class="post-title-link" itemprop="url">Curl_loader 泛洪攻击</a>
         </h2>
 
         <div class="post-meta">
@@ -591,7 +417,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-04-05 00:00:00" itemprop="dateCreated datePublished" datetime="2023-04-05T00:00:00+08:00">2023-04-05</time>
+              <time title="创建时间：2023-07-20 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-20T00:00:00+08:00">2023-07-20</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -599,7 +425,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                  <a href="/categories/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">黑客工具</span></a>
                 </span>
             </span>
 
@@ -614,30 +440,22 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="windows-防火墙"><a href="#windows-防火墙" class="headerlink" title="windows 防火墙"></a>windows 防火墙</h3><p>1、包过滤防火墙</p>
-<ul>
-<li>判断信息-五元组</li>
-<li>工作范围  3-4层</li>
-</ul>
-<p>2、应用代理</p>
-<p>较大程度地隔绝通信两端的直接通信，所有通信都要由应用层代理层转发,访问者不允许与服务器建立直接的TCP连接，应用层的协议会话过程必须符合代理的安全策略要求。</p>
-<ul>
-<li>判断信息：应用层数据</li>
-<li>工作范围：应用层</li>
-</ul>
-<p>3、状态监测防火墙 ASPF</p>
-<ul>
-<li>TCP编辑，IP地址，端口</li>
-<li>2-4层</li>
-</ul>
-<p>4、WAF </p>
-<ul>
-<li>http协议数据（request response）</li>
-<li>应用层</li>
-</ul>
+          <p>1、安装过程</p>
+<p>下载链接 ：<a target="_blank" rel="noopener" href="https://master.dl.sourceforge.net/project/curl-loader/curl-loader/curl-loader-0.56/curl-loader-0.56.tar.bz2?viasf=1">https://master.dl.sourceforge.net/project/curl-loader/curl-loader/curl-loader-0.56/curl-loader-0.56.tar.bz2?viasf=1</a></p>
+<p>安装依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install openssl -y</span><br><span class="line">yum install openssl-devel -y</span><br></pre></td></tr></table></figure>
+
+<p>解压并make</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -xjf curl-loader-0.56.tar.bz2</span><br><span class="line">cd curl-loader-0.56</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<p>2、使用步骤</p>
+<p>配置文件  示例  参考链接：<a target="_blank" rel="noopener" href="https://curl-loader.sourceforge.net/doc/faq.html">https://curl-loader.sourceforge.net/doc/faq.html</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">10k.conf</span><br><span class="line">########### GENERAL SECTION ################################</span><br><span class="line">BATCH_NAME= 10K        # 名称</span><br><span class="line">CLIENTS_NUM_MAX=10000  # 最大一万个客户端</span><br><span class="line">CLIENTS_NUM_START=100  # 从100个客户端开始</span><br><span class="line">CLIENTS_RAMPUP_INC=50  # 每次增加50</span><br><span class="line">INTERFACE   =eth0   # 网卡</span><br><span class="line">NETMASK=16         # 掩码</span><br><span class="line">IP_ADDR_MIN= 192.168.1.1    # 伪装的IP起始</span><br><span class="line">IP_ADDR_MAX= 192.168.53.255  #Actually - this is for self-control</span><br><span class="line">CYCLES_NUM= -1   # 循环次数 -1代表无限循环</span><br><span class="line">URLS_NUM= 1      # URL的数量</span><br><span class="line"></span><br><span class="line">########### URL SECTION ####################################</span><br><span class="line"></span><br><span class="line">URL=http://localhost/index.html</span><br><span class="line">#URL=http://localhost/ACE-INSTALL.html</span><br><span class="line">URL_SHORT_NAME=&quot;local-index&quot;</span><br><span class="line">REQUEST_TYPE=GET</span><br><span class="line">TIMER_URL_COMPLETION = 5000      # In msec. When positive, Now it is enforced by cancelling url fetch on timeout</span><br><span class="line">TIMER_AFTER_URL_SLEEP =20   # 请求发的间歇</span><br></pre></td></tr></table></figure>
+
+<p>使用命令</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/04/05/Windows%E9%98%B2%E7%81%AB%E5%A2%99_new/#more" rel="contents">
+              <a class="btn" href="/2023/07/20/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/curl_loader%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -661,7 +479,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/31/%E9%82%AE%E4%BB%B6%E5%8D%8F%E8%AE%AE_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/11/Web%E6%B8%97%E9%80%8F/LNMP%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -675,7 +493,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/31/%E9%82%AE%E4%BB%B6%E5%8D%8F%E8%AE%AE_new/" class="post-title-link" itemprop="url">邮件协议</a>
+            <a href="/2023/07/11/Web%E6%B8%97%E9%80%8F/LNMP%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">LNMP环境（支持LUA）</a>
         </h2>
 
         <div class="post-meta">
@@ -685,7 +503,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-31 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-31T00:00:00+08:00">2023-03-31</time>
+              <time title="创建时间：2023-07-11 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-11T00:00:00+08:00">2023-07-11</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -693,7 +511,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
                 </span>
             </span>
 
@@ -708,37 +526,34 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="邮件协议"><a href="#邮件协议" class="headerlink" title="邮件协议"></a>邮件协议</h3><p>1、邮件协议</p>
+          <h4 id="1、安装Mysql5-7"><a href="#1、安装Mysql5-7" class="headerlink" title="1、安装Mysql5.7"></a>1、安装Mysql5.7</h4><ul>
+<li>配置Mysql 的yum 源 CentOS 的yum源中没有mysql，需要到mysql的官网下载yum repo配置文件</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># 下载安装</span><br><span class="line">wget http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm</span><br><span class="line">rpm -ivh mysql57-community-release-el7-11.noarch.rpm </span><br><span class="line">rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022</span><br><span class="line">yum -y install mysql-server</span><br><span class="line"></span><br><span class="line"># 查看mysqld 服务是否存在并启动</span><br><span class="line">systemctl start mysql</span><br><span class="line">systemctl status mysqld</span><br><span class="line"></span><br><span class="line"># 获取临时密码（mysql5.7才有，5.6默认密码为空）</span><br><span class="line">cat /var/log/mysqld.log |grep password</span><br><span class="line">2023-07-06T14:49:50.366809Z 1 [Note] A temporary password is generated for root@localhost: wF4t6oiiju)o</span><br><span class="line"># 更改密码</span><br><span class="line">ALTER USER &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED BY &#x27;Qwer1234@&#x27;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
 <ul>
-<li><p>SMTP：简单邮件传输协议，TCP端口号25，主要用于发送电子邮件</p>
-<p>SMTP代表Simple Mail Transfer Protocol。SMTP用于发送电子邮件并将其路由到正确的目标服务器（或邮箱）。SMTP服务器提供从邮件客户端（例如Microsoft Outlook、Gmail等）发送电子邮件所需的服务。当你发送一封电子邮件时，SMTP服务器接收该邮件，检查发送者是否有权访问该邮件，并将其传递到邮件接收服务器。SMTP是向外发送电子邮件的标准协议。</p>
+<li>查看默认密码策略</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230706225840203.png" alt="image-20230706225840203"></p>
+<p>如需关闭密码策略，在&#x2F;etc&#x2F;my.cnf 中添加</p>
+<p>validate_password&#x3D; off</p>
+<ul>
+<li><p>创建数据库和账号</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"># 创建数据库</span><br><span class="line">mysql&gt; create database web_site character set utf8 collate utf8_general_ci;</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"># 创建用户</span><br><span class="line">mysql&gt; create user john@&#x27;%&#x27; identified by &#x27;Asdf1234@&#x27;;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"># 授权用户用于该数据库的所有表的权限</span><br><span class="line">mysql&gt; grant all privileges on web_site.* to john@&#x27;%&#x27;;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"># 查看用户是否添加成功</span><br><span class="line">mysql&gt; use mysql;</span><br><span class="line">Reading table information for completion of table and column names</span><br><span class="line">You can turn off this feature to get a quicker startup with -A</span><br><span class="line"></span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; select User,Host,authentication_string from user;</span><br><span class="line">+---------------+-----------+-------------------------------------------+</span><br><span class="line">| User          | Host      | authentication_string                     |</span><br><span class="line">+---------------+-----------+-------------------------------------------+</span><br><span class="line">| root          | localhost | *F393111FF4D128DBA783646EDBD577DC15DEBE40 |</span><br><span class="line">| mysql.session | localhost | *THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE |</span><br><span class="line">| mysql.sys     | localhost | *THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE |</span><br><span class="line">| john          | %         | *C244E5730489A669785440CA0861C36379D08029 |</span><br><span class="line">+---------------+-----------+-------------------------------------------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="2、php7-3-源码安装"><a href="#2、php7-3-源码安装" class="headerlink" title="2、php7.3 源码安装"></a>2、php7.3 源码安装</h4><ul>
+<li><p>安装依赖库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">yum install -y gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel freetype-devel libxml2-devel libjpeg-devel libpng-devel curl-devel patch ncurses-devel bzip2 libcap-devel ntp diffutils sendmail iptables unzip cmake pcre-devel zlib-devel openssl openssl-devel libmcrypt-devel libmhash-devel sysklogd</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">其中libmcrypt-devel libmhash-devel 安装失败</span></span><br><span class="line">解决办法</span><br><span class="line">1、安装第三方yum源</span><br><span class="line">wget http://www.atomicorp.com/installers/atomic</span><br><span class="line">sh ./atomic</span><br><span class="line">2、使用yum命令安装</span><br><span class="line">yum  install  libmcrypt-devel libmhash-devel</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sysklogd 安装失败，说是在较新的 Linux 发行版中，rsyslog 已经取代了 sysklogd，就没管了</span></span><br></pre></td></tr></table></figure>
 </li>
-<li><p>POP3：邮局协议第三版，默认TCP端口号110号，主要用于接收电子邮件</p>
-<p>POP3是用于从邮件服务器上检索电子邮件的一种协议。使用POP3协议时，用户在邮件客户端上对本地邮件的操作（如，删除、转移至其它文件夹等）不会影响服务器上的邮件。但如果用户未勾选“在服务器上保留邮件的副本”时，不同的邮件客户端看到的本地邮件将会有所不同。</p>
+<li><p>创建用户和组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@192 ~]# groupadd www</span><br><span class="line">[root@192 ~]# useradd -r www -g www</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>IMAP4：网际消息访问协议第四版，默认端口号143号，主要用于在线查看邮件（接收邮件)</p>
-<p>使用IMAP协议时，用户在某个邮件客户端上的操作，将会被“映射”到邮件服务器上。因此，使用IMAP协议，可以同时保持多个邮件客户端上邮件的同步。</p>
+<li><p>安装</p>
 </li>
 </ul>
-<p>2、常见电子邮件系统</p>
-<ul>
-<li>exchange</li>
-<li>postfix</li>
-<li>第三方（qq,163）</li>
-</ul>
-<p>3、邮件客户端</p>
-<ul>
-<li>foxmail</li>
-<li>outlook</li>
-<li>网易邮箱大师</li>
-<li>QQ邮箱k</li>
-</ul>
-<p>4、wireshark 抓包</p>
-<p>可以尝试抓到明文用户名，密码，内容</p>
-<p>pop3  : 从邮件服务器拉取邮件，删除后不影响邮件服务器</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/31/%E9%82%AE%E4%BB%B6%E5%8D%8F%E8%AE%AE_new/#more" rel="contents">
+              <a class="btn" href="/2023/07/11/Web%E6%B8%97%E9%80%8F/LNMP%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -762,7 +577,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/29/HTTP_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/03/Web%E6%B8%97%E9%80%8F/Nginx_new/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -776,7 +591,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/29/HTTP_new/" class="post-title-link" itemprop="url">HTTP</a>
+            <a href="/2023/07/03/Web%E6%B8%97%E9%80%8F/Nginx_new/" class="post-title-link" itemprop="url">Nginx</a>
         </h2>
 
         <div class="post-meta">
@@ -786,7 +601,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-29 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-29T00:00:00+08:00">2023-03-29</time>
+              <time title="创建时间：2023-07-03 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-03T00:00:00+08:00">2023-07-03</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -794,7 +609,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
                 </span>
             </span>
 
@@ -809,36 +624,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="HTTP协议-HTTPS"><a href="#HTTP协议-HTTPS" class="headerlink" title="HTTP协议-HTTPS"></a>HTTP协议-HTTPS</h3><h4 id="1、HTTP"><a href="#1、HTTP" class="headerlink" title="1、HTTP"></a>1、HTTP</h4><ul>
-<li>超文本传输协议，默认端口80，基于TCP</li>
-<li>http是无连接的，限制每次连接只处理一个请求</li>
-<li>http是无状态的，没有记忆能力</li>
-</ul>
-<h4 id="2、HTTPS"><a href="#2、HTTPS" class="headerlink" title="2、HTTPS"></a>2、HTTPS</h4><ul>
-<li><p>https &#x3D; http + ssl&#x2F;tls</p>
-</li>
-<li><p>在http的通道上增加了安全性，传输过程中通过加密和身份验证来确保传输安全性。</p>
-</li>
-<li><p>tls</p>
-<p>传输层安全协议，SSL和tls其实是一个协议，SSL 2.0版本自SSL3.0版本以后更名为TLS1.0，目前最高TLS1.3，最广泛应用的是TLS1.2。</p>
-</li>
-<li><p>传输之前，client和server 协商数据传输过程中的加密算法，包含非对称加密的密钥交换算法（RSA），数据签名摘要算法（MD5，sha），对称加密算法（DES&#x2F;AES ）</p>
-</li>
-<li><p>客户端生成随机的字符串，通过协商好的非对称加密算法，使用服务端的公钥对该字符串进行加密，发送给服务端。服务端收到后，使用自己的私钥进行解密得到该字符串，随后的数据传输中，使用这个字符串作为密钥进行对称加密。</p>
-</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230329222217626.png" alt="image-20230329222217626"></p>
-<p>3、PKI</p>
+          <h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><p> 1、概念</p>
+<p>轻量应用服务器、高并发</p>
+<p>2、反向代理与正向代理</p>
+<p>正向代理示意图</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230703214801703.png" alt="image-20230703214801703"></p>
+<p>作用：</p>
 <ul>
-<li><p>数字签名</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230329223947617.png" alt="image-20230329223947617"></p>
-</li>
+<li>访问无法访问的资源如Google</li>
+<li>做缓存，加速访问资源，如CDN</li>
+<li>对客户端进行访问授权，上网认证</li>
+<li>记录用户访问记录，上网行为管理</li>
 </ul>
-<p>4、完整的过程</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230329225150730.png" alt="image-20230329225150730"></p>
+<p>反向代理</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230703215040740.png" alt="image-20230703215040740"></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/29/HTTP_new/#more" rel="contents">
+              <a class="btn" href="/2023/07/03/Web%E6%B8%97%E9%80%8F/Nginx_new/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -862,7 +664,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/28/FTP_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/06/27/Web%E6%B8%97%E9%80%8F/Java_Tomcat%E7%8E%AF%E5%A2%83_new/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -876,7 +678,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/28/FTP_new/" class="post-title-link" itemprop="url">FTP</a>
+            <a href="/2023/06/27/Web%E6%B8%97%E9%80%8F/Java_Tomcat%E7%8E%AF%E5%A2%83_new/" class="post-title-link" itemprop="url">Java_Tomcat环境</a>
         </h2>
 
         <div class="post-meta">
@@ -886,7 +688,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-28 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-28T00:00:00+08:00">2023-03-28</time>
+              <time title="创建时间：2023-06-27 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-27T00:00:00+08:00">2023-06-27</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -894,7 +696,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
                 </span>
             </span>
 
@@ -909,42 +711,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="FTP协议"><a href="#FTP协议" class="headerlink" title="FTP协议"></a>FTP协议</h3><p>1、概念</p>
-<ul>
-<li><p>文件传输协议，CS架构，基于TCP，默认端口号20，21</p>
-</li>
-<li><p>主动模式</p>
-</li>
-</ul>
-<p>  <img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230328231152827.png" alt="image-20230328231152827"></p>
-<ul>
-<li><p>被动模式</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230328231118733.png" alt="image-20230328231118733"></p>
-</li>
-</ul>
-<p>2、软件</p>
-<ul>
-<li><p>服务器软件</p>
-<ul>
-<li>serv-U</li>
-<li>filezilla server</li>
-<li>vsftpd</li>
-<li>IIS</li>
-</ul>
-</li>
-<li><p>客户端</p>
-<ul>
-<li>ftp serverIP</li>
-<li>资源管理器  <a href="ftp://192.168.10.10/">ftp://192.168.10.10</a></li>
-<li>浏览器  <a href="ftp://server_ip/">ftp://server_ip</a></li>
-<li>第三方工具</li>
-</ul>
-</li>
-</ul>
+          <h3 id="Java-Tomcat环境"><a href="#Java-Tomcat环境" class="headerlink" title="Java_Tomcat环境"></a>Java_Tomcat环境</h3><p>Tomcat 核心功能是作为Java的容器来运行Java的后台代码，并内置对HTTP请求的处理，但不是最优选择，前面往往加一个Apache或者Nigix 处理HTTP请求。</p>
+<p>1、 单独安装Mysql5.6环境</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">wget http://repo.mysql.com/mysql-community-release-el6-5.noarch.rpm</span><br><span class="line">yum list installed | grep mysql</span><br><span class="line">rpm -qa|grep -i mariadb</span><br><span class="line">rpm -qa|grep mariadb|xargs rpm -e --nodeps</span><br><span class="line">rpm -qa|grep -i mariadb</span><br><span class="line">rpm -ivh mysql-community-release-el6-5.noarch.rpm</span><br><span class="line">yum repolist all | grep mysql</span><br><span class="line">yum install mysql-community-server</span><br><span class="line">systemctl status mysqld</span><br><span class="line">systemctl start mysqld</span><br><span class="line">systemctl status mysqld</span><br><span class="line">mysql -uroot</span><br><span class="line">    use mysql;</span><br><span class="line">    UPDATE user SET Password=PASSWORD(&#x27;123456&#x27;) WHERE User=&#x27;root&#x27;;</span><br><span class="line">    GRANT ALL PRIVILEGES ON *.* TO &#x27;root&#x27;@&#x27;%&#x27; IDENTIFIED BY &#x27;123456&#x27; WITH GRANT OPTION;</span><br><span class="line">    FLUSH privileges;</span><br><span class="line"></span><br><span class="line">systectl restart mysqld</span><br><span class="line"></span><br><span class="line"># 如果不小心改错了,以不验证模式启动Mysql</span><br><span class="line">systemctl stop mysqld</span><br><span class="line">mysqld_safe --skip-grant-tables  </span><br><span class="line">随后登录，更改</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
+<p>2 .安装Tomcat 8.5 (java 已安装)</p>
+<p>下载链接 <a target="_blank" rel="noopener" href="https://tomcat.apache.org/download-80.cgi">https://tomcat.apache.org/download-80.cgi</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">tar xzvf apache-tomcat-8.5.90.tar.gz</span><br><span class="line">mv apache-tomcat-8.5.90 /opt</span><br><span class="line">echo &#x27;export CATALINA_HOME=/opt/apache-tomcat-8.5.90&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line">echo &#x27;export PATH=$CATALINA_HOME/bin:$PATH&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">防火墙</span></span><br><span class="line">firewall-cmd --add-port=8080/tcp --permanent</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">CATALINA_HOME/bin/startup.sh</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">默认配置文件</span></span><br><span class="line">/opt/apache-tomcat-8.5.90/conf/server.xml</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">默认日志文件</span></span><br><span class="line">/opt/apache-tomcat-8.5.90/log/catalina.out</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">访问日志文件</span></span><br><span class="line">/opt/apache-tomcat-8.5.90/log/localhost_access_log.2023-06-27.txt</span><br></pre></td></tr></table></figure>
+
+<p>默认网站根目录如下</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230627232003484.png" alt="image-20230627232003484"></p>
+<p>数据库连接文件</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/28/FTP_new/#more" rel="contents">
+              <a class="btn" href="/2023/06/27/Web%E6%B8%97%E9%80%8F/Java_Tomcat%E7%8E%AF%E5%A2%83_new/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -968,7 +748,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/26/DNS_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/06/24/Web%E6%B8%97%E9%80%8F/LAMP%E7%8E%AF%E5%A2%83_new/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -982,7 +762,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/26/DNS_new/" class="post-title-link" itemprop="url">DNS</a>
+            <a href="/2023/06/24/Web%E6%B8%97%E9%80%8F/LAMP%E7%8E%AF%E5%A2%83_new/" class="post-title-link" itemprop="url">LAMP环境</a>
         </h2>
 
         <div class="post-meta">
@@ -992,7 +772,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-26 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-26T00:00:00+08:00">2023-03-26</time>
+              <time title="创建时间：2023-06-24 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-24T00:00:00+08:00">2023-06-24</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1000,7 +780,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
                 </span>
             </span>
 
@@ -1015,53 +795,59 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="DNS-协议"><a href="#DNS-协议" class="headerlink" title="DNS 协议"></a>DNS 协议</h3><p>1、概念</p>
+          <h3 id="Lampp环境"><a href="#Lampp环境" class="headerlink" title="Lampp环境"></a>Lampp环境</h3><p>1、基本概念与环境</p>
+<p>Linux+apache2+mysql+php+python</p>
+<p>Xmapp 是集合了LAMPP 的完整的运行环境，相对来说适用于开发和调试，但是安全性配置不足，相对而言漏洞较多。</p>
 <ul>
-<li>DNS记录<ul>
-<li>A   : 主机记录，域名和IP的映射</li>
-<li>CNAME ： 别名</li>
-<li>SOA：权威名称服务器</li>
-<li>NS：名称服务器</li>
-<li>MX：邮件交换记录</li>
-<li>SRV： 正在提供服务的</li>
-<li>PTR:  反向指针</li>
+<li>Xmapp 启动后，Apache 使用端口80，防火墙要放行</li>
 </ul>
-</li>
-</ul>
-<p>2、DNS查询</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd  --add-port=80/tcp  --permanent</span><br></pre></td></tr></table></figure>
+
 <ul>
-<li><p>客户机访问<a target="_blank" rel="noopener" href="http://www.baidu.com,根据自己的tcp/IP%E5%8F%82%E6%95%B0%EF%BC%8C%E5%90%91%E8%87%AA%E5%B7%B1%E7%9A%84%E9%A6%96%E9%80%89DNS%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%91%E9%80%81DNS%E8%AF%B7%E6%B1%82">www.baidu.com，根据自己的TCP/IP参数，向自己的首选DNS服务器发送DNS请求</a></p>
+<li><p><a target="_blank" rel="noopener" href="http://ip/dashboard/phpinfo.php">http://ip/dashboard/phpinfo.php</a> 展示了所有运行环境参数，通常情况下，<em><strong>配置完成后要删除该页面</strong></em></p>
 </li>
-<li><p>首选DNS服务器收到客户机的请求后，去查询自己的区域文件，找不到IP地址信息（将请求转发给根域服务器）；直接可以找到，则返回IP地址</p>
+<li><p>默认情况下，&#x2F;opt&#x2F;lampp&#x2F;htdocs 目录是应用程序的根目录。</p>
 </li>
-<li><p>根域服务器收到请求后，由于根域服务器只维护顶级域服务器，会响应顶级域名服务器IP（com）,首选DNS根据根域名服务器响应的信息，将请求转发到com顶级域</p>
+<li><p>phpmyadmin 是mysql的网页端，<em><strong>默认情况下禁止远程访问</strong></em></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改/opt/lampp/etc/extra/httpd-xampp.conf</span> </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">注释  Require <span class="built_in">local</span>  新增  Require all granted 即可运行远程访问</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">since XAMPP 1.4.3</span></span><br><span class="line">&lt;Directory &quot;/opt/lampp/phpmyadmin&quot;&gt;</span><br><span class="line">    AllowOverride AuthConfig Limit</span><br><span class="line">    # Require local</span><br><span class="line">    Require all granted</span><br><span class="line">    ErrorDocument 403 /error/XAMPP_FORBIDDEN.html.var</span><br><span class="line">&lt;/Directory&gt;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>com顶级域收到请求，由于com顶级域只维护二级域信息，会响应二级域服务器IP，首选DNS根据顶级域响应的信息，将请求转发到baidu.com 二级域</p>
-</li>
-<li><p>baidu.com 二级域收到请求，baidu.com DNS服务器里面维护的是baidu.com 区域内的所有主机信息，包含了<a target="_blank" rel="noopener" href="http://www.baidu.com的信息,将ip地址响应给首选dns/">www.baidu.com的信息，将IP地址响应给首选DNS</a></p>
-</li>
-<li><p>首选DNS响应给主机。</p>
-</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327213240915.png" alt="image-20230327213240915"></p>
-<p>3、 DNS配置 缓存DNS服务器 </p>
+<li><p>确认服务和端口正常启动</p>
 <ul>
-<li><p>server2016上安装DNS服务，配置转发器</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327223920382.png" alt="image-20230327223920382"></p>
+<li><p>修改默认端口，修改配置文件&#x2F;opt&#x2F;lampp&#x2F;etc&#x2F;httpd.conf，<em><strong>改成非80，更安全</strong></em></p>
 </li>
-<li><p>将另一台主机DNS服务器设置为server2016的IP，随后nslookup 查询特定域名</p>
-</li>
-<li><p>wireshark抓包</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327224042516.png" alt="image-20230327224042516"></p>
-</li>
-<li><p>server2016这个缓存DNS服务器向转发器中的DNS服务器（192.168.10.1）转发DNS请求，192.168.10.1请求到以后，返回给server2016，server2016再响应client。</p>
+<li><p>如果出现内核版本不兼容情况，修改&#x2F;opt&#x2F;lampp&#x2F;lampp ，将内核版本修改为2.8.0以上。</p>
 </li>
 </ul>
-<p>4、 DNS攻击</p>
-<p>环境：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LD_ASSUME_KERNEL=2.8.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署对应的系统或者网站，导入数据库，修改配置文件等。</p>
+<p>注意配置数据库时</p>
+<ul>
+<li>修改root默认密码</li>
+<li>配置phpmyadmin 允许远程访问，或者设置一个可以远程访问的用户，然后用navicat连接进行配置</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">默认数据库的user情况</span><br><span class="line">MariaDB [mysql]&gt; select User,Password,Host from user;</span><br><span class="line">+------+----------+-----------+</span><br><span class="line">| User | Password | Host      |</span><br><span class="line">+------+----------+-----------+</span><br><span class="line">| root |          | localhost |</span><br><span class="line">| root |          | 127.0.0.1 |</span><br><span class="line">| root |          | ::1       |</span><br><span class="line">|      |          | localhost |</span><br><span class="line">| root |          | %         |</span><br><span class="line">| pma  |          | localhost</span><br><span class="line"></span><br><span class="line">第一行：用户名为 root，密码为空白，允许从 localhost 发起连接请求，不需要密码。</span><br><span class="line">第二行：用户名为 root，密码为空白，允许从 127.0.0.1 发起连接请求，不需要密码。</span><br><span class="line">第三行：用户名为 root，密码为空白，允许从 ::1 发起连接请求，不需要密码。</span><br><span class="line">第四行：用户名为空白，密码为空白，允许从 localhost 发起连接请求。这行数据有些特殊，因为它可以允许任何人以匿名身份登录，不需要密码。</span><br><span class="line">第五行：用户名为 root，密码为空白，允许从任意主机（%）发起连接请求。注意，在使用通配符 % 时需要小心，因为这样很可能导致安全漏洞，不需要密码。</span><br><span class="line">第六行：用户名为 pma，密码为空白，允许从 localhost 发起连接请求。pma 是 phpMyAdmin 中默认创建的一个用户，用于管理 MySQL 数据库，不需要密码。</span><br></pre></td></tr></table></figure>
+
+
+
+<p>两种方式修改mysql的密码：</p>
+<p>第一种方式：</p>
+<p>phpmyadmin 点击修改权限，找到change password, 添加密码，然后修改phpmyadmin&#x2F;config.inc.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$cfg[&#x27;Servers&#x27;][$i][&#x27;password&#x27;] = &#x27;654321&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230625225559571.png" alt="image-20230625225559571"></p>
+<p>第二种方式，默认空密码登陆后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot </span><br><span class="line">update user set authentication_string=password(&#x27;qwe123&#x27;) where user=&#x27;root&#x27; and host=&#x27;localhost&#x27;;</span><br><span class="line">update user set authentication_string=password(&#x27;qwe123&#x27;) where user=&#x27;root&#x27; and host=&#x27;127.0.0.1&#x27;;</span><br><span class="line">update user set authentication_string=password(&#x27;xxxxxx&#x27;) where user=&#x27;root&#x27; and host=&#x27;%&#x27;;</span><br><span class="line">flush privileges</span><br><span class="line"># 注意 authentication_string 在低版本是password ，在高版本是 authentication_string</span><br><span class="line">而不是下面的语句</span><br><span class="line">update user set password=&#x27;qwe123&#x27; where user=&#x27;root&#x27; and host=&#x27;localhost&#x27;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>注意如果密码出错，无法登录进去的话，可以修改my.cnf 加入</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">skip-grant-tables</span><br></pre></td></tr></table></figure>
+
+
+
+<p><em><strong>安全起见，一般要禁用phpmyadmin</strong></em>，有三种方法</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/26/DNS_new/#more" rel="contents">
+              <a class="btn" href="/2023/06/24/Web%E6%B8%97%E9%80%8F/LAMP%E7%8E%AF%E5%A2%83_new/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1085,7 +871,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/23/DHCP_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/06/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8A%A0%E5%9B%BA%E6%8A%80%E6%9C%AF_new/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -1099,7 +885,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/23/DHCP_new/" class="post-title-link" itemprop="url">DHCP</a>
+            <a href="/2023/06/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8A%A0%E5%9B%BA%E6%8A%80%E6%9C%AF_new/" class="post-title-link" itemprop="url">windows 服务器加固技术</a>
         </h2>
 
         <div class="post-meta">
@@ -1109,7 +895,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-23 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-23T00:00:00+08:00">2023-03-23</time>
+              <time title="创建时间：2023-06-11 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-11T00:00:00+08:00">2023-06-11</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1117,7 +903,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
                 </span>
             </span>
 
@@ -1132,47 +918,132 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="DHCP协议"><a href="#DHCP协议" class="headerlink" title="DHCP协议"></a>DHCP协议</h3><p>1、DHCP的工作原理</p>
+          <h3 id="Windows-服务器加固技术"><a href="#Windows-服务器加固技术" class="headerlink" title="Windows 服务器加固技术"></a>Windows 服务器加固技术</h3><h4 id="1、windows-常用命令"><a href="#1、windows-常用命令" class="headerlink" title="1、windows 常用命令"></a>1、windows 常用命令</h4><table>
+<thead>
+<tr>
+<th><strong>命令</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ver</td>
+<td>查看系统版本</td>
+</tr>
+<tr>
+<td>hostname</td>
+<td>查看主机名</td>
+</tr>
+<tr>
+<td>ipconfig &#x2F;all</td>
+<td>查看网络配置</td>
+</tr>
+<tr>
+<td>net user&#x2F;localgroup&#x2F;share&#x2F;config</td>
+<td>查看用户&#x2F;用户组&#x2F;共享&#x2F;当前运行可配置服务</td>
+</tr>
+<tr>
+<td>at</td>
+<td>建立或查看系统作业</td>
+</tr>
+<tr>
+<td>netstat</td>
+<td>查看开放端口</td>
+</tr>
+<tr>
+<td>secpol.msc</td>
+<td>查看和修改本地安全设置</td>
+</tr>
+<tr>
+<td>services.msc</td>
+<td>查看和修改服务</td>
+</tr>
+<tr>
+<td>eventvwr.msc</td>
+<td>查看日志</td>
+</tr>
+<tr>
+<td>regedit</td>
+<td>打开注册表</td>
+</tr>
+<tr>
+<td>whoami</td>
+<td>查看当前操作用户的用户名</td>
+</tr>
+</tbody></table>
 <ul>
-<li><p>动态主机配置协议，主要给客户机提供TCP&#x2F;IP参数（IP地址、子网掩码、网关、DNS）</p>
+<li><p>修改本地安全策略</p>
+<p>账户策略</p>
+<ul>
+<li>密码策略</li>
+<li>账户锁定策略</li>
+</ul>
+<p>本地策略</p>
+<ul>
+<li><p>审核策略	  -记录成日志</p>
 </li>
-<li><p>好处</p>
-<ul>
-<li>减少管理员的工作量</li>
-<li>减少出错的可能，避免输入错误</li>
-<li>避免IIP冲突</li>
-<li>提高IP地址利用</li>
-</ul>
+<li><p>用户权限分配  </p>
 </li>
-<li><p>应用层协议，基于UDP，端口号67，服务器响应给客户机的68号端口，客户机与服务器的交互过程</p>
-<ul>
-<li>dhcp discover  客户机 发送 ，以广播方式，网络中所有的DHCP服务器都会受到并响应 ，客户向受到的第一个offer报文的服务器发送request请求</li>
-<li>dhcp offer dhcp 服务器发送的提供报文</li>
-<li>dhcp request client 发送的request请求</li>
-<li>dhcp ack  服务器确认，客户机获得IP参数</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323204319729.png" alt="image-20230323204319729"></p>
-<p>除了以上的还有四种报文</p>
-<ul>
-<li>dhcp release</li>
-<li>dhcp nak: 针对request 的拒绝报文</li>
-<li>dhcp decline：当客户端发现接收到IP冲突时，发送此报文给服务器</li>
-<li>dhcp inform：已经有IP地址，获取其他的配置信息，如网关，DNS等</li>
+<li><p>安全选项</p>
+</li>
 </ul>
 </li>
 </ul>
-<p>2、windows server 部署</p>
-<p>如图的拓扑结构，R1上需要在f0&#x2F;0接口配置dhcp中继，VM1才能请求到DHCPserver 分配的IP地址。 </p>
-<p>如图 DHCP server 配置了两个dhcp 作用域，50和120网段</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323214149891.png" alt="image-20230323214149891"></p>
-<p>3、抓流量 </p>
+<h4 id="2、windows-常见端口"><a href="#2、windows-常见端口" class="headerlink" title="2、windows 常见端口"></a>2、windows 常见端口</h4><table>
+<thead>
+<tr>
+<th><strong>端口</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>80&#x2F;8080&#x2F;8081</td>
+<td>HTTP协议代理服务器常用端口号</td>
+</tr>
+<tr>
+<td>443</td>
+<td>HTTPS协议代理服务器常用端口号</td>
+</tr>
+<tr>
+<td>21</td>
+<td>FTP(文件传输协议)协议代理服务器常用端口号</td>
+</tr>
+<tr>
+<td>23</td>
+<td>Telnet(远程登录)协议代理服务器常用端口号</td>
+</tr>
+<tr>
+<td>22</td>
+<td>SSH（安全登录）、SCP（文件传输）</td>
+</tr>
+<tr>
+<td>1521</td>
+<td>Oracle 数据库</td>
+</tr>
+<tr>
+<td>1433</td>
+<td>MS SQL SERVER数据库</td>
+</tr>
+<tr>
+<td>1080</td>
+<td>QQ</td>
+</tr>
+<tr>
+<td>3306</td>
+<td>Mysql数据库</td>
+</tr>
+<tr>
+<td>25</td>
+<td>SMTP（简单邮件传输协议）</td>
+</tr>
+</tbody></table>
+<h4 id="3、windows账号及安全策略"><a href="#3、windows账号及安全策略" class="headerlink" title="3、windows账号及安全策略"></a>3、windows账号及安全策略</h4><p>  windows+R  secpol.msc </p>
 <ul>
-<li>示例1，释放vmnet1 的地址来抓包，查看这个过程</li>
+<li>账号策略</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ipconfig /release  &quot;VMware Network Adapter VMnet1&quot;</span><br><span class="line">ipconfig /renew  &quot;VMware Network Adapter VMnet1&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">密码必须符合复杂性要求：启用 </span><br><span class="line">密码长度最小值         8个字符 </span><br><span class="line">密码最长使用期限：       30天 </span><br><span class="line">强制密码历史：         3个记住的密码</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/23/DHCP_new/#more" rel="contents">
+              <a class="btn" href="/2023/06/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8A%A0%E5%9B%BA%E6%8A%80%E6%9C%AF_new/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1196,7 +1067,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/23/UDP_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/06/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/Linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -1210,7 +1081,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/23/UDP_new/" class="post-title-link" itemprop="url">UDP</a>
+            <a href="/2023/06/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/Linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">Linux系统安全配置</a>
         </h2>
 
         <div class="post-meta">
@@ -1220,7 +1091,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-23 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-23T00:00:00+08:00">2023-03-23</time>
+              <time title="创建时间：2023-06-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-04T00:00:00+08:00">2023-06-04</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1228,7 +1099,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
                 </span>
             </span>
 
@@ -1243,40 +1114,112 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="UDP协议"><a href="#UDP协议" class="headerlink" title="UDP协议"></a>UDP协议</h3><ul>
-<li><p>特点</p>
-<p>不需要连接，直接发送数据，不会重新排序，也不需要确认</p>
-</li>
-<li><p>报文字段</p>
-<ul>
-<li>源端口</li>
-<li>目的端口</li>
-<li>length</li>
-<li>checksum</li>
-<li>stream index </li>
-<li>timestamps</li>
-<li>udp payload</li>
-</ul>
-</li>
-<li><p>常见UDP</p>
-<ul>
-<li>DNS 53</li>
-<li>ntp  123</li>
-<li>tftp 69</li>
-<li>rpc 111</li>
-<li>snmp 161</li>
-</ul>
-</li>
-<li><p>udp 攻击</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hping3 <span class="literal">-q</span> <span class="literal">-n</span> <span class="literal">--rand-source</span> <span class="literal">--udp</span> <span class="literal">-p</span> <span class="number">53</span> <span class="literal">--flood</span> <span class="number">192.168</span>.<span class="number">198.135</span> <span class="literal">-d</span> <span class="number">10000</span></span><br></pre></td></tr></table></figure>
+          <h3 id="Linux系统安全配置"><a href="#Linux系统安全配置" class="headerlink" title="Linux系统安全配置"></a>Linux系统安全配置</h3><h4 id="系统权限"><a href="#系统权限" class="headerlink" title="系统权限"></a>系统权限</h4><h5 id="1、安装操作系统"><a href="#1、安装操作系统" class="headerlink" title="1、安装操作系统"></a>1、安装操作系统</h5><p>1、选择稳定版操作系统</p>
+<p>2、最小化安装（后期方便安装应用）</p>
+<p>3、不要安装gcc ，make（防止黑客进入以后方便操作）</p>
+<p>4、安装系统后更新系统 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y update</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323202403665.png" alt="image-20230323202403665"></p>
+<h5 id="2、文件权限"><a href="#2、文件权限" class="headerlink" title="2、文件权限"></a>2、文件权限</h5><ul>
+<li><p>文件夹默认权限  755   777-022 </p>
+</li>
+<li><p>文件默认权限 644       666-022</p>
 </li>
 </ul>
-
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/23/UDP_new/#more" rel="contents">
+              <a class="btn" href="/2023/06/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/Linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/04/24/Web%E6%B8%97%E9%80%8F/Docker_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/04/24/Web%E6%B8%97%E9%80%8F/Docker_new/" class="post-title-link" itemprop="url">Docker 基本操作学习</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-04-24 00:00:00" itemprop="dateCreated datePublished" datetime="2023-04-24T00:00:00+08:00">2023-04-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="Docker–常用操作命令"><a href="#Docker–常用操作命令" class="headerlink" title="Docker–常用操作命令"></a>Docker–常用操作命令</h3><p>1、对比虚拟机</p>
+<ul>
+<li><p>安装虚拟机软件，安装操作系统，备份虚拟机文件，随时复制并启动</p>
+</li>
+<li><p>在Linux 安装Docker应用程序，从镜像仓库拉取操作系统或者应用环境，基于该镜像文件创建一个容器（运行环境），备份容器以供下次使用，或者将容器提交为本地镜像</p>
+</li>
+<li><p>虚拟机模拟一套全新的硬件环境，而Docker 则是直接使用宿主机资源</p>
+</li>
+</ul>
+<p>2、安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">yum install net-tools</span><br><span class="line">yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line">yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br><span class="line">yum makecache fast</span><br><span class="line">yum -y install docker-ce</span><br><span class="line">systemctl start docker</span><br><span class="line">docker info</span><br><span class="line">systemctl list-unit-files</span><br><span class="line">systemctl list-unit-files |grep docker</span><br></pre></td></tr></table></figure>
+
+<p>2、docker命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">docker ps             # 查看当前运行的容器</span><br><span class="line">docker images          # 列举当前的镜像</span><br><span class="line">docker search centos   # 查找镜像</span><br><span class="line">docker pull hello-world  # 拉取镜像</span><br><span class="line">docker create hello-world  # 创建容器</span><br><span class="line"></span><br><span class="line">[root@192 ~]# docker create --name your_docker_name hello-world</span><br><span class="line">56ca1631d20a8e016f47545e0d0d65c253709629000ade70571c34bc54cfc2c8</span><br><span class="line"></span><br><span class="line">docker container ls -a # 查看所有的容器</span><br><span class="line"></span><br><span class="line">[root@192 ~]# docker container ls -a</span><br><span class="line">CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS    PORTS     NAMES</span><br><span class="line">56ca1631d20a   hello-world   &quot;/hello&quot;   44 seconds ago   Created             vibrant_kalam</span><br><span class="line">docker run --name your_docker_name hello-world  # 创建并启动容器</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230424215554888.png" alt="image-20230424215554888"></p>
+<p>相关网址：</p>
+<p><a target="_blank" rel="noopener" href="https://hub.daocloud.io/">https://hub.daocloud.io/</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/04/24/Web%E6%B8%97%E9%80%8F/Docker_new/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1365,20 +1308,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">90</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1405,7 +1348,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1414,7 +1357,31 @@
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
 
 
 

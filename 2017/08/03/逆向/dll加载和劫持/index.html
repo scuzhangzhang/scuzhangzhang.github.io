@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="一.dll加载顺序  DLL查找路径基础  &amp;emsp;&amp;emsp;应用程序可以通过以下方式控制一个DLL的加载路径：使用全路径加载、使用DLL重定向、使用manifest文件。如果上述三种方式均未指定，系统查找DLL的顺序将按照本部分描述的顺序进行。 &amp;emsp;&amp;emsp;对于以下两种情况的DLL，系统将不会查找，而是直接加载： &amp;emsp;&amp;e">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dll加载和劫持">
+<meta property="og:url" content="http://zwjsfdbb.top/2017/08/03/%E9%80%86%E5%90%91/dll%E5%8A%A0%E8%BD%BD%E5%92%8C%E5%8A%AB%E6%8C%81/index.html">
+<meta property="og:site_name" content="fengchuiguo">
+<meta property="og:description" content="一.dll加载顺序  DLL查找路径基础  &amp;emsp;&amp;emsp;应用程序可以通过以下方式控制一个DLL的加载路径：使用全路径加载、使用DLL重定向、使用manifest文件。如果上述三种方式均未指定，系统查找DLL的顺序将按照本部分描述的顺序进行。 &amp;emsp;&amp;emsp;对于以下两种情况的DLL，系统将不会查找，而是直接加载： &amp;emsp;&amp;e">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-08-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-12T09:47:19.177Z">
+<meta property="article:author" content="fengchuiguo">
+<meta property="article:tag" content="逆向">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zwjsfdbb.top/2017/08/03/%E9%80%86%E5%90%91/dll%E5%8A%A0%E8%BD%BD%E5%92%8C%E5%8A%AB%E6%8C%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>dll加载和劫持 | fengchuiguo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fengchuiguo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/03/%E9%80%86%E5%90%91/dll%E5%8A%A0%E8%BD%BD%E5%92%8C%E5%8A%AB%E6%8C%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          dll加载和劫持
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-03 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-03T00:00:00+08:00">2017-08-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一.dll加载顺序</p>
+<ol>
+<li>DLL查找路径基础</li>
+</ol>
+<p>&amp;emsp;&amp;emsp;应用程序可以通过以下方式控制一个DLL的加载路径：使用全路径加载、使用DLL重定向、使用manifest文件。如果上述三种方式均未指定，系统查找DLL的顺序将按照本部分描述的顺序进行。</p>
+<p>&amp;emsp;&amp;emsp;对于以下两种情况的DLL，系统将不会查找，而是直接加载：</p>
+<p>&amp;emsp;&amp;emsp;a. 对于已经加载到内存中的同名DLL，系统使用已经加载的DLL，并且忽略待加载DLL的路径。（注意对某个进程而言，系统已经加载的DLL一定是唯一的存在于某个目录下。）</p>
+<p>&amp;emsp;&amp;emsp;b. 如果该DLL存在于某个Windows版本的已知DLL列表（unkown DLL）中，系统使用已知DLL的拷贝（包括已知DLL的依赖项）。已知DLL列表可以从如下注册表项看到：HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\KnownDLLs。</p>
+<p>&amp;emsp;&amp;emsp;这里有个比较坑的地方，对于有依赖项的DLL（即使使用全路径指定DLL位置），系统查找其所依赖DLL的方法是按照实际的模块名称来的，因此如果加载的DLL不在系统查找顺序目录下，那么动态加载该DLL（LoadLibrary）会返回一个”找不到模块”的错误。</p>
+<p>2.系统标准DLL查找顺序</p>
+<p>&amp;emsp;&amp;emsp;系统使用的标准DLL查找顺序依赖于是否设置了”安全DLL查找模式”（safe DLL search mode）。”安全DLL查找模式”会将用户当前目录置于查找顺序的后边。<br>“安全DLL查找模式”默认是启用的，禁用的话，可以将注册表项HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\SafeDllSearchMode设为0。调用SetDllDirectory函数可以禁用”安全DLL查找模式”，并修改DLL查找顺序。<br>Windows XP下，”安全DLL查找模式”默认是禁用的，需要启用该项的话，在注册表中新建一个SafeDllSearchMode子项，并赋值为1即可。”安全DLL查找模式”从Windows XP SP2开始，默认是启用的。</p>
+<p>&amp;emsp;&amp;emsp;启用”安全DLL查找模式”时，查找顺序如下：</p>
+<ul>
+<li>a . 应用程序所在目录；</li>
+<li>b. 系统目录。GetSystemDirectory返回的目录，通常是系统盘\Windows\System32；<br>c. 16位系统目录。该项只是为了向前兼容的处理，可以不考虑；<br>d. Windows目录。GetWindowsDirectory返回的目录，通常是系统盘\Windows；<br>e. 当前目录。GetCurrentDirectory返回的目录；<br>f. 环境变量PATH中所有目录。</li>
+</ul>
+<p>如果”安全DLL查找模式”被禁用，查找顺序如下：<br>a. 应用程序所在目录；<br>b. 当前目录。GetCurrentDirectory返回的目录；<br>c. 系统目录。GetSystemDirectory返回的目录，通常是系统盘\Windows\System32；<br>d. 16位系统目录。该项只是为了向前兼容的处理，可以不考虑；<br>e. Windows目录。GetWindowsDirectory返回的目录，通常是系统盘\Windows；<br>f. 环境变量PATH中所有目录。</p>
+<ol start="3">
+<li>修改系统DLL查找顺序<br>系统使用的标准DLL查找顺序可以通过以下两种方式调整：<br>3.1 使用LOAD_WITH_ALTERED_SEARCH_PATH标志调用LoadLibraryEx函数；<br>这种方式调用LoadLibraryEx函数，需要设置lpFileName参数（绝对路径）。与标准查找策略不同的是，使用LOAD_WITH_ALTERED_SEARCH_PATH标志调用LoadLibraryEx函数的DLL查找顺序将”查找应用程序所在目录”修改为lpFileName指定的目录。<br>3.2 调用SetDllDirectory函数。<br>注意：SetDllDirectory函数在Windows XP SP1开始支持的。<br>函数SetDllDirectory在调用参数lpPathName是一个路径时，可支持修改DLL搜索路径。修改之后的搜索顺序如下：<br>a. 应用程序所在目录；<br>b. 函数SetDllDirectory参数lpPathName给定的目录；<br>c. 系统目录。GetSystemDirectory返回的目录，通常是系统盘\Windows\System32；<br>d. 16位系统目录。该项只是为了向前兼容的处理，可以不考虑；<br>e. Windows目录。GetWindowsDirectory返回的目录，通常是系统盘\Windows；<br>f. 环境变量PATH中所有目录。<br>如果lpPathName参数为空字符串，这样就会把当前目录从DLL搜索路径中去掉。<br>如果用NULL参数调用SetDllDirectory函数，可以恢复按照系统注册表的”安全DLL查找模式”来查找DLL。</li>
+</ol>
+<p>当然win8或者windows server 2012提供更多的可定制方法，这个可以参考MSDN上介绍。比如：SetDefaultDllDirectories、 AddDllDirectory、RemoveDllDirectory。</p>
+<p>4.为了测试计算机系统的dll 加载顺序可以通过一个程序加载一个不存在的dll,然后用process monitor 来监控加载的行为。</p>
+<pre><code>#include &lt;windows.h&gt;
+#include &lt;iostream&gt;
+
+int main(int argc, char ** argv)
+&#123;
+    using std::cout;
+    using std::endl;
+    
+    // 随便设置一个不存在的dll名
+    HMODULE hMod = LoadLibrary(&quot;123.dll&quot;);
+
+    if (NULL != hMod)
+        FreeLibrary(hMod);
+        
+    cout &lt;&lt; &quot;LoadLibrary Test&quot; &lt;&lt; endl;
+    
+    return 0;
+&#125;
+</code></pre>
+<p>5.通过process monitor 实际测试win10 64位发现加载顺序是<br>    •  应用程序所在目录<br>    • 系统目录（首先是c:\Windows\SysWOW64；然后是c:\Windows\System）<br>    • windows目录<br>    • 当前目录<br>    • 环境变量path目录</p>
+<p>二  dll 劫持</p>
+<p>&amp;emsp;&amp;emsp;由于输入表中只包含DLL名而没有它的路径名，因此加载程序必须在磁盘上搜索DLL文件。首先会尝试从当前程序所在的目录加载DLL，如果没找到，则在Windows系统目录中查找，最后是在环境变量中列出的各个目录下查找。利用这个特点，先伪造一个系统同名的DLL，提供同样的输出表，每个输出函数转向真正的系统DLL。程序调用系统DLL时会先调用当前目录下伪造的DLL，完成相关功能后，再跳到系统DLL同名函数里执行。这个过程用个形象的词来描述就是系统DLL被劫持（hijack）了。</p>
+<p>&amp;emsp;&amp;emsp;●DLL劫持的实现●<br>这一步我们的工作就是通过编程来实现一个LPK.DLL文件，它与系统目录下的LPK.DLL导出表相同，并能加载系统目录下的LPK.DLL，并且能将导出表转发到真实的LPK.DLL。可以看出我们要实现的这个DLL需求如下：</p>
+<ul>
+<li><p>1 、构造一个与系统目录下LPK.DLL一样的导出表；</p>
+</li>
+<li><p>2、加载系统目录下的LPK.DLL；</p>
+</li>
+<li><p>3、将导出函数转发到系统目录下的LPK.DLL上；</p>
+</li>
+<li><p>4、在初始化函数中加入我们要执行的代码。</p>
+</li>
+</ul>
+<p>我们使用VC++来进行开发，首先是定义导出函数。核心代码如下：</p>
+<pre><code>#pragma comment(linker, &quot;/EXPORT:LpkInitialize=_gamehacker_LpkInitialize,@1&quot;)
+#pragma comment(linker, &quot;/EXPORT:LpkTabbedTextOut=_gamehacker_LpkTabbedTextOut,@2&quot;)
+#pragma comment(linker, &quot;/EXPORT:LpkDllInitialize=_gamehacker_LpkDllInitialize,@3&quot;)
+#pragma comment(linker, &quot;/EXPORT:LpkDrawTextEx=_gamehacker_LpkDrawTextEx,@4&quot;)
+#pragma comment(linker, &quot;/EXPORT:LpkExtTextOut=_gamehacker_LpkExtTextOut,@6&quot;)
+#pragma comment(linker, &quot;/EXPORT:LpkGetCharacterPlacement=
+_gamehacker_LpkGetCharacterPlacement,@7&quot;)
+#pragma comment(linker, &quot;/EXPORT:LpkGetTextExtentExPoint=_gamehacker_LpkGetTextExtentExPoint,@8&quot;)
+#pragma comment(linker, &quot;/EXPORT:LpkPSMTextOut=_gamehacker_LpkPSMTextOut,@9&quot;)
+#pragma comment(linker, &quot;/EXPORT:LpkUseGDIWidthCache=_gamehacker_LpkUseGDIWidthCache,@10&quot;)
+#pragma comment(linker, &quot;/EXPORT:ftsWordBreak=_gamehacker_ftsWordBreak,@11&quot;)
+</code></pre>
+<p>以上是导出表中的函数，LPK.DLL比较特殊，在导入表中有一项不是函数是数据，因此数据这部分要单独处理。核心代码如下：</p>
+<pre><code>★
+EXTERNC void __cdecl gamehacker_LpkEditControl(void);   
+EXTERNC __declspec(dllexport) void (*LpkEditControl[14])() = &#123;gamehacker_LpkEditControl&#125;;  
+★
+</code></pre>
+<p>LpkEditControl这个数组有14个成员，如上定义即可，后面我们还需要将真正的数据复制过来。<br>加载系统目录下的LPK.DLL。核心代码如下：<br>    ★<br>     inline BOOL WINAPI Load()<br>     {<br>      TCHAR tzPath[MAX_PATH];<br>      TCHAR tzTemp[MAX_PATH * 2];<br>      <br>      GetSystemDirectory(tzPath, MAX_PATH);<br>      lstrcat(tzPath, TEXT(“\lpk”));<br>      m_hModule&#x3D;LoadLibrary(tzPath);  <br>      return (m_hModule !&#x3D; NULL); <br>     }<br>    ★<br>在代码中可以看到，使用LoadLibrary方式加载系统目录下的LPK.DLL。加载完成后就要实现导出函数的转发了，这步是很关键的。<br>首先要获得原函数地址。核心代码如下：</p>
+<pre><code>★
+ FARPROC WINAPI GetAddress(PCSTR pszProcName)
+ &#123;
+  FARPROC fpAddress;
+  CHAR szProcName[16];
+  TCHAR tzTemp[MAX_PATH];
+  
+  fpAddress = GetProcAddress(m_hModule, pszProcName);  
+  return fpAddress;
+ &#125;
+★
+</code></pre>
+<p>然后将我们构造的导出函数一一转发。核心代码如下：</p>
+<pre><code>★
+ALCDECL gamehacker_LpkInitialize(void)
+&#123;
+ GetAddress(&quot;LpkInitialize&quot;);
+ __asm JMP EAX;
+&#125;
+ALCDECL gamehacker_LpkTabbedTextOut(void)
+&#123;
+ GetAddress(&quot;LpkTabbedTextOut&quot;);
+ __asm JMP EAX;
+&#125;
+ALCDECL gamehacker_LpkDllInitialize(void)
+&#123;
+ GetAddress(&quot;LpkDllInitialize&quot;);
+ __asm JMP EAX;
+&#125;
+ALCDECL gamehacker_LpkDrawTextEx(void)
+&#123;
+ GetAddress(&quot;LpkDrawTextEx&quot;);
+ __asm JMP EAX;
+&#125;
+ALCDECL gamehacker_LpkEditControl(void)
+&#123;
+ GetAddress(&quot;LpkEditControl&quot;);
+ __asm jmp DWORD ptr [EAX];
+&#125;
+ALCDECL gamehacker_LpkExtTextOut(void)
+&#123;
+ GetAddress(&quot;LpkExtTextOut&quot;);
+ __asm JMP EAX;
+&#125;
+ALCDECL gamehacker_LpkGetCharacterPlacement(void)
+&#123;
+ GetAddress(&quot;LpkGetCharacterPlacement&quot;);
+ __asm JMP EAX;
+&#125;
+ALCDECL gamehacker_LpkGetTextExtentExPoint(void)
+&#123;
+ GetAddress(&quot;LpkGetTextExtentExPoint&quot;);
+ __asm JMP EAX;
+&#125;
+ALCDECL gamehacker_LpkPSMTextOut(void)
+&#123;
+ GetAddress(&quot;LpkPSMTextOut&quot;);
+ __asm JMP EAX;
+&#125;
+ALCDECL gamehacker_LpkUseGDIWidthCache(void)
+&#123;
+ GetAddress(&quot;LpkUseGDIWidthCache&quot;);
+ __asm JMP EAX;
+&#125;
+ALCDECL gamehacker_ftsWordBreak(void)
+&#123;
+ GetAddress(&quot;ftsWordBreak&quot;);
+ __asm JMP EAX;
+&#125;
+★
+</code></pre>
+<p>转发完之后不要忘记LpkEditControl哦，要将真实数据复制过来。核心代码如下：<br>★<br> memcpy((LPVOID)(LpkEditControl+1), (LPVOID)((int*)GetAddress(“LpkEditControl”) + 1),52);  <br>★<br>好了，到这里整个DLL劫持基本就算完成了，也许你要问，那我们要执行的代码写在哪里？我的方法是将其写到初始化函数中。这样当DLL被加载的时候就会执行。下面看一下DLL的入口函数吧。</p>
+<pre><code>★
+BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, PVOID pvReserved)
+&#123;
+ if (dwReason == DLL_PROCESS_ATTACH)
+ &#123;
+  DisableThreadLibraryCalls(hModule);
+  if(Load())
+  &#123;  
+   memcpy((LPVOID)(LpkEditControl+1), (LPVOID)((int*)GetAddress(&quot;LpkEditControl&quot;) + 1),52);  
+   _beginthread(Init,NULL,NULL);
+  &#125;
+  else
+   return FALSE;
+ &#125;
+ else if (dwReason == DLL_PROCESS_DETACH)
+ &#123;
+  Free();
+ &#125;
+ return TRUE;
+&#125;
+★
+</code></pre>
+<p>在这个函数中我们看到，当加载系统目录下的LPK.DLL成功后，进行了LpkEditControl数组的复制，并通过_beginthread(Init,NULL,NULL);定义了初始化函数Init，而这个初始化函数是由我们控制的。<br>下面在初始化函数Init中写入测试代码如下：</p>
+<pre><code>★
+void WINAPIV Init(LPVOID pParam);
+void WINAPIV Init(LPVOID pParam)
+&#123;
+ TCHAR tzPath[MAX_PATH];
+ TCHAR tzTemp[MAX_PATH * 2];
+  wsprintf(tzTemp, TEXT(&quot;劫持函数运行了.......&quot;), tzPath);
+   MessageBox(NULL, tzTemp, TEXT(&quot;gamehacker&quot;), MB_ICONSTOP);
+ return; 
+&#125; 
+★
+</code></pre>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="fengchuiguo 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="fengchuiguo 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>fengchuiguo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zwjsfdbb.top/2017/08/03/%E9%80%86%E5%90%91/dll%E5%8A%A0%E8%BD%BD%E5%92%8C%E5%8A%AB%E6%8C%81/" title="dll加载和劫持">http://zwjsfdbb.top/2017/08/03/逆向/dll加载和劫持/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"># 逆向</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/01/%E9%80%86%E5%90%91/%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84crackme/" rel="prev" title="一个简单的crackme">
+      <i class="fa fa-chevron-left"></i> 一个简单的crackme
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/06/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/netcat%E2%80%94%E5%8F%8D%E5%90%91shell/" rel="next" title="netcat-反向shell">
+      netcat-反向shell <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">fengchuiguo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fengchuiguo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ba624f1112450ac0437d',
+      clientSecret: '815911bc627d433d1f233c833883b96e335ea413',
+      repo        : 'hexo_discuss',
+      owner       : 'scuzhangzhang',
+      admin       : ['scuzhangzhang'],
+      id          : '3b625666c6838732d49846b11a13e413',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

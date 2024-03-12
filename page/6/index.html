@@ -183,7 +183,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/20/iptables/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E7%BC%96%E7%A8%8B/windows%20%E7%BC%96%E7%A8%8B%E8%8E%B7%E5%8F%96%E7%BD%91%E5%8D%A1%E5%92%8Cip/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -197,7 +197,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/10/20/iptables/" class="post-title-link" itemprop="url">iptables</a>
+            <a href="/2018/04/12/%E7%BC%96%E7%A8%8B/windows%20%E7%BC%96%E7%A8%8B%E8%8E%B7%E5%8F%96%E7%BD%91%E5%8D%A1%E5%92%8Cip/" class="post-title-link" itemprop="url">windows 编程获取网卡和ip</a>
         </h2>
 
         <div class="post-meta">
@@ -207,662 +207,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-10-20 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-20T00:00:00+08:00">2017-10-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>&amp;emsp;&amp;emsp;当主机收到一个数据包后，数据包先在内核空间中处理，若发现目的地址是自身，则传到用户空间中交给对应的应用程序处理，若发现目的不是自身，则会将包丢弃或进行转发。</p>
-<p>&amp;emsp;&amp;emsp;iptables实现防火墙功能的原理是：在数据包经过内核的过程中有五处关键地方，分别是PREROUTING、INPUT、OUTPUT、FORWARD、POSTROUTING，称为钩子函数，iptables这款用户空间的软件可以在这5处地方写规则，对经过的数据包进行处理，规则一般的定义为“如果数据包头符合这样的条件，就这样处理数据包”。</p>
-<p>&amp;emsp;&amp;emsp;iptables中定义有表，分别表示提供的功能，有filter表（实现包过滤）、nat表（实现网络地址转换）、mangle表（实现包修改）、raw表（实现数据跟踪），这些表具有一定的优先级：raw–&gt;mangle–&gt;nat–&gt;filter</p>
-<p><img src="https://i.imgur.com/Fl0nfg8.png"></p>
-<p><img src="https://i.imgur.com/OHQyUMC.png"></p>
-<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><p>&amp;emsp常用操作命令	说明</p>
-<p>-A	在指定链尾部添加规则</p>
-<p>-D	删除匹配的规则</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/20/iptables/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/10/16/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">双系统安装（win10+ubuntu）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1.我选择的 是win10加ubuntu双系统。</p>
-<p>2.准备工作</p>
-<pre><code>      U盘一个16g
-      win10系统
-      ubuntu系统
-</code></pre>
-<p>3.备份好硬盘数据以后，空出一个分区，然后制作一个PE盘，然后进PE删除这个分区，使其处于未分配的空间状态，用于安装ubuntu ,然后安装win10，这个就不用多说了，大家都会。</p>
-<p>4.安装结束以后，用大白菜iso装机方式，把ubuntu系统直接写入U盘，然后U盘其启动即可进入装机状态。</p>
-<p>其他的跟一般装ubuntu一样，在分区那个位置，选择其他方式，选择手动分区，然后选择刚刚那个未分配空间，一般可以分4个分区。&#x2F;boot 200M,swap分区视内存定,一般可以和内存一样大，然后剩下分&#x2F;，15g-20g左右，剩下的可以全部给&#x2F;home。引导驱动器选择&#x2F;boot,然后继续安装正常方式来装就好了。</p>
-<p>4.此时两个系统都安好了，但是此时还是默认win10启动，此时最重要的来了，下载一个叫EasyBCD的软件，选择添加新条目，然后选择Linux，然后名称，驱动器选择&#x2F;boot对应的就好了。此时重启你就会发现有两个候选操作系统了。</p>
-<p><img src="https://i.imgur.com/prFcTXH.png"></p>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/16/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/10/16/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96/" class="post-title-link" itemprop="url">对抗反汇编</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h5 id="方法总结如下："><a href="#方法总结如下：" class="headerlink" title="方法总结如下："></a>方法总结如下：</h5><h5 id="1、插入流氓字节，阻止真正的指令被反汇编"><a href="#1、插入流氓字节，阻止真正的指令被反汇编" class="headerlink" title="1、插入流氓字节，阻止真正的指令被反汇编"></a>1、插入流氓字节，阻止真正的指令被反汇编</h5><p>线性反汇编和面向代码流的反汇编：</p>
-<p>线性反汇编是遍历一个代码段，一次一条指令的线性反汇编，不考虑代码流的控制指令。而面向代码流的反汇编是会检查每一条指令。然后建立反汇编的地址列表，然后这样的反汇编算法会更加先进，而不易出错。比如：</p>
-<pre><code>    .text:00401035                 jz      short near ptr loc_401037+1
-    .text:00401037
-    .text:00401037 loc_401037:                             ; CODE XREF: .text:00401035j
-    .text:00401037                 call    near ptr 8B4C55C7h
-</code></pre>
-<p>观察以上的汇编代码，你会发现jz跳转到了call 指令中间，这显然是不可能的，所以call指令一定是一个数据而不是代码，在此处按d键，然后再观察</p>
-<blockquote>
-<pre><code>.text:00401035                 jz      short loc_401038
-</code></pre>
-<p>   .text:00401035 ; —————————————————————————<br>            .text:00401037                 db 0E8h<br>        .text:00401038 ; —————————————————————————<br>        .text:00401038<br>        .text:00401038 loc_401038:                             ; CODE XREF: .text:00401035j<br>        .text:00401038                 mov     eax, [ebp+0Ch]</p>
-</blockquote>
-<p>这样显然很正确了，对于call 指令而言，如果后面四个字节跟的是地址，它对应的机器码是0xe8，此处显然是把数据0xe8当成了call指令，才会出现这样的问题。</p>
-<h5 id="2、固定条件的跳转指令"><a href="#2、固定条件的跳转指令" class="headerlink" title="2、固定条件的跳转指令"></a>2、固定条件的跳转指令</h5><pre><code>                               xor     eax, eax
-.text:00401035                 jz      short loc_401038
-</code></pre>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/16/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E9%87%8D%E5%AE%9A%E5%90%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/10/16/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E9%87%8D%E5%AE%9A%E5%90%91/" class="post-title-link" itemprop="url">恶意代码重定向</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>&amp;emsp;1.首先用strings查看字符串，发现<a target="_blank" rel="noopener" href="http://www.practicalmalwareanalysis.com/start.htm%EF%BC%8CUser-Agent%E5%AD%97%E6%A0%B7%EF%BC%8C%E4%BB%A5%E5%8F%8AC:/autobat.exe%EF%BC%8C%E7%96%91%E4%BC%BC%E7%BC%96%E7%A0%81%E7%94%A8%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%9A">http://www.practicalmalwareanalysis.com/start.htm，User-Agent字样，以及C:\autobat.exe，疑似编码用的字符串：</a></p>
-<pre><code>/abcdefghijklmnopqrstuvwxyz0123456789:.以及CreateFile，CreateProcessA，
-InternetReadFile
-InternetCloseHandle
-InternetOpenUrlA
-InternetOpenA
-WININET.dll
-URLDownloadToCacheFileA 
-</code></pre>
-<p>&amp;emsp;&amp;emsp;显式调用高层API COM接口，以及Wininet 接口函数。<br><img src="https://i.imgur.com/qDJ4DI5.png"><br>这些函数，这些都是重要信息需要关注的。</p>
-<p>&amp;emsp;&amp;emsp;2.IDA加载程序分析，首先是401457函数，调用了CreateFileA和ReadFile函数，具体分析发现是打开’C:\autobat.exe’,失败了调用函数，分析可知是把’<a target="_blank" rel="noopener" href="http://www.practicalmalwareanalysis.com/start.htm',0%E5%86%99%E5%85%A5%E6%96%87%E4%BB%B6C:/autobat.exe%EF%BC%8C%E9%87%8D%E5%91%BD%E5%90%8D%E8%AF%A5%E5%87%BD%E6%95%B0%E4%B8%BAwrite_url,%E7%84%B6%E5%90%8E%E5%86%8D%E6%AC%A1%E8%B0%83%E7%94%A8401457%E5%87%BD%E6%95%B0%EF%BC%8C%E5%88%86%E6%9E%90%E5%8F%AF%E5%BE%97%E6%98%AF%E6%8A%8A%E8%AF%A5%E7%BD%91%E5%9D%80%E8%AF%BB%E5%88%B0%E7%BC%93%E5%86%B2%E5%8C%BAipbuffer,%E5%91%BD%E5%90%8D%E8%AF%A5%E5%87%BD%E6%95%B0%E4%B8%BAread_url,%E8%BF%94%E5%9B%9E%E5%80%BC%E4%B8%BA1%EF%BC%8C%E7%84%B6%E5%90%8E%E6%8E%A5%E4%B8%8B%E6%9D%A5%E8%B0%83%E7%94%A84011f3%E5%87%BD%E6%95%B0%EF%BC%8C%E9%A6%96%E5%85%88%E6%98%AF%E5%9C%A8szagent%E5%9C%B0%E5%9D%80%E5%AD%98%E6%94%BE%E7%A1%AC%E7%BC%96%E7%A0%81%E7%9A%84%E5%A4%B4%E9%83%A8%E4%BF%A1%E6%81%AF%EF%BC%8C%E4%BD%86%E6%98%AF%E9%94%99%E8%AF%AF%E7%9A%84%E5%A4%9A%E5%86%99%E4%BA%86User-Agent%EF%BC%9A%E8%BF%99%E6%A0%B7%E4%BC%9A%E5%AF%BC%E8%87%B4%E5%AE%9E%E9%99%85%E5%BE%97%E5%88%B0%E7%9A%84%E5%A4%B4%E9%83%A8%E4%BC%9A%E5%87%BA%E7%8E%B0User-Agent:User-Agent:%E7%9A%84%E6%83%85%E5%86%B5%E3%80%82%E7%84%B6%E5%90%8E%E4%B8%8B%E9%9D%A2%E6%98%AFInternetOpenA%E5%92%8CInternetOpenUrlA%E5%87%BD%E6%95%B0%E6%89%93%E5%BC%80http://www.practicalmalwareanalysis.com/start.htm%EF%BC%8C%E6%89%93%E5%BC%80%E6%88%90%E5%8A%9F%E5%90%8EInternetReadFile%E8%AF%BB%E5%8F%96%E9%A1%B5%E9%9D%A2%E4%BF%A1%E6%81%AF%EF%BC%8C">http://www.practicalmalwareanalysis.com/start.htm&#39;,0写入文件C:\autobat.exe，重命名该函数为write_url,然后再次调用401457函数，分析可得是把该网址读到缓冲区ipbuffer,命名该函数为read_url,返回值为1，然后接下来调用4011f3函数，首先是在szagent地址存放硬编码的头部信息，但是错误的多写了User-Agent：这样会导致实际得到的头部会出现User-Agent:User-Agent:的情况。然后下面是InternetOpenA和InternetOpenUrlA函数打开http://www.practicalmalwareanalysis.com/start.htm，打开成功后InternetReadFile读取页面信息，</a> 首先搜索&lt;no’字符串，然后调用401000函数，</p>
-<p><img src="https://i.imgur.com/ht0pUfZ.png"></p>
-<p>&amp;emsp;&amp;emsp;进去分析发现是对&lt;noscript标签的不规则比较，然后对判断是否后面会有<a target="_blank" rel="noopener" href="http://www.practicalmalwareanalysis.com,然后找到“96”的位置结束,然后把v7地址存放的内容赋到a3地址./">http://www.practicalmalwareanalysis.com，然后找到“96”的位置结束，然后把v7地址存放的内容赋到a3地址。</a></p>
-<p><img src="https://i.imgur.com/akX3WUw.png"></p>
-<p>&amp;emsp;&amp;emsp;函数401000成功返回1，然后4011f3也返回1，最后执行401684函数，函数有两个参数，一个是刚刚的a3，另一个是v6的地址。v6&#x3D;1,打开401684函数进行分析，是现实strtok函数，把字符串分为两部分，分别赋给两变量，然后是个case语句，当发现首字母为d时，执行401565函数，分析401565函数，首先是401147函数初步分析发现是个解码函数，然后后面是URLDownloadToCacheFileA，CreateProcessA函数，是把下载的程序运行起来。首字母为n时，v6置1，首字母为s时，sleep特定的时间，首字母为r时，运行401651函数，进去函数进行分析，发现又是刚刚那个解码函数401147，然后再次调用write_url函数，由此可以知道应该是个url重定向。到此整个样本就已经分析结束了。</p>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/16/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E9%87%8D%E5%AE%9A%E5%90%91/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/10/16/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/" class="post-title-link" itemprop="url">树莓派透明代理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1.安装vim</p>
-<p>连网之后，首先安装vim,便于后面的配置文件的编写。</p>
-<pre><code> sudo apt-get install vim
-</code></pre>
-<p>2.静态ip  </p>
-<p>图形界面貌似会失败，建议在配置文件里改：</p>
-<pre><code>sudo vim /etc/dhcpcd.conf
-</code></pre>
-<p>填写以下内容</p>
-<pre><code>interface eth0
-
-static ip_address=ip
-
-static routers=网关
-
-static domain_name_servers=223.5.5.5
-</code></pre>
-<p>3.配置路由转发：</p>
-<pre><code>sudo vim  /etc/sysctl.conf
-</code></pre>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/16/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/09/16/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/09/16/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/" class="post-title-link" itemprop="url">dll注入之APC注入</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-09-16T00:00:00+08:00">2017-09-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>APC注入的原理是利用当线程被唤醒时APC中的注册函数会被执行的机制，并以此去执行我们的DLL加载代码，进而完成DLL注入的目的，其具体流程如下：</p>
-<p>    1）当EXE里某个线程执行到SleepEx()或者WaitForSingleObjectEx()时，系统就会产生一个软中断（或者是Messagebox弹窗的时候不点OK的时候也能注入）。</p>
-<p>    2）当线程再次被唤醒时，此线程会首先执行APC队列中的被注册的函数。</p>
-<p>    3）利用QueueUserAPC()这个API可以在软中断时向线程的APC队列插入一个函数指针，如果我们插入的是Loadlibrary()执行函数的话，就能达到注入DLL的目的。<br>程序如下:</p>
-<pre><code>// TESTAPC2.cpp : 定义控制台应用程序的入口点。
-//
-
-#include &quot;stdafx.h&quot;
-#include &lt;string&gt;
-#include&lt;windows.h&gt;
-#include&lt;shlwapi.h&gt;
-#include&lt;tlhelp32.h&gt;
-#include&lt;winternl.h&gt;
-#pragma comment(lib,&quot;shlwapi.lib&quot;)
-#pragma comment(lib,&quot;ntdll.lib&quot;)
-using namespace std;
-//根据进程名获取PID
-DWORD GetPidFormName(wstring wsProcessname)
-&#123;
-    HANDLE hSnaoshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if (hSnaoshot == INVALID_HANDLE_VALUE)
-    &#123;
-        return false;
-    &#125;
-    PROCESSENTRY32W pe = &#123; sizeof(pe) &#125;;
-    BOOL bok;
-    for (bok = Process32FirstW(hSnaoshot, &amp;pe); bok; bok = Process32NextW(hSnaoshot,&amp;pe))
-    &#123;
-        wstring wsNowProcName = pe.szExeFile;
-        if (StrStrI(wsNowProcName.c_str(), wsProcessname.c_str()) != NULL)
-        &#123;
-            CloseHandle(hSnaoshot);
-            return pe.th32ProcessID;
-        &#125;
-    &#125;
-    CloseHandle(hSnaoshot);
-    return 0;
-&#125;
-//dll 文件注入到进程wsProcessname
-BOOL Injection_APC(const wstring &amp;wsProcessname, const WCHAR wcCacheInDllPath[])
-&#123;
-    DWORD dwProcessId = GetPidFormName(wsProcessname);
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwProcessId);
-    if (!hProcess)
-    &#123;
-        return FALSE;
-    &#125;
-    PVOID lpData = VirtualAllocEx(hProcess, NULL, 1024, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-    DWORD dwRet;
-    if (lpData)
-    &#123;
-        //在远程进程申请空间写入待注入dll 的路径
-        WriteProcessMemory(hProcess, lpData, (LPVOID)wcCacheInDllPath,MAX_PATH, &amp;dwRet);
-        CloseHandle(hProcess);
-    &#125;
-    //开始注入
-    THREADENTRY32 te = &#123; sizeof(te) &#125;;
-    HANDLE handleSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);//遍历系统中所有线程
-    if (handleSnap == INVALID_HANDLE_VALUE)
-    &#123;
-        return false;
-    &#125;
-    bool bstat = false;
-    if (Thread32First(handleSnap, &amp;te))
-    &#123;
-        do &#123;
-            if (te.th32OwnerProcessID == dwProcessId)
-            &#123;
-                HANDLE handleThread = OpenThread(THREAD_ALL_ACCESS, FALSE, te.th32ThreadID);
-                if (handleThread)
-                &#123;
-                    DWORD dwRet = QueueUserAPC((PAPCFUNC)LoadLibraryW, handleThread, (ULONG_PTR)lpData);
-                &#125;
-                if (dwRet &gt; 0)
-                &#123;
-                    bstat = TRUE;
-                &#125;
-                CloseHandle(handleThread);
-            &#125;
-        &#125; while (Thread32Next(handleSnap, &amp;te));
-        CloseHandle(handleSnap);
-        return bstat;
-    &#125;
-
-    &#125;
-    int main()
-    &#123;
-        Injection_APC(L&quot;testapc.exe&quot;, L&quot;testapcdll.dll&quot;);
-        return 0;
-    &#125;
-</code></pre>
-<p>测试exe程序：</p>
-<pre><code>    #include&lt;windows.h&gt;
-    int main()
-    &#123;
-        MessageBox(NULL, L&quot;start&quot;, L&quot;tit&quot;, MB_OK);
-        SleepEx(1000 * 60 * 5, true);
-        MessageBox(NULL, L&quot;end&quot;, L&quot;tit&quot;, MB_OK);
-        Sleep(-1);
-    &#125;
-</code></pre>
-<p>测试dll 程序：</p>
-<pre><code>#include&lt;windows.h&gt;
-#include&quot;dll.h&quot;
-BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, void* lpReserved)
-&#123;
-    switch (dwReason)
-    &#123;
-        // 动态链接库映射到某个进程的地址空间
-    case DLL_PROCESS_ATTACH:
-        MessageBox(NULL, L&quot;in apc ok~&quot;, L&quot;tit&quot;, MB_OK);
-        /**
-        * 当DLL刚被加载时触发（LoadLibrary），此处专门用来做初始化工作，
-        * 如果初始化失败可以返回 false 这样DLL就不会被继续加载了
-        **/
-        break;
-
-        // 应用程序创建新的线程
-    case DLL_THREAD_ATTACH:
-
-        break;
-
-        // 应用程序某个线程正常终止
-    case DLL_THREAD_DETACH:
-
-        break;
-
-        // 动态链接库将被卸载
-    case DLL_PROCESS_DETACH:
-        /**
-        * 当DLL将要被卸载时触发（FreeLibrary）,此处专门用来做清理工作
-        * 如关闭文件，释放内存空间等
-        **/
-        break;
-    &#125;
-    return 1;
-&#125;
-/*
-void helloDLL(void)
-&#123;
-//MessageBox(NULL, TEXT(&quot;Hello DLL~&quot;), TEXT(&quot;Title&quot;), MB_OK);
-&#125;*/
-</code></pre>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/09/16/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/09/14/vs%E9%94%99%E8%AF%AF%E9%9B%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/09/14/vs%E9%94%99%E8%AF%AF%E9%9B%86/" class="post-title-link" itemprop="url">VS错误集</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2017-09-14T00:00:00+08:00">2017-09-14</time>
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -885,32 +230,152 @@ void helloDLL(void)
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>一 .无法解析的外部符号 _main，该符号在函数 “int __cdecl invoke_main(void)” (?invoke_main@@YAHXZ) 中被引用window	F:\c\window\window\MSVCRTD.lib(exe_main.obj)	</p>
-<p>&amp;emsp;&amp;emsp;原因是c语言程序找不到适当的入口程序函数	<br>般情况下，</p>
-<p>&amp;emsp;&amp;emsp;如果是windows程序，那么WinMain是入口函数，在VS2017中新建项目为“win32项目”</p>
-<p>&amp;emsp;&amp;emsp;如果是dos控制台程序，那么main是入口函数，在VS2017中新建项目为“win32控制台应用程序”而如果入口函数指定不当，很显然c语言运行时找不到配合函数，它就会报告错误。修改设置适应你的需求</p>
-<p>&amp;emsp;&amp;emsp;如果是windows程序：</p>
-<ul>
-<li><p>1.菜单中选择 工程-&gt;属性, 弹出属性窗口</p>
-</li>
-<li><p>2.在左边栏中依次选择：配置属性-&gt;C&#x2F;C++-&gt;预处理器,然后在右边栏的预处理器定义对应的项中删除_CONSOLE, 添加_WINDOWS.</p>
-</li>
-<li><p>3.在左边栏中依次选择：配置属性-&gt;链接器-&gt;系统,然后在右边栏的SubSystem对应的项改为Windows(&#x2F;SUBSYSTEM:WINDOWS)<br>如果是控制台程序：</p>
-</li>
-<li><p>1.菜单中选择 工程-&gt;属性, 弹出弹出属性窗口</p>
-</li>
-<li><p>2.在左边栏中依次选择：配置属性-&gt;C&#x2F;C++-&gt;预处理器,然后在右边栏的预处理器定义对应的项中删除_WINDOWS, 添加_CONSOLE.</p>
-</li>
-<li><p>3.在左边栏中依次选择：配置属性-&gt;链接器-&gt;系统,然后在右边栏的SubSystem对应的项改为CONSOLE(&#x2F;SUBSYSTEM:CONSOLE)</p>
-</li>
-</ul>
-<p>二  vs2015丢失msvcp140.dll 无法运行程序</p>
-<p>1.可以选择静态编译</p>
-<p><img src="https://i.imgur.com/hetjIa8.png"></p>
-<p>初始状态是这样的</p>
+          <p>一台机器上可能不只有一个网卡，但每一个网卡只有一个MAC地址，而每一个网卡可能配置有多个IP地址；如平常的笔记本电脑中，就会有无线网卡和有线网卡（网线接口）两种；因此，如果要获得本机所有网卡的IP和MAC地址信息，则必须顺序获得每个网卡，再依次获取其信息等；在windows sdk中，用IP_ADAPTER_INFO结构体存储网卡信息，包括网卡名、网卡描述、网卡MAC地址、网卡IP等，该结构体的主要描述如下所示：</p>
+<pre><code>            typedef struct _IP_ADAPTER_INFO &#123;
+            struct _IP_ADAPTER_INFO* Next;//指向链表中下一个适配器信息的指针
+            DWORD ComboIndex;//预留值
+            char AdapterName[MAX_ADAPTER_NAME_LENGTH + 4];//使用ANSI字符串表示的适配器名称
+            char Description[MAX_ADAPTER_DESCRIPTION_LENGTH + 4];//使用ANSI字符串表示的适配器描述
+            UINT AddressLength;//适配器硬件地址以字节计算的长度
+            BYTE Address[MAX_ADAPTER_ADDRESS_LENGTH];//硬件地址以BYTE数组所表示
+            DWORD Index;//适配器索引
+                    UINT Type;//适配器类型,主要有以下几种：
+                    /*
+                    *   MIB_IF_TYPE_OTHER     1
+                    *   MIB_IF_TYPE_ETHERNET     6
+                    *   MIB_IF_TYPE_TOKENRING     9
+                    *   MIB_IF_TYPE_FDDI     15
+                    *   MIB_IF_TYPE_PPP     23
+                    *   MIB_IF_TYPE_LOOPBACK      24
+                    *   MIB_IF_TYPE_SLIP      28
+                    */
+            UINT DhcpEnabled;//指定这个适配器是否开启DHCP
+            PIP_ADDR_STRING CurrentIpAddress;//预留值
+            IP_ADDR_STRING IpAddressList;//该适配器的IPv4地址链表
+            IP_ADDR_STRING GatewayList;//该适配器的网关IPv4地址链表
+            IP_ADDR_STRING DhcpServer;//该适配器的DHCP服务器的IPv4 地址链表
+            BOOL HaveWins;
+            IP_ADDR_STRING PrimaryWinsServer;
+            IP_ADDR_STRING SecondaryWinsServer;
+            time_t LeaseObtained;
+            time_t LeaseExpires;
+            &#125; IP_ADAPTER_INFO,*PIP_ADAPTER_INFO;
+
+由于可能有多个网卡，因此struct _IP_ADAPTER_INFO* Next字段为一个链表结构指针，由于一个网卡可能有多个IP，因此IP_ADDR_STRING字段应该也是一个链表结构，其信息如下所示：
+
+    typedef struct _IP_ADDR_STRING
+    &#123;
+            struct _IP_ADDR_STRING* Next;  //指向同类型节点，即下一个IP（如果有多IP的话）
+            IP_ADDRESS_STRING IpAddress;  //IP地址信息
+            IP_MASK_STRING IpMask; //IP子网掩码
+            DWORD Context;// 网络表入口。这个值对应着AddIPAddredd和DeleteIPAddress函数中的NTEContext参数
+    &#125; IP_ADDR_STRING;
+</code></pre>
+<p>在基本了解以上信息后，就可以调用GetAdaptersInfo函数来获取相关网卡信息了，其通用的代码如下所示：</p>
+<pre><code>                    #include &lt;WinSock2.h&gt;
+                    #include &lt;Iphlpapi.h&gt;
+                    #include &lt;iostream&gt;
+                    using namespace std;
+                    #pragma comment(lib,&quot;Iphlpapi.lib&quot;) //需要添加Iphlpapi.lib库
+                    int main(int argc, char* argv[])
+                    &#123;
+                            //PIP_ADAPTER_INFO结构体指针存储本机网卡信息
+                            PIP_ADAPTER_INFO pIpAdapterInfo = new IP_ADAPTER_INFO();
+                            //得到结构体大小,用于GetAdaptersInfo参数
+                            unsigned long stSize = sizeof(IP_ADAPTER_INFO);
+                            //调用GetAdaptersInfo函数,填充pIpAdapterInfo指针变量;其中stSize参数既是一个输入量也是一个输出量
+                            int nRel = GetAdaptersInfo(pIpAdapterInfo,&amp;stSize);
+                            //记录网卡数量
+                            int netCardNum = 0;
+                            //记录每张网卡上的IP地址数量
+                            int IPnumPerNetCard = 0;
+                            if (ERROR_BUFFER_OVERFLOW == nRel)
+                            &#123;
+                                    //如果函数返回的是ERROR_BUFFER_OVERFLOW
+                                    //则说明GetAdaptersInfo参数传递的内存空间不够,同时其传出stSize,表示需要的空间大小
+                                    //这也是说明为什么stSize既是一个输入量也是一个输出量
+                                    //释放原来的内存空间
+                                    delete pIpAdapterInfo;
+                                    //重新申请内存空间用来存储所有网卡信息
+                                    pIpAdapterInfo = (PIP_ADAPTER_INFO)new BYTE[stSize];
+                                    //再次调用GetAdaptersInfo函数,填充pIpAdapterInfo指针变量
+                                    nRel=GetAdaptersInfo(pIpAdapterInfo,&amp;stSize);    
+                            &#125;
+                            if (ERROR_SUCCESS == nRel)
+                            &#123;
+                                    //输出网卡信息
+                                    //可能有多网卡,因此通过循环去判断
+                            while (pIpAdapterInfo)
+                            &#123;
+                                    cout&lt;&lt;&quot;网卡数量：&quot;&lt;&lt;++netCardNum&lt;&lt;endl;
+                                    cout&lt;&lt;&quot;网卡名称：&quot;&lt;&lt;pIpAdapterInfo-&gt;AdapterName&lt;&lt;endl;
+                                    cout&lt;&lt;&quot;网卡描述：&quot;&lt;&lt;pIpAdapterInfo-&gt;Description&lt;&lt;endl;
+                                    switch(pIpAdapterInfo-&gt;Type)
+                                    &#123;
+                                    case MIB_IF_TYPE_OTHER:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;OTHER&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_ETHERNET:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;ETHERNET&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_TOKENRING:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;TOKENRING&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_FDDI:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;FDDI&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_PPP:
+                                            printf(&quot;PP\n&quot;);
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;PPP&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_LOOPBACK:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;LOOPBACK&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_SLIP:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;SLIP&quot;&lt;&lt;endl;
+                                            break;
+                                    default:
+                    break;
+                                    &#125;
+                                    cout&lt;&lt;&quot;网卡MAC地址：&quot;;
+                                    for (DWORD i = 0; i &lt; pIpAdapterInfo-&gt;AddressLength; i++)
+                                            if (i &lt; pIpAdapterInfo-&gt;AddressLength-1)
+                                            &#123;
+                                                    printf(&quot;%02X-&quot;, pIpAdapterInfo-&gt;Address[i]);
+                                            &#125;
+                                            else
+                                            &#123;
+                                                    printf(&quot;%02X\n&quot;, pIpAdapterInfo-&gt;Address[i]);
+                                            &#125;
+                                            cout&lt;&lt;&quot;网卡IP地址如下：&quot;&lt;&lt;endl;
+                                            //可能网卡有多IP,因此通过循环去判断
+                                            IP_ADDR_STRING *pIpAddrString =&amp;(pIpAdapterInfo-&gt;IpAddressList);
+                                            do 
+                                            &#123;
+                                                    cout&lt;&lt;&quot;该网卡上的IP数量：&quot;&lt;&lt;++IPnumPerNetCard&lt;&lt;endl;
+                                                    cout&lt;&lt;&quot;IP 地址：&quot;&lt;&lt;pIpAddrString-&gt;IpAddress.String&lt;&lt;endl;
+                                                    cout&lt;&lt;&quot;子网地址：&quot;&lt;&lt;pIpAddrString-&gt;IpMask.String&lt;&lt;endl;
+                                                    cout&lt;&lt;&quot;网关地址：&quot;&lt;&lt;pIpAdapterInfo-&gt;GatewayList.IpAddress.String&lt;&lt;endl;
+                                                    pIpAddrString=pIpAddrString-&gt;Next;
+                                            &#125; while (pIpAddrString);
+                                            pIpAdapterInfo = pIpAdapterInfo-&gt;Next;
+                                            cout&lt;&lt;&quot;--------------------------------------------------------------------&quot;&lt;&lt;endl;
+                            &#125;
+                            
+                            &#125;
+                            //释放内存空间
+                            if (pIpAdapterInfo)
+                            &#123;
+                                    delete pIpAdapterInfo;
+                            &#125;
+                    
+                            return 0;
+                    &#125;
+</code></pre>
+
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/09/14/vs%E9%94%99%E8%AF%AF%E9%9B%86/#more" rel="contents">
+              <a class="btn" href="/2018/04/12/%E7%BC%96%E7%A8%8B/windows%20%E7%BC%96%E7%A8%8B%E8%8E%B7%E5%8F%96%E7%BD%91%E5%8D%A1%E5%92%8Cip/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -934,7 +399,7 @@ void helloDLL(void)
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/09/13/sublime%E4%B9%B1%E7%A0%81%E5%A4%84%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%881%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -948,7 +413,7 @@ void helloDLL(void)
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/09/13/sublime%E4%B9%B1%E7%A0%81%E5%A4%84%E7%90%86/" class="post-title-link" itemprop="url">sublime中文乱码处理</a>
+            <a href="/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%881%EF%BC%89/" class="post-title-link" itemprop="url">获取打开文件的全路径（1）</a>
         </h2>
 
         <div class="post-meta">
@@ -958,7 +423,445 @@ void helloDLL(void)
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-09-13 00:00:00" itemprop="dateCreated datePublished" datetime="2017-09-13T00:00:00+08:00">2017-09-13</time>
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="1、获取打开文件的全路径（1）"><a href="#1、获取打开文件的全路径（1）" class="headerlink" title="1、获取打开文件的全路径（1）"></a>1、获取打开文件的全路径（1）</h4><p>方法：获取进程PEB中的命令行参数信息（问题：如果先打开文件比如word.exe再打开文件，会出现获取不到的情况）<br>步骤：</p>
+<ul>
+<li><h5 id="遍历进程获取打开文件的可执行文件的进程"><a href="#遍历进程获取打开文件的可执行文件的进程" class="headerlink" title="遍历进程获取打开文件的可执行文件的进程"></a>遍历进程获取打开文件的可执行文件的进程</h5><p>  HANDLE hSnapProcess &#x3D; CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);<br>  if (hSnapProcess &#x3D;&#x3D; INVALID_HANDLE_VALUE)<br>  {<br>  return;<br>  }<br>  PROCESSENTRY32W ProcessEntry;<br>  ProcessEntry.dwSize &#x3D; sizeof(ProcessEntry);<br>  BOOL bret &#x3D; Process32FirstW(hSnapProcess, &amp;ProcessEntry);<br>  WCHAR wszProcessInfo[MAX_PATH] &#x3D; { 0 };</p>
+<p>  do<br>  {<br>  WCHAR Name[MAX_PATH] &#x3D; { 0 };<br><br>  if (!lstrcmp(ProcessEntry.szExeFile, L”POWERPNT.EXE”)| !lstrcmp(ProcessEntry.szExeFile, L”WINWORD.EXE”))<br>  {<br>      HANDLE hProcess &#x3D; OpenProcess(PROCESS_ALL_ACCESS, false, ProcessEntry.th32ProcessID);<br>      do something<br>      CloseHandle(hProcess);<br><br>  }<br>  } while (Process32NextW(hSnapProcess, &amp;ProcessEntry));</p>
+</li>
+<li><h5 id="利用ntdll-dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory-函数原型如下："><a href="#利用ntdll-dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory-函数原型如下：" class="headerlink" title="利用ntdll.dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory,函数原型如下："></a>利用ntdll.dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory,函数原型如下：</h5><p> NTSTATUS WINAPI NtQueryInformationProcess(<br>   <em>In</em>      HANDLE           ProcessHandle,<br>   <em>In</em>      PROCESSINFOCLASS ProcessInformationClass,<br>   <em>Out</em>     PVOID            ProcessInformation,<br>   <em>In</em>      ULONG            ProcessInformationLength,<br>   <em>Out_opt</em> PULONG           ReturnLength<br> );</p>
+</li>
+</ul>
+<p>第一个参数是进程句柄，第二个参数是获取的进程的信息类型，这里我们选择ProcessBasicInformation,<br>msdn 的声明如下，会返回一个PEB结构体。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230704222649697.png" alt="image-20230704222649697"></p>
+<p>第三个参数是输出参数，当参数2是ProcessBasicInformation时，会返回一个<br>PROCESS_BASIC_INFORMATION 结构，结构如下，</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230704222723161.png" alt="image-20230704222723161"></p>
+<pre><code>status = NtQueryInformationProcess(hProcess,
+                ProcessBasicInformation,
+                &amp;pbi,
+                sizeof(PROCESS_BASIC_INFORMATION),
+                &amp;ReturnLength);
+</code></pre>
+<ul>
+<li><h5 id="获取到PROCESS-BASIC-INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，"><a href="#获取到PROCESS-BASIC-INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，" class="headerlink" title="获取到PROCESS_BASIC_INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，"></a>获取到PROCESS_BASIC_INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，</h5><p>   ReadProcessMemory(hProcess, pbi.PebBaseAddress, &amp;peb, sizeof(PEB), 0)  ReadProcessMemory的函数原型如下：</p>
+<p>   BOOL WINAPI ReadProcessMemory(<br> <em>In</em>  HANDLE  hProcess,<br> <em>In</em>  LPCVOID lpBaseAddress,<br> <em>Out</em> LPVOID  lpBuffer,<br> <em>In</em>  SIZE_T  nSize,<br> <em>Out</em> SIZE_T  *lpNumberOfBytesRead<br>   );</p>
+</li>
+<li><h5 id="通过ReadProcessMemory-获取进程的PEB以后，PEB的结构如下："><a href="#通过ReadProcessMemory-获取进程的PEB以后，PEB的结构如下：" class="headerlink" title="通过ReadProcessMemory 获取进程的PEB以后，PEB的结构如下："></a>通过ReadProcessMemory 获取进程的PEB以后，PEB的结构如下：</h5><p>  typedef struct _PEB {<br>  BOOLEAN                 InheritedAddressSpace;<br>  BOOLEAN                 ReadImageFileExecOptions;<br>  BOOLEAN                 BeingDebugged;<br>  BOOLEAN                 Spare;<br>  HANDLE                  Mutant;<br>  PVOID                   ImageBaseAddress;<br>  PPEB_LDR_DATA           LoaderData;<br>  PRTL_USER_PROCESS_PARAMETERS ProcessParameters;<br>  PVOID                   SubSystemData;<br>  PVOID                   ProcessHeap;<br>  PVOID                   FastPebLock;<br>  PPEBLOCKROUTINE         FastPebLockRoutine;<br>  PPEBLOCKROUTINE         FastPebUnlockRoutine;<br>  ULONG                   EnvironmentUpdateCount;<br>  PVOID*                  KernelCallbackTable;<br>  PVOID                   EventLogSection;<br>  PVOID                   EventLog;<br>  PPEB_FREE_BLOCK         FreeList;<br>  ULONG                   TlsExpansionCounter;<br>  PVOID                   TlsBitmap;<br>  ULONG                   TlsBitmapBits[0x2];<br>  PVOID                   ReadOnlySharedMemoryBase;<br>  PVOID                   ReadOnlySharedMemoryHeap;<br>  PVOID*                  ReadOnlyStaticServerData;<br>  PVOID                   AnsiCodePageData;<br>  PVOID                   OemCodePageData;<br>  PVOID                   UnicodeCaseTableData;<br>  ULONG                   NumberOfProcessors;<br>  ULONG                   NtGlobalFlag;<br>  BYTE                    Spare2[0x4];<br>  LARGE_INTEGER           CriticalSectionTimeout;<br>  ULONG                   HeapSegmentReserve;<br>  ULONG                   HeapSegmentCommit;<br>  ULONG                   HeapDeCommitTotalFreeThreshold;<br>  ULONG                   HeapDeCommitFreeBlockThreshold;<br>  ULONG                   NumberOfHeaps;<br>  ULONG                   MaximumNumberOfHeaps;<br>  PVOID*                  *ProcessHeaps;<br>  PVOID                   GdiSharedHandleTable;<br>  PVOID                   ProcessStarterHelper;<br>  PVOID                   GdiDCAttributeList;<br>  PVOID                   LoaderLock;<br>  ULONG                   OSMajorVersion;<br>  ULONG                   OSMinorVersion;<br>  ULONG                   OSBuildNumber;<br>  ULONG                   OSPlatformId;<br>  ULONG                   ImageSubSystem;<br>  ULONG                   ImageSubSystemMajorVersion;<br>  ULONG                   ImageSubSystemMinorVersion;<br>  ULONG                   GdiHandleBuffer[0x22];<br>  ULONG                   PostProcessInitRoutine;<br>  ULONG                   TlsExpansionBitmap;<br>  BYTE                    TlsExpansionBitmapBits[0x80];<br>  ULONG                   SessionId;<br>  } PEB, *PPEB;</p>
+</li>
+</ul>
+<p>如图标红位置为进程的参数信息，再次调用ReadProcessMemory  获取参数信息，<br>ReadProcessMemory(hProcess, peb.ProcessParameters, &amp;upps, sizeof(RTL_USER_PROCESS_PARAMETERS), 0))<br> 其中upps是一个RTL_USER_PROCESS_PARAMETERS 的结构体，定义如下：<br>    typedef struct _RTL_USER_PROCESS_PARAMETERS<br>    {<br>        ULONG MaximumLength;<br>        ULONG Length;</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%881%EF%BC%89/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%882)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%882)/" class="post-title-link" itemprop="url">获取打开的文件的全路径（2）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="1、获取打开文件的全路径（2）"><a href="#1、获取打开文件的全路径（2）" class="headerlink" title="1、获取打开文件的全路径（2）"></a>1、获取打开文件的全路径（2）</h4><p>搜索进程空间中的所有句柄，获取句柄的文件名即可。</p>
+<ul>
+<li><h5 id="首先遍历进程寻找打开文件的进程，比如-word-exe-和PowerPoint-exe"><a href="#首先遍历进程寻找打开文件的进程，比如-word-exe-和PowerPoint-exe" class="headerlink" title="首先遍历进程寻找打开文件的进程，比如 word.exe 和PowerPoint.exe"></a>首先遍历进程寻找打开文件的进程，比如 word.exe 和PowerPoint.exe</h5><p>  HANDLE hSnapProcess &#x3D; CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);<br>  if (hSnapProcess &#x3D;&#x3D; INVALID_HANDLE_VALUE)<br>  {<br>  return 1;<br>  }<br>  PROCESSENTRY32W ProcessEntry;<br>  ProcessEntry.dwSize &#x3D; sizeof(ProcessEntry);<br>  BOOL bret &#x3D; Process32FirstW(hSnapProcess, &amp;ProcessEntry);<br>  WCHAR wszProcessInfo[MAX_PATH] &#x3D; { 0 };</p>
+<p>  do<br>  {<br>  WCHAR Name[MAX_PATH] &#x3D; { 0 };<br><br>  if (!lstrcmp(ProcessEntry.szExeFile, L”POWERPNT.EXE”) | !lstrcmp(ProcessEntry.szExeFile, L”WINWORD.EXE”))<br>  {<br>      …….<br>  }</p>
+</li>
+<li><h5 id="寻找到目标进程以后，获取进程中的句柄"><a href="#寻找到目标进程以后，获取进程中的句柄" class="headerlink" title="寻找到目标进程以后，获取进程中的句柄"></a>寻找到目标进程以后，获取进程中的句柄</h5></li>
+</ul>
+<p> 这里利用了未文档化的一个函数</p>
+<p>ZwQuerySystemInformation，这是ntdll.dll中的函数</p>
+<pre><code>HMODULE hNtDLL = LoadLibrary(L&quot;NTDLL.DLL&quot;);
+if (!hNtDLL)
+&#123;
+    return 1;
+&#125;
+ZwQuerySystemInformation = (ZWQUERYSYSTEMINFORMATION)GetProcAddress(hNtDLL, &quot;ZwQuerySystemInformation&quot;);
+
+typedef NTSTATUS(WINAPI *ZWQUERYSYSTEMINFORMATION)(unsigned long, PVOID, ULONG, PULONG);
+ZWQUERYSYSTEMINFORMATION ZwQuerySystemInformation;
+</code></pre>
+<p>函数原型如下：</p>
+<pre><code>NTSTATUS WINAPI ZwQuerySystemInformation(
+  _In_      SYSTEM_INFORMATION_CLASS SystemInformationClass,
+  _Inout_   PVOID                    SystemInformation,
+  _In_      ULONG                    SystemInformationLength,
+  _Out_opt_ PULONG                   ReturnLength
+);
+</code></pre>
+<p> SYSTEM_INFORMATION_CLASS结构体如下：</p>
+<pre><code>typedef enum _SYSTEMINFOCLASS
+&#123;
+    SystemBasicInformation,             // 0x002C
+    SystemProcessorInformation,         // 0x000C
+    SystemPerformanceInformation,       // 0x0138
+    SystemTimeInformation,              // 0x0020
+    SystemPathInformation,              // not implemented
+    SystemProcessInformation,           // 0x00C8+ per process
+    SystemCallInformation,              // 0x0018 + (n * 0x0004)
+    SystemConfigurationInformation,     // 0x0018
+    SystemProcessorCounters,            // 0x0030 per cpu
+    SystemGlobalFlag,                   // 0x0004 (fails if size != 4)
+    SystemCallTimeInformation,          // not implemented
+    SystemModuleInformation,            // 0x0004 + (n * 0x011C)
+    SystemLockInformation,              // 0x0004 + (n * 0x0024)
+    SystemStackTraceInformation,        // not implemented
+    SystemPagedPoolInformation,         // checked build only
+    SystemNonPagedPoolInformation,      // checked build only
+    SystemHandleInformation,            // 0x0004  + (n * 0x0010)
+    SystemObjectTypeInformation,        // 0x0038+ + (n * 0x0030+)
+    SystemPageFileInformation,          // 0x0018+ per page file
+    SystemVdmInstemulInformation,       // 0x0088
+    SystemVdmBopInformation,            // invalid info class
+    SystemCacheInformation,             // 0x0024
+    SystemPoolTagInformation,           // 0x0004 + (n * 0x001C)
+    SystemInterruptInformation,         // 0x0000, or 0x0018 per cpu
+    SystemDpcInformation,               // 0x0014
+    SystemFullMemoryInformation,        // checked build only
+    SystemLoadDriver,                   // 0x0018, set mode only
+    SystemUnloadDriver,                 // 0x0004, set mode only
+    SystemTimeAdjustmentInformation,    // 0x000C, 0x0008 writeable
+    SystemSummaryMemoryInformation,     // checked build only
+    SystemNextEventIdInformation,       // checked build only
+    SystemEventIdsInformation,          // checked build only
+    SystemCrashDumpInformation,         // 0x0004
+    SystemExceptionInformation,         // 0x0010
+    SystemCrashDumpStateInformation,    // 0x0004
+    SystemDebuggerInformation,          // 0x0002
+    SystemContextSwitchInformation,     // 0x0030
+    SystemRegistryQuotaInformation,     // 0x000C
+    SystemAddDriver,                    // 0x0008, set mode only
+    SystemPrioritySeparationInformation,// 0x0004, set mode only
+    SystemPlugPlayBusInformation,       // not implemented
+    SystemDockInformation,              // not implemented
+    SystemPowerInfo,             // 0x0060 (XP only!)
+    SystemProcessorSpeedInformation,    // 0x000C (XP only!)
+    SystemTimeZoneInformation,          // 0x00AC
+    SystemLookasideInformation,         // n * 0x0020
+    SystemSetTimeSlipEvent,
+    SystemCreateSession,    // set mode only
+    SystemDeleteSession,    // set mode only
+    SystemInvalidInfoClass1,   // invalid info class
+    SystemRangeStartInformation,   // 0x0004 (fails if size != 4)
+    SystemVerifierInformation,
+    SystemAddVerifier,
+    SystemSessionProcessesInformation, // checked build only
+    MaxSystemInfoClass
+&#125; SYSTEMINFOCLASS, *PSYSTEMINFOCLASS;
+</code></pre>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%882)/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E9%80%86%E5%90%91/IDA%E5%88%9B%E5%BB%BA%E7%BB%93%E6%9E%84%E4%BD%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/12/%E9%80%86%E5%90%91/IDA%E5%88%9B%E5%BB%BA%E7%BB%93%E6%9E%84%E4%BD%93/" class="post-title-link" itemprop="url">IDA创建结构体</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.在IDA中打开Structures，快捷键是shifr+ F9 ,然后按insert键，进行插入</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/5ad5559c1b1dc.png" alt="5ad5559c1b1dc"></p>
+<p> 2.在ends 后按d键，添加相应的成员，然后选中成员名，按N进行修改，选中类型，按d 进行更改类型，构造完结构题以后，回到代码窗口</p>
+<p><img src="https://i.loli.net/2018/04/17/5ad555a742e37.png" alt="5ad555a742e37"></p>
+<p>  3  在代码窗口找到相应的变量，右键选择Convert to struct ，然后选择刚刚你定义的结构体即可。</p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/12/%E9%80%86%E5%90%91/IDA%E5%88%9B%E5%BB%BA%E7%BB%93%E6%9E%84%E4%BD%93/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E9%80%86%E5%90%91/PE%20Checksum/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/12/%E9%80%86%E5%90%91/PE%20Checksum/" class="post-title-link" itemprop="url">PE Checksum</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="1-check-介绍"><a href="#1-check-介绍" class="headerlink" title="1.check 介绍"></a>1.check 介绍</h3><p>PE文件可选头结构如下，其中有个成员是checksum ，其在编译以后生成一个校验和，<br>所有驱动、系统启动时加载的DLL、系统关键进程加载的DLL都要进行校验和的校验，查看是否有改动，这个检验和可以通过API进行计算，CheckSumMappedFile 或者直接 MapFileAndCheckSum，计算算法比较简单如下：</p>
+<ul>
+<li>因为要计算整个文件数据嘛，所以开始这个字段的数据要先置0；</li>
+<li>从文件头开始，每次读一个字（WORD），进行带进位的累加（ADC），超出WORD部分自动溢出；</li>
+<li>将前面的累加和再加上PE文件的长度，结果就是这个校验和了</li>
+</ul>
+<h3 id="2-测试代码如下："><a href="#2-测试代码如下：" class="headerlink" title="2 测试代码如下："></a>2 测试代码如下：</h3><pre><code>#include&quot;stdafx.h&quot;
+#include &lt;windows.h&gt;
+#include&lt;ImageHlp.h&gt;
+#pragma comment(lib,&quot;ImageHlp.lib&quot;)
+</code></pre>
+<p>​	</p>
+<pre><code>void main()
+&#123;
+    DWORD HeaderCheckSum = 0;   //PE头里的校验值
+    DWORD CheckSum = 0;     //计算下来的校验值
+    MapFileAndCheckSum(L&quot;D:\\newupdate.exe&quot;, &amp;HeaderCheckSum, &amp;CheckSum);
+
+    if (CheckSum == HeaderCheckSum)
+    &#123;
+        MessageBox(NULL, L&quot;相等&quot;, NULL, 0);
+    &#125;
+
+&#125;
+</code></pre>
+<h3 id="附PE可选头结构"><a href="#附PE可选头结构" class="headerlink" title="附PE可选头结构"></a>附PE可选头结构</h3><p>typedef struct _IMAGE_OPTIONAL_HEADER<br>{<br>    &#x2F;&#x2F;<br>    &#x2F;&#x2F; Standard fields.<br>    &#x2F;&#x2F;<br>+18h    WORD    Magic;         &#x2F;&#x2F; 标志字, ROM 映像（0107h）,普通可执行文件（010Bh）<br>+1Ah    BYTE      MajorLinkerVersion;     &#x2F;&#x2F; 链接程序的主版本号<br>+1Bh    BYTE      MinorLinkerVersion;     &#x2F;&#x2F; 链接程序的次版本号<br>+1Ch    DWORD   SizeOfCode;     &#x2F;&#x2F; 所有含代码的节的总大小<br>+20h    DWORD   SizeOfInitializedData;    &#x2F;&#x2F; 所有含已初始化数据的节的总大小<br>+24h    DWORD   SizeOfUninitializedData; &#x2F;&#x2F; 所有含未初始化数据的节的大小<br>+28h    DWORD   AddressOfEntryPoint;    &#x2F;&#x2F; 程序执行入口RVA<br>+2Ch    DWORD   BaseOfCode;      &#x2F;&#x2F; 代码的区块的起始RVA<br>+30h    DWORD   BaseOfData;      &#x2F;&#x2F; 数据的区块的起始RVA<br>    &#x2F;&#x2F;<br>    &#x2F;&#x2F; NT additional fields.    以下是属于NT结构增加的领域。<br>    &#x2F;&#x2F;<br>+34h    DWORD   ImageBase;      &#x2F;&#x2F; 程序的首选装载地址<br>+38h    DWORD   SectionAlignment;      &#x2F;&#x2F; 内存中的区块的对齐大小<br>+3Ch    DWORD   FileAlignment;      &#x2F;&#x2F; 文件中的区块的对齐大小<br>+40h    WORD    MajorOperatingSystemVersion;  &#x2F;&#x2F; 要求操作系统最低版本号的主版本号<br>+42h    WORD    MinorOperatingSystemVersion;  &#x2F;&#x2F; 要求操作系统最低版本号的副版本号<br>+44h    WORD    MajorImageVersion;       &#x2F;&#x2F; 可运行于操作系统的主版本号<br>+46h    WORD    MinorImageVersion;       &#x2F;&#x2F; 可运行于操作系统的次版本号<br>+48h    WORD    MajorSubsystemVersion;  &#x2F;&#x2F; 要求最低子系统版本的主版本号<br>+4Ah    WORD    MinorSubsystemVersion;  &#x2F;&#x2F; 要求最低子系统版本的次版本号<br>+4Ch    DWORD   Win32VersionValue;       &#x2F;&#x2F; 莫须有字段，不被病毒利用的话一般为0<br>+50h    DWORD   SizeOfImage;       &#x2F;&#x2F; 映像装入内存后的总尺寸<br>+54h    DWORD   SizeOfHeaders;       &#x2F;&#x2F; 所有头 + 区块表的尺寸大小<br>+58h    DWORD   CheckSum;       &#x2F;&#x2F; 映像的校检和<br>+5Ch    WORD    Subsystem;       &#x2F;&#x2F; 可执行文件期望的子系统<br>+5Eh    WORD    DllCharacteristics;       &#x2F;&#x2F; DllMain()函数何时被调用，默认为 0<br>+60h    DWORD   SizeOfStackReserve;       &#x2F;&#x2F; 初始化时的栈大小<br>+64h    DWORD   SizeOfStackCommit;       &#x2F;&#x2F; 初始化时实际提交的栈大小<br>+68h    DWORD   SizeOfHeapReserve;        &#x2F;&#x2F; 初始化时保留的堆大小<br>+6Ch    DWORD   SizeOfHeapCommit;        &#x2F;&#x2F; 初始化时实际提交的堆大小<br>+70h    DWORD   LoaderFlags;        &#x2F;&#x2F; 与调试有关，默认为 0<br>+74h    DWORD   NumberOfRvaAndSizes;  &#x2F;&#x2F; 下边数据目录的项数，这个字段自Windows NT 发布以来        &#x2F;&#x2F; 一直是16<br>+78h    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];<br>       &#x2F;&#x2F; 数据目录表<br>} IMAGE_OPTIONAL_HEADER32, *PIMAGE_OPTIONAL_HEADER32;</p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/12/%E9%80%86%E5%90%91/PE%20Checksum/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/12/12/%E6%9D%82%E5%AD%A6/linux%20usb%20wifi%E8%AE%BE%E7%BD%AEAP%20%E6%A8%A1%E5%BC%8F%20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/12/12/%E6%9D%82%E5%AD%A6/linux%20usb%20wifi%E8%AE%BE%E7%BD%AEAP%20%E6%A8%A1%E5%BC%8F%20/" class="post-title-link" itemprop="url">linux usb wifi设置AP 模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-12-12 00:00:00" itemprop="dateCreated datePublished" datetime="2017-12-12T00:00:00+08:00">2017-12-12</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -981,16 +884,31 @@ void helloDLL(void)
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>一、安装包管理器<br>使用Ctrl+~快捷键或者通过View-&gt;Show Console菜单打开命令行，粘贴如下代码</p>
-<pre><code>import urllib.request,os; pf = &#39;Package Control.sublime-package&#39;; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), &#39;wb&#39;).write(urllib.request.urlopen( &#39;http://sublime.wbond.net/&#39; + pf.replace(&#39; &#39;,&#39; &#39;)).read())
+          <p>一.问题阐述<br>        本文是基于Linux 的ubuntu16.04系统来完成的，usb设备是Realteak 的RTL8188EUS的设备（lsusb看到的），因为ubuntu自带的nl90211无法支持此类设备，所以有两种解决办法。</p>
+<p>二.解决办法</p>
+<pre><code>    第一种方法是编译8188eu的驱动，这个在github上有，而且有很多解决办法，编译前需要安装相应的头文件和编译环境，如何你能这样解决的话，当然是最好了，如果这样没能解决，编译失败又解决不来的话，可以换第二种方法。
+    第二种方法是编译带8188eu的hostapd来实现，具体实现步骤如下：
+    1.卸载已有的hostapd
+    sudo apt-get autoremove hostapd
+    2.下载带有rtl8188eu的源码。
+    wget https://github.com/jenssegers/RTL8188-hostapd/archive/v2.0.tar.gz
+    tar -zxvf v2.0.tar.gz
+    3.编译
+    cd RTL8188-hostapd-2.0/hostapd
+    sudo make
+    4.安装
+    sudo  make install
+   此时可能你还是无法创建热点，这是因为ubuntu自带的Nerwork Manager 会对热点的创建产生影响，把无线网卡设置为未托管即可。
+   在/etc/NetworkManager/NetworkManager.conf中添加[keyfile]字段，添加内容为：unmanaged-devices=mac:00:23:cd:10:3e:0b ,mac地址改为自己wifi 设备的地址即可，此时应该就可以创建热点了。
+   
+   参考链接：
+   https://jenssegers.com/43/Realtek-RTL8188-based-access-point-on-Raspberry-Pi
+   http://os.51cto.com/art/201311/415573.htm
 </code></pre>
-<p>顺利的话，此时就可以在Preferences菜单下看到Package Settings和Package Control两个菜单了</p>
-<p>二、安装乱码处理插件：</p>
-<p>    调用ctrl+shift+p,输入：install package，回车，在稍后弹出的安装包框中搜索：ConvertToUTF8或者GBK Encoding Support，选择点击安装；</p>
 
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/09/13/sublime%E4%B9%B1%E7%A0%81%E5%A4%84%E7%90%86/#more" rel="contents">
+              <a class="btn" href="/2017/12/12/%E6%9D%82%E5%AD%A6/linux%20usb%20wifi%E8%AE%BE%E7%BD%AEAP%20%E6%A8%A1%E5%BC%8F%20/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1014,7 +932,7 @@ void helloDLL(void)
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/09/11/shellcode%20%E5%AE%9E%E7%8E%B0%E9%94%AE%E7%9B%98%E8%AE%B0%E5%BD%95%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/11/29/Web%E6%B8%97%E9%80%8F/WIN10%20linux%20%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85lamp%20/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -1028,7 +946,7 @@ void helloDLL(void)
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/09/11/shellcode%20%E5%AE%9E%E7%8E%B0%E9%94%AE%E7%9B%98%E8%AE%B0%E5%BD%95%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">shellcode 实现键盘记录样本分析</a>
+            <a href="/2017/11/29/Web%E6%B8%97%E9%80%8F/WIN10%20linux%20%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85lamp%20/" class="post-title-link" itemprop="url">WIN10 linux 子系统安装lamp</a>
         </h2>
 
         <div class="post-meta">
@@ -1038,7 +956,7 @@ void helloDLL(void)
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-09-11 00:00:00" itemprop="dateCreated datePublished" datetime="2017-09-11T00:00:00+08:00">2017-09-11</time>
+              <time title="创建时间：2017-11-29 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-29T00:00:00+08:00">2017-11-29</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1046,7 +964,7 @@ void helloDLL(void)
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
                 </span>
             </span>
 
@@ -1061,29 +979,52 @@ void helloDLL(void)
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>1.样本来源于《恶意代码分析实战》的实验样本Lab11-03.exe和Lab11-03.dll.<br>2.首先对Lab11-03.exe进行基础分析，查看字符串和导入导出函数。用strings可以看到</p>
-<pre><code>        C:\WINDOWS\System32\inet_epar32.dll
-        zzz69806582
-        net start cisvc
-        C:\WINDOWS\System32\%s
-        cisvc.exe
-        Lab11-03.dll
+          <p>1.换源</p>
+<pre><code>备份原先的源
+cp /etc/apt/sources.list /etc/apt/sources.list.bak
+vim /etc/apt/sources.list
+换成
+deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse
+更新
+apt-get update	
 </code></pre>
-<p>等字符串，C:\WINDOWS\System32\inet_epar32.dll表示程序可能加载该dll,net start cisvc是服务的启动方式，cisvc.exe代表该程序可能被启动。然后对Lab11-03.dll进行分析，出现了</p>
-<pre><code>    C:\WINDOWS\System32\kernel64x.dll
-    zzz69806582
-    GetForegroundWindow
-    GetAsyncKeyState
+<p>2.安装apache2</p>
+<pre><code>apt-get install apache2
+service apache2 restart 
+在本地浏览器打开localhost 应该可以看到apache2的欢迎界面
 </code></pre>
-<p>等，C:\WINDOWS\System32\kernel64x.dll表示程序可能加载该dll，zzz69806582暂时还看不出来有什作用，GetForegroundWindow，GetAsyncKeyState表示这很可能是一个键盘记录器。<br>3.然后进行动态分析，命令行切到当前目录下，运行Lab11-03.exe，用procmon和procexp进行监控，</p>
-<p><img src="https://i.imgur.com/7WpA6fl.png"></p>
-<p>如图可以看到该样本启动了一个服务。至于启动什么服务，通过procmon来具体看。<br>在进程栏看到了net start cisvc</p>
-<p><img src="https://i.imgur.com/z1cNgvE.png"></p>
-<p>在文件操作一栏我们可以看到创建并写入了文件inet_epar32.dll,打开了cisvc.exe<br>但是并没有写入文件的操作。</p>
-<p><img src="https://i.imgur.com/zKoDTRC.png"></p>
+<p>3.安装php</p>
+<pre><code>按照ubuntu安装的方法 apt-get install php5是没法用的，不晓得为啥子
+我找的解决办法是如下：
+apt-get install software-properties-common
+add-apt-repository ppa:ondrej/php
+apt-get update
+apt-get install php
+apt-get install libapache2-mod-php
+service apache2 restart
+</code></pre>
+<p>4.测试php</p>
+<pre><code>在/var/www/html目录下新建test.php
+内容如下：
+&lt;?php
+phpinfo();
+?&gt;
+打开localhost/test.php 正常显示则代表成功
+</code></pre>
+<p>5.至于mysql 的安装，后续再写</p>
+<p>​	</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/09/11/shellcode%20%E5%AE%9E%E7%8E%B0%E9%94%AE%E7%9B%98%E8%AE%B0%E5%BD%95%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/#more" rel="contents">
+              <a class="btn" href="/2017/11/29/Web%E6%B8%97%E9%80%8F/WIN10%20linux%20%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85lamp%20/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1107,7 +1048,7 @@ void helloDLL(void)
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/09/%E5%B8%B8%E8%A7%84%E8%84%B1%E5%A3%B3/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/11/15/%E6%9D%82%E5%AD%A6/dns%E6%B1%A1%E6%9F%93%E7%9A%84%E8%A7%A3%E5%86%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -1121,7 +1062,7 @@ void helloDLL(void)
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/08/09/%E5%B8%B8%E8%A7%84%E8%84%B1%E5%A3%B3/" class="post-title-link" itemprop="url">常规脱壳</a>
+            <a href="/2017/11/15/%E6%9D%82%E5%AD%A6/dns%E6%B1%A1%E6%9F%93%E7%9A%84%E8%A7%A3%E5%86%B3/" class="post-title-link" itemprop="url">dns污染的解决</a>
         </h2>
 
         <div class="post-meta">
@@ -1131,7 +1072,7 @@ void helloDLL(void)
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-08-09 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-09T00:00:00+08:00">2017-08-09</time>
+              <time title="创建时间：2017-11-15 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-15T00:00:00+08:00">2017-11-15</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1139,7 +1080,7 @@ void helloDLL(void)
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
                 </span>
             </span>
 
@@ -1154,22 +1095,215 @@ void helloDLL(void)
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>总结方法如下：</p>
-<p>1、单步跟（向上的跳转下一步F4）</p>
-<p>2、esp定律</p>
-<p>3、二次内存镜像</p>
-<p>4、一次到位</p>
-<p>5、模拟跟踪</p>
-<blockquote>
-<p>tc eip&lt;sfx</p>
-<p>调试 sfx  第二个</p>
-</blockquote>
-<p>6、最后一次异常</p>
-<p>7、特殊方法</p>
-<p>at GetVersion等</p>
+          <p>dnsmasq+chinadns+hev-dns-forwarder</p>
+<p>1.安装dnsmasq</p>
+<pre><code> sudo apt-get install dnsmasq
+ 编辑/etc/dnsmasq.conf 
+ 取消no-resolv前面的注释
+ server=127.0.0.1#5354
+</code></pre>
+<p>2.安装chindns<br>    <a target="_blank" rel="noopener" href="https://github.com/shadowsocks/ChinaDNS/releases/download/1.3.2/chinadns-1.3.2.tar.gz">https://github.com/shadowsocks/ChinaDNS/releases/download/1.3.2/chinadns-1.3.2.tar.gz</a><br>    解压<br>    tar -zxf chinadns-1.3.2.tar.gz<br>    cd chinadns-1.3.2<br>    .&#x2F;configure<br>    make<br>    make install<br>    安装结束后在复制到&#x2F;usr&#x2F;local&#x2F;bin 目录中去（可能已经自动复制到了，确认一下）<br>    运行命令为<br>    chinadns -c &#x2F;home&#x2F;pi&#x2F;Desktop&#x2F;chinadns-1.3.2&#x2F;chnroute.txt -s 114.114.114.114,127.0.0.1:5300 -p 5354 -m  &amp; &gt; &#x2F;dev&#x2F;null 2&gt;&amp;1</p>
+<p>3.安装</p>
+<pre><code>git clone https://github.com/aa65535/hev-dns-forwarder
+cd hev-dns-forwarder
+make
+编译完会在src目录下生成二进制文件，复制到/usr/local/bin目录下
+运行命令
+hev-dns-forwarder
+</code></pre>
+<p>4.加入开机启动项</p>
+<pre><code>在/etc/rc.local中加入
+sudo  hev-dns-forwarder  &amp; &gt; /dev/null 2&gt;&amp;1
+sudo chinadns -c /home/pi/Desktop/chinadns-1.3.2/chnroute.txt -s 114.114.114.114,127.0.0.1:5300 -p 5354 -m  &amp; &gt; /dev/null 2&gt;&amp;1
+</code></pre>
+<p>参考链接：<br><a target="_blank" rel="noopener" href="https://blog.bluerain.io/p/SS-Redir-For-Router.html">https://blog.bluerain.io/p/SS-Redir-For-Router.html</a></p>
+<p>​	</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/08/09/%E5%B8%B8%E8%A7%84%E8%84%B1%E5%A3%B3/#more" rel="contents">
+              <a class="btn" href="/2017/11/15/%E6%9D%82%E5%AD%A6/dns%E6%B1%A1%E6%9F%93%E7%9A%84%E8%A7%A3%E5%86%B3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/11/11/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/11/11/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="post-title-link" itemprop="url">树莓派搭建vpn服务器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-11 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-11T00:00:00+08:00">2017-11-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.此篇是在前篇搭建树莓派透明代理的基础上完成的，</p>
+<p>2.树莓派尽量设置成静态ip，具体如下</p>
+<pre><code>sudo vim /etc/dhcpcd.conf
+填写以下内容
+
+interface eth0
+
+static ip_address=ip
+
+static routers=网关
+
+static domain_name_servers=223.5.5.5
+</code></pre>
+<p>3.安装openvpn</p>
+<pre><code>sudo apt-get install openvpn
+</code></pre>
+<p>4.下载easy-rsa</p>
+<pre><code>cd /etc/openvpn
+wget --no-check-certificate https://github.com/OpenVPN/easy-rsa/releases/download/2.2.2/EasyRSA-2.2.2.tgz
+tar -xzvf EasyRSA-2.2.2.tgz
+mv EasyRSA-2.2.2 easy-rsa
+</code></pre>
+<p>5.配置easy-rsa</p>
+<pre><code>cd /etc/openvpn/easy-rsa
+vim vars    # 打开easy-rsa配置文件
+修改一下内容
+export EASY_RSA=&quot;/etc/openvpn/easy-rsa&quot;
+export KEY_SIZE=1024 #默认的2048太大，要运算很久
+加载配置
+source ./vars
+</code></pre>
+<p>6.生成ca密钥</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/11/11/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/11/05/%E6%9D%82%E5%AD%A6/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/11/05/%E6%9D%82%E5%AD%A6/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/" class="post-title-link" itemprop="url">重装系统后hexo 博客恢复</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-05 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-05T00:00:00+08:00">2017-11-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="1-安装node-js和git"><a href="#1-安装node-js和git" class="headerlink" title="1.安装node.js和git"></a>1.安装node.js和git</h3><p> 这个不用多说，直接下载安装就行了。</p>
+<h3 id="2-配置-git-个人信息，生成新的-ssh-密钥："><a href="#2-配置-git-个人信息，生成新的-ssh-密钥：" class="headerlink" title="2.配置 git 个人信息，生成新的 ssh 密钥："></a>2.配置 git 个人信息，生成新的 ssh 密钥：</h3><p>git config –global user.name “xxxxxx”<br>git config –global user.email “xxxxxx”<br>ssh-keygen -t rsa -C “xxxxxxxx(邮箱)”</p>
+<h3 id="3-添加公钥"><a href="#3-添加公钥" class="headerlink" title="3.添加公钥"></a>3.添加公钥</h3><p>在用户文件夹.ssh 文件里面把公钥复制出来粘贴到github个人设置的ssh位置。</p>
+<h3 id="4-安装hexo"><a href="#4-安装hexo" class="headerlink" title="4.安装hexo"></a>4.安装hexo</h3><p>建议先<br>npm install cnpm -g –registry&#x3D;<a target="_blank" rel="noopener" href="https://registry.npm.taobao.org/">https://registry.npm.taobao.org</a><br>安装的时候 用cpm 代替npm<br>这样的话npm 安装比较快而且不容易失败<br>cnpm install hexo-cli -g</p>
+<h3 id="5-删除博客文件夹文件，保留部分"><a href="#5-删除博客文件夹文件，保留部分" class="headerlink" title="5.删除博客文件夹文件，保留部分"></a>5.删除博客文件夹文件，保留部分</h3><p>打开原来的博客文件夹,只需保留_config.yml，theme&#x2F;，source&#x2F;，scaffolds&#x2F;，package.json，.gitignore 这些项目，删除其他的文件。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/11/05/%E6%9D%82%E5%AD%A6/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1258,20 +1392,20 @@ void helloDLL(void)
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">90</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1298,7 +1432,7 @@ void helloDLL(void)
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1307,7 +1441,31 @@ void helloDLL(void)
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
 
 
 
