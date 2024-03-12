@@ -184,7 +184,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/01/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%B8%80%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/01/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%BA%8C%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -198,7 +198,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/08/01/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%B8%80%E8%AE%B0/" class="post-title-link" itemprop="url">恶意代码分析第一记</a>
+            <a href="/2017/08/01/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%BA%8C%E8%AE%B0/" class="post-title-link" itemprop="url">恶意代码分析第二记</a>
         </h2>
 
         <div class="post-meta">
@@ -232,20 +232,18 @@
 
       
           <p>一、样本基本信息</p>
-<p>分析样本来源于恶意代码分析实战课后题目的样本,lab3-01.exe</p>
+<p>.样本来源于恶意代码分析实战的第七章的实验样本lab07-03.exe,lab07-03.dll.</p>
 <p>二、分析过程</p>
-<p>首先在虚拟机里准备好必要的工具，<br>静态分析工具包括 PEView、strings、(IDA)、,Dependency Walkler、Resource Hacker、PEID、PEexplorer等。</p>
-<p>动态分析工具包括process monitor,process explorer,ApateDNS,RegShot等。</p>
-<ul>
-<li>静态分析步骤：</li>
-</ul>
-<p>•     PEID 查壳</p>
-<p><img src="https://i.imgur.com/4usSk9D.png" alt="img"></p>
-<p>发现是个加壳程序，估计导入表和字符串应该看不到什么有用的信息了。</p>
-<p>• PEVIew</p>
+<p>首先查看下有什么关键字符串。strings.exe 程序查看lab07-03.exe 的字符串，发现有文件映射的一系列函数，CreateFileMappingA,UnmapViewOfFile,MapViewOfFile等，以及遍历文件的函数FindFirstFileA,FindNextFileA,FindClose,另外还有复制文件的函数和创建文件的函数等，没发现什么网络特征。再看下lab07-03.dll的字符串，首先是创建进程的函数CreateProcessA，然后是互斥体的函数CreateMutexA,OpenMutexA,等函数,此外发现了一些网络特征，ip地址 127.26.152.13，以及实现网络功能的库WS2_32.dll,还有一些字符串比较函数strcmp.</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/wiWLOYN.png" alt="img"></p>
+<p><img src="C:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/3SglnDX.png" alt="img"></p>
+<p>然后查看lab07-03.exe的导入表，可以看到前面所叙述的函数，同时应注意到，导入表中并没有LoadLibrary或者GetProcAddress函数，说明dll文件并没有在运行时加载。查看lab07-03.dll文件发现很多网络特征，很多网络函数，包括WSAStartup,socket,send,connect,recv等。</p>
+<p><img src="http://i.imgur.com/NPtmzMv.png"></p>
+<p><img src="http://i.imgur.com/pa6CXX9.png"></p>
+<p>查看完这些后，心中稍微有点底，然后运行程序进行动态分析，配置网络环境ApateDNS,监控软件等。运行完程序发现秒退，什么也没有发生，process monitor和process explorer也什么没监控到，也没什么网络活动。猜测可能会有命令行参数。<br>对lab07-03.exe进行逆向分析。载入IDA，进入主函数，发现果然有验证，判断参数是否为2，并且第二个参数是否“WARNING_THIS_WILL_DESTROY_YOUR_MACHINE”然后下面就是文件映射的操作了，对’C:\Windows\System32\Kernel32.dll 和lab07-03.dll进行了一系列的文件读写操作，这部分详情分析有点困难，我们留到动态分析的时候再来做。最后把文件lab07-03.dll拷贝到’C:\Windows\System32\Kerne132.dll中。继续往下看，是一个函数4011e0,参数是c盘根目录，跟进去看一下发现是一个遍历文件夹的操作。判断是否是.exe文件，然后是进行内存映射，查找kernel32.dll字符串改为kerne132.dll字符串。意图很明显了，让c盘目录下的exe文件加载山寨的kerne132.dll。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/08/01/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%B8%80%E8%AE%B0/#more" rel="contents">
+              <a class="btn" href="/2017/08/01/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%BA%8C%E8%AE%B0/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
