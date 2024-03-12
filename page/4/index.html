@@ -183,6 +183,123 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/26/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/DNS_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/26/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/DNS_new/" class="post-title-link" itemprop="url">DNS</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-26 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-26T00:00:00+08:00">2023-03-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="DNS-协议"><a href="#DNS-协议" class="headerlink" title="DNS 协议"></a>DNS 协议</h3><p>1、概念</p>
+<ul>
+<li>DNS记录<ul>
+<li>A   : 主机记录，域名和IP的映射</li>
+<li>CNAME ： 别名</li>
+<li>SOA：权威名称服务器</li>
+<li>NS：名称服务器</li>
+<li>MX：邮件交换记录</li>
+<li>SRV： 正在提供服务的</li>
+<li>PTR:  反向指针</li>
+</ul>
+</li>
+</ul>
+<p>2、DNS查询</p>
+<ul>
+<li><p>客户机访问<a target="_blank" rel="noopener" href="http://www.baidu.com,根据自己的tcp/IP%E5%8F%82%E6%95%B0%EF%BC%8C%E5%90%91%E8%87%AA%E5%B7%B1%E7%9A%84%E9%A6%96%E9%80%89DNS%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%91%E9%80%81DNS%E8%AF%B7%E6%B1%82">www.baidu.com，根据自己的TCP/IP参数，向自己的首选DNS服务器发送DNS请求</a></p>
+</li>
+<li><p>首选DNS服务器收到客户机的请求后，去查询自己的区域文件，找不到IP地址信息（将请求转发给根域服务器）；直接可以找到，则返回IP地址</p>
+</li>
+<li><p>根域服务器收到请求后，由于根域服务器只维护顶级域服务器，会响应顶级域名服务器IP（com）,首选DNS根据根域名服务器响应的信息，将请求转发到com顶级域</p>
+</li>
+<li><p>com顶级域收到请求，由于com顶级域只维护二级域信息，会响应二级域服务器IP，首选DNS根据顶级域响应的信息，将请求转发到baidu.com 二级域</p>
+</li>
+<li><p>baidu.com 二级域收到请求，baidu.com DNS服务器里面维护的是baidu.com 区域内的所有主机信息，包含了<a target="_blank" rel="noopener" href="http://www.baidu.com的信息,将ip地址响应给首选dns/">www.baidu.com的信息，将IP地址响应给首选DNS</a></p>
+</li>
+<li><p>首选DNS响应给主机。</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327213240915.png" alt="image-20230327213240915"></p>
+<p>3、 DNS配置 缓存DNS服务器 </p>
+<ul>
+<li><p>server2016上安装DNS服务，配置转发器</p>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327223920382.png" alt="image-20230327223920382"></p>
+</li>
+<li><p>将另一台主机DNS服务器设置为server2016的IP，随后nslookup 查询特定域名</p>
+</li>
+<li><p>wireshark抓包</p>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327224042516.png" alt="image-20230327224042516"></p>
+</li>
+<li><p>server2016这个缓存DNS服务器向转发器中的DNS服务器（192.168.10.1）转发DNS请求，192.168.10.1请求到以后，返回给server2016，server2016再响应client。</p>
+</li>
+</ul>
+<p>4、 DNS攻击</p>
+<p>环境：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/26/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/DNS_new/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/23/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/DHCP_new/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1266,132 +1383,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/09/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86_new/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/03/09/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86_new/" class="post-title-link" itemprop="url">路由器相关知识</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-03-09 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-09T00:00:00+08:00">2023-03-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1、路由器相关知识</p>
-<ul>
-<li><p>三层设备</p>
-</li>
-<li><p>网络层功能</p>
-<ul>
-<li>逻辑地址寻址，实现不同网络直接的路径选择</li>
-<li>查找目的是否可达，可达则选择最优路径</li>
-</ul>
-</li>
-<li><p>网络层传输的是PDU ,IP数据包</p>
-</li>
-</ul>
-<p>2、IP数据包的格式</p>
-<ul>
-<li><p>IPV4 数据包格式 </p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230309102043979.png" alt="image-20230309102043979"></p>
-</li>
-</ul>
-<p>3、路由器的工作原理</p>
-<ul>
-<li><p>路由</p>
-<ul>
-<li>从源主机到目标主机的转发过程</li>
-<li>包含两个内容<ul>
-<li>确定最佳路径（手动绑定，根据动态路由协商方式）</li>
-<li>通过网络传输信息</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>路由表</p>
-<ul>
-<li>直接路由：当路由器的接口配置好对应的IP地址并开启接口后自动生成 </li>
-<li>非直接路由：需要手动配置静态路由或者使用动态路由协议学习</li>
-</ul>
-</li>
-</ul>
-<p>4、静态路由</p>
-<ul>
-<li><p>管理员配置、不灵活</p>
-</li>
-<li><p>特殊的静态路由：默认路由</p>
-<ul>
-<li>使用场景：一般应用于末节网络</li>
-</ul>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ip route 目标网络 下一跳地址或者接口</span><br><span class="line">ip route <span class="number">192.168</span>.<span class="number">10.0</span> <span class="number">255.255</span>.<span class="number">255.0</span> <span class="number">192.168</span>.<span class="number">30.2</span></span><br><span class="line">ip route <span class="number">192.168</span>.<span class="number">10.0</span> <span class="number">255.255</span>.<span class="number">255.0</span> f0/<span class="number">1</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>5、动态路由</p>
-<ul>
-<li>通过某种动态路由协议自动的去建立自己的路由表</li>
-<li>常见的动态路由协议，RIP OSPF</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/03/09/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86_new/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1461,7 +1452,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">94</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
