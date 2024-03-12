@@ -24,12 +24,12 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="python 开发xss 扫描工具">
 <meta property="og:url" content="http://zwjsfdbb.top/2024/02/19/Web%E6%B8%97%E9%80%8F/python%20%E5%BC%80%E5%8F%91xss%E6%89%AB%E6%8F%8F%E5%99%A8/index.html">
-<meta property="og:site_name" content="fengchuiguo">
+<meta property="og:site_name" content="hack_zz">
 <meta property="og:description" content="思路： 1、发送一个带有payload参数值的请求，从响应中判断是否存在Payload。（反射型） 2、准备字典文件作为payload  3、不同类型的payload 区别对待">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-02-18T16:00:00.000Z">
 <meta property="article:modified_time" content="2024-03-12T10:14:52.534Z">
-<meta property="article:author" content="fengchuiguo">
+<meta property="article:author" content="hack_zz">
 <meta property="article:tag" content="web渗透">
 <meta name="twitter:card" content="summary">
 
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>python 开发xss 扫描工具 | fengchuiguo</title>
+  <title>python 开发xss 扫描工具 | hack_zz</title>
   
 
 
@@ -97,9 +97,10 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">fengchuiguo</h1>
+      <h1 class="site-title">hack_zz</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
+      <p class="site-subtitle" itemprop="description">每天进步一点点</p>
   </div>
 
   <div class="site-nav-right">
@@ -193,12 +194,12 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="name" content="hack_zz">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="name" content="hack_zz">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -225,6 +226,13 @@
             </span>
 
           
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
 
         </div>
       </header>
@@ -253,12 +261,12 @@
   <div id="qr" style="display: none;">
       
       <div style="display: inline-block;">
-        <img src="/images/wechatpay.jpg" alt="fengchuiguo 微信支付">
+        <img src="/images/wechatpay.jpg" alt="hack_zz 微信支付">
         <p>微信支付</p>
       </div>
       
       <div style="display: inline-block;">
-        <img src="/images/alipay.jpg" alt="fengchuiguo 支付宝">
+        <img src="/images/alipay.jpg" alt="hack_zz 支付宝">
         <p>支付宝</p>
       </div>
 
@@ -270,7 +278,7 @@
 <div>
 <ul class="post-copyright">
   <li class="post-copyright-author">
-    <strong>本文作者： </strong>fengchuiguo
+    <strong>本文作者： </strong>hack_zz
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
@@ -362,7 +370,7 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">fengchuiguo</p>
+  <p class="site-author-name" itemprop="name">hack_zz</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -414,12 +422,36 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">fengchuiguo</span>
+  <span class="author" itemprop="copyrightHolder">hack_zz</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
 
 
 

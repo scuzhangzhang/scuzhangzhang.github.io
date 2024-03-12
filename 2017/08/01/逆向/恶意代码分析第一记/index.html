@@ -24,7 +24,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="恶意代码分析第一记">
 <meta property="og:url" content="http://zwjsfdbb.top/2017/08/01/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%B8%80%E8%AE%B0/index.html">
-<meta property="og:site_name" content="fengchuiguo">
+<meta property="og:site_name" content="hack_zz">
 <meta property="og:description" content="一、样本基本信息 分析样本来源于恶意代码分析实战课后题目的样本,lab3-01.exe 二、分析过程 首先在虚拟机里准备好必要的工具，静态分析工具包括 PEView、strings、(IDA)、,Dependency Walkler、Resource Hacker、PEID、PEexplorer等。 动态分析工具包括process monitor,process explorer,ApateDNS">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.imgur.com/4usSk9D.png">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://i.imgur.com/jVOp29K.png">
 <meta property="article:published_time" content="2017-07-31T16:00:00.000Z">
 <meta property="article:modified_time" content="2024-03-12T09:45:53.204Z">
-<meta property="article:author" content="fengchuiguo">
+<meta property="article:author" content="hack_zz">
 <meta property="article:tag" content="逆向">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://i.imgur.com/4usSk9D.png">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>恶意代码分析第一记 | fengchuiguo</title>
+  <title>恶意代码分析第一记 | hack_zz</title>
   
 
 
@@ -103,9 +103,10 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">fengchuiguo</h1>
+      <h1 class="site-title">hack_zz</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
+      <p class="site-subtitle" itemprop="description">每天进步一点点</p>
   </div>
 
   <div class="site-nav-right">
@@ -199,12 +200,12 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="name" content="hack_zz">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="name" content="hack_zz">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -231,6 +232,13 @@
             </span>
 
           
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
 
         </div>
       </header>
@@ -280,12 +288,12 @@
   <div id="qr" style="display: none;">
       
       <div style="display: inline-block;">
-        <img src="/images/wechatpay.jpg" alt="fengchuiguo 微信支付">
+        <img src="/images/wechatpay.jpg" alt="hack_zz 微信支付">
         <p>微信支付</p>
       </div>
       
       <div style="display: inline-block;">
-        <img src="/images/alipay.jpg" alt="fengchuiguo 支付宝">
+        <img src="/images/alipay.jpg" alt="hack_zz 支付宝">
         <p>支付宝</p>
       </div>
 
@@ -297,7 +305,7 @@
 <div>
 <ul class="post-copyright">
   <li class="post-copyright-author">
-    <strong>本文作者： </strong>fengchuiguo
+    <strong>本文作者： </strong>hack_zz
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
@@ -392,7 +400,7 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">fengchuiguo</p>
+  <p class="site-author-name" itemprop="name">hack_zz</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -444,12 +452,36 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">fengchuiguo</span>
+  <span class="author" itemprop="copyrightHolder">hack_zz</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
 
 
 
