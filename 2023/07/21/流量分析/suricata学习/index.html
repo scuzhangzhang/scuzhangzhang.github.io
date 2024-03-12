@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="一、基本概念Suricata是一款高性能的网络IDS、IPS和网络安全监控引擎。它是开源的，能够进行实时入侵检测(IDS)、内联入侵预防(IPS)、网络安全监控(NSM)和离线pcap处理，并且支持Lua脚本对数据包进行检测。 二、安装与配置1、下载安装suricata 和npcap ，目前最新版本7.0 https:&#x2F;&#x2F;www.openinfosecfoundation.org&#x2F;download">
+<meta property="og:type" content="article">
+<meta property="og:title" content="suricata 踩坑日记">
+<meta property="og:url" content="http://zwjsfdbb.top/2023/07/21/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90/suricata%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="hack_zz">
+<meta property="og:description" content="一、基本概念Suricata是一款高性能的网络IDS、IPS和网络安全监控引擎。它是开源的，能够进行实时入侵检测(IDS)、内联入侵预防(IPS)、网络安全监控(NSM)和离线pcap处理，并且支持Lua脚本对数据包进行检测。 二、安装与配置1、下载安装suricata 和npcap ，目前最新版本7.0 https:&#x2F;&#x2F;www.openinfosecfoundation.org&#x2F;download">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202307201546926.png">
+<meta property="article:published_time" content="2023-07-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-12T15:27:50.813Z">
+<meta property="article:author" content="hack_zz">
+<meta property="article:tag" content="流量分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202307201546926.png">
+
+<link rel="canonical" href="http://zwjsfdbb.top/2023/07/21/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90/suricata%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>suricata 踩坑日记 | hack_zz</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hack_zz</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">每天进步一点点</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/21/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90/suricata%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          suricata 踩坑日记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-21 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-21T00:00:00+08:00">2023-07-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">流量分析</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h4><p>Suricata是一款高性能的网络IDS、IPS和网络安全监控引擎。它是开源的，能够进行实时入侵检测(IDS)、内联入侵预防(IPS)、网络安全监控(NSM)和离线pcap处理，并且支持Lua脚本对数据包进行检测。</p>
+<h4 id="二、安装与配置"><a href="#二、安装与配置" class="headerlink" title="二、安装与配置"></a>二、安装与配置</h4><p>1、下载安装suricata 和npcap ，目前最新版本7.0</p>
+<p><a target="_blank" rel="noopener" href="https://www.openinfosecfoundation.org/download/">https://www.openinfosecfoundation.org/download/</a></p>
+<p><a target="_blank" rel="noopener" href="https://npcap.com/dist/npcap-1.75.exe">https://npcap.com/dist/npcap-1.75.exe</a></p>
+<p>2、修改配置文件</p>
+<ul>
+<li><p>各种路径替换成自己的安装路径</p>
+</li>
+<li><p>pcap-file: true（可选）打开，才能看到哪个文件命中</p>
+</li>
+<li><p>append: no (可选)  yes 是追加，no 是重写</p>
+</li>
+<li><p>开启lua 支持 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- lua:</span><br><span class="line">      enabled: yes</span><br><span class="line">      scripts-dir: lua_path</span><br><span class="line">      scripts:</span><br><span class="line">         - xxx.lua</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="三、注意事项"><a href="#三、注意事项" class="headerlink" title="三、注意事项"></a>三、注意事项</h4><p>1、域名前加.   </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">alert dns any any -&gt; any any (dns.query; dotprefix; \</span><br><span class="line">    content:&quot;.microsoft.com&quot;; sid:1;)</span><br></pre></td></tr></table></figure>
+
+<p>2、使用特定字段http.header、http.request_line，如末尾不要加\r\n</p>
+<p>示例包结构如下：</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202307201546926.png" alt="image-20230720154622845"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alert http any any -&gt; any any (msg:&quot;THREAD-Win32-TrojanSpy-Arkei From Fdark arkei.py&quot;; flow:established; http.request_line; pcre:&quot;/^GET \/(\d&#123;4&#125;) HTTP\/1\.1/is&quot;; http.header; pcre:&quot;/Host\: [^(\\r\\n)]+\r\n/is&quot;; dsize: &gt;0; sid:1000001; rev:1;)</span><br></pre></td></tr></table></figure>
+
+<p> 3、命令行踩坑</p>
+<p>​        -k none  忽略pcap 包校验（大坑）   -vvv 输出更多日志 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">suricata.exe -k none -r .\pcap_file -vvv -c .\suricata.yaml -l .\outputpath     参考命令行</span><br></pre></td></tr></table></figure>
+
+<p>4、 <strong>Lua语法的特殊性</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">模式串</span><br><span class="line">.   任意字符 </span><br><span class="line">%a   字母 </span><br><span class="line">%c   控制字符 </span><br><span class="line">%d   数字 </span><br><span class="line">%l   小写字母 </span><br><span class="line">%p   标点字符 </span><br><span class="line">%s   空白符 </span><br><span class="line">%u   大写字母 </span><br><span class="line">%w   字母和数字 ，不包括下划线</span><br><span class="line">%x   十六进制数字 </span><br><span class="line">%z   代表 0的字符 </span><br><span class="line"></span><br><span class="line">特殊字符如下：</span><br><span class="line">(). % + - * ? [ ^ $ </span><br><span class="line">% 也作为以上特殊字符的转义字符。</span><br><span class="line"></span><br><span class="line">[] 该方框作为匹配该范围的集合，。</span><br><span class="line">  如[0-9] 则匹配0到9的数字范围</span><br><span class="line"></span><br><span class="line">Lua 中的模式修饰符有四个： </span><br><span class="line">+   匹配前一字符 1 次或多次，最长匹配</span><br><span class="line">*   匹配前一字符 0 次或多次，最长匹配</span><br><span class="line">-   匹配前一字符 0 次或多次，最短匹配</span><br><span class="line">?   匹配前一字符 0 次或 1次 </span><br><span class="line">&#x27;+&#x27;，匹配一个或多个字符，总是进行最长的匹配。</span><br><span class="line">如，模式  &#x27;%a+&#x27;  匹配一个或多个字母或者一个单词： </span><br><span class="line"></span><br><span class="line">注意以上的区别：</span><br><span class="line">如：匹配c中的注释串</span><br><span class="line">用 &#x27;/%*.*%*/&#x27;  和&#x27;/%*.-%*/&#x27;</span><br><span class="line"></span><br><span class="line">str = &quot;int x; /* x */  int y; /* y */&quot; </span><br><span class="line">print(string.gsub(str, &quot;/%*.*%*/&quot;, &quot;&lt;注释串&gt;&quot;)) </span><br><span class="line">  --&gt; int x; &lt;注释串&gt; </span><br><span class="line">  </span><br><span class="line">采用 &#x27;.-&#x27; 则为最短匹配，即匹配 &quot;/*&quot; 开始到第一个 &quot;*/&quot;  之前的部分： </span><br><span class="line">str = &quot;int x; /* x */  int y; /* y */&quot; </span><br><span class="line">print(string.gsub(str, &quot;/%*.-%*/&quot;, &quot;&lt;注释部分&gt;&quot;)) </span><br><span class="line">  --&gt; int x; &lt;注释串&gt;  int y; &lt;注释串&gt; </span><br><span class="line"></span><br><span class="line">以 &#x27;^&#x27;  开头表示只匹配目标串的开始部分，</span><br><span class="line">以 &#x27;$&#x27;  结尾表示只匹配目标串的结尾部分。</span><br><span class="line"></span><br><span class="line">%b 表示匹配对称字符，注意其只能针对的ansi码单字符。</span><br><span class="line">x = string.gsub(&quot;xdddddyxxx&quot;, &quot;%bxy&quot;, &quot;取代&quot;)</span><br><span class="line">print(x)   --&gt;取代xxx</span><br><span class="line"></span><br><span class="line">如去除字符串首尾的空格： </span><br><span class="line">function trim (s) </span><br><span class="line">  return (string.gsub(s, &quot;^%s*(.-)%s*$&quot;, &quot;%1&quot;)) </span><br><span class="line">end </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="四、Linux-下的suricata-安装"><a href="#四、Linux-下的suricata-安装" class="headerlink" title="四、Linux 下的suricata 安装"></a>四、Linux 下的suricata 安装</h4><p>ubuntu20.04</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak</span><br><span class="line">sudo apt-get install vim</span><br><span class="line">sudo vim /etc/apt/sources.list</span><br><span class="line">清空后添加</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse </span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse </span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse </span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse </span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse </span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse </span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse </span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse </span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse </span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo add-apt-repository ppa:oisf/suricata-stable</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install suricata jq</span><br><span class="line">sudo suricata --build-info</span><br><span class="line">sudo systemctl status suricata</span><br><span class="line">cd /etc/suricata</span><br><span class="line">cp suricata.yaml suricata.yaml.bak</span><br><span class="line">vim suricata.yml</span><br><span class="line">修改 </span><br><span class="line">- pcap-file: true</span><br><span class="line">- append: no (可选)  yes 是追加，no 是重写</span><br><span class="line">- 开启lua 支持 </span><br><span class="line">  - lua:</span><br><span class="line">      enabled: yes</span><br><span class="line">      scripts-dir: /etc/suricata/lua-output/</span><br><span class="line">      scripts:</span><br><span class="line">      #   - script1.lua</span><br><span class="line">   lua:</span><br><span class="line">    # Allow Lua rules. Disabled by default.</span><br><span class="line">    allow-rules: true     </span><br><span class="line"># 接下来就可以编写规则，进行pcap  扫描了</span><br><span class="line">suricata -k none -vvv -r pcap_path -c suricata.yaml -l output_path</span><br><span class="line"></span><br><span class="line"># 对于需要struct 库的lua 程序</span><br><span class="line">sudo apt-get install luarocks -y</span><br><span class="line">luarocks install struct</span><br><span class="line"></span><br><span class="line"># bit32安装</span><br><span class="line">luarocks install bit32</span><br></pre></td></tr></table></figure>
+
+<p>五、suricata规则编写</p>
+<p>1、常用字段</p>
+<ul>
+<li>msg   描述信息</li>
+<li>content  需要匹配的字符串</li>
+<li>pcre  正则匹配模式</li>
+<li>dsize  tcp paylad 的大小</li>
+<li>offset  content 偏移 </li>
+<li>depth  匹配的字符串长度</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-- 规则内容全都在xxx.lua 中，靠lua来解析tcp payload内容</span><br><span class="line">alert tcp any any -&gt; any any (msg:&quot;xxx&quot;; luajit:xxx.lua;classtype:trojan-activity;  sid:800008; rev:1;)</span><br><span class="line"></span><br><span class="line">--- 规则通过content 字符串和 pcre 正则来匹配 payload内容，不同协议还有一些单独的字段，建议参考官方文档</span><br><span class="line">alert tcp any any -&gt; any any (msg:&quot;xxx&quot;;content:&quot;GET|20|/&quot;; pcre:&quot;/^GET \/(\d&#123;4&#125;) HTTP\/1\.1\r\nHost: [^(\\r\\n)]+\r\n\r\n/is&quot;;dsize: &lt;200; sid:7000001; rev:1;)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>2、Lua规则编写</p>
+<p>1）模版示例代码如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">(args)</span></span></span><br><span class="line">    <span class="keyword">local</span> needs = &#123;&#125;</span><br><span class="line">    needs[<span class="string">&quot;packet&quot;</span>] = <span class="built_in">tostring</span>(<span class="literal">true</span>)</span><br><span class="line">    <span class="keyword">return</span> needs</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">match</span><span class="params">(args)</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">local</span> packet = args[<span class="string">&quot;packet&quot;</span>]</span><br><span class="line">    <span class="keyword">local</span> content = SCPacketPayload()</span><br><span class="line">   </span><br><span class="line">    <span class="keyword">if</span> content == <span class="literal">nil</span> <span class="keyword">or</span> #content == <span class="number">0</span> <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">-- 逻辑代码</span></span><br><span class="line">    <span class="comment">-- .....</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>2）分享几个比较有用的自定义函数</p>
+<ul>
+<li>字符串分割，lua没有内置的字符串分割函数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function string_split(str, delimiter)</span><br><span class="line">    local result = &#123;&#125;</span><br><span class="line">    local start_index = 1</span><br><span class="line">    local end_index = string.find(str, delimiter)</span><br><span class="line">    while end_index do</span><br><span class="line">        table.insert(result, string.sub(str, start_index, end_index - 1))</span><br><span class="line">        start_index = end_index + string.len(delimiter)</span><br><span class="line">        end_index = string.find(str, delimiter, start_index)</span><br><span class="line">    end</span><br><span class="line">    table.insert(result, string.sub(str, start_index))</span><br><span class="line">    return result</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>​	日志输出，用于调试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function log_string(write_string)</span><br><span class="line">	filename = SCLogPath() .. &quot;/&quot; .. &quot;err.log&quot;</span><br><span class="line">    file = assert(io.open(filename, &quot;a&quot;))</span><br><span class="line">	file:write(write_string)</span><br><span class="line">	file:write(&quot;\n&quot;)</span><br><span class="line">	file:flush()</span><br><span class="line">	file:close()</span><br><span class="line">end</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>3）常用的内置函数</p>
+<ul>
+<li>string.match(str,pattern)  用于正则匹配字符串，注意lua 中不支持{min,max}的写法</li>
+<li>string.sub(str,start,end)  截取字符串</li>
+<li>string.find(str,substr,init,plain)  init 指定起始位置，plain 指定简单模式还是正则模式，true代表简单模式，false 代表正则模式</li>
+<li>string.char(str)  整型数字转成字符</li>
+<li>string.byte(str)  字符转换成整数</li>
+<li>string.len(str) 获取字符串长度，等于#str</li>
+<li>tonumber(str) 转成数字</li>
+<li>tostring(number) 转成字符串 </li>
+<li>struct.unpack(format,data) 解析二进制数据 需要导入struct 库  local struct &#x3D; require(“struct”)</li>
+<li>bit32.xor(ch,key)  异或运算 需要导入bit32 库    local bit32 &#x3D; require(“bit32”)</li>
+<li>string.gsub(mainString,findString,replaceString,num)  字符串替换函数</li>
+<li>string.find()  等同于 str:find()，以上很多.方法都可以换成:方法</li>
+<li>local success, result &#x3D; pcall(function() 内部代码   end)   try except 的lua实现</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="hack_zz 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="hack_zz 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>hack_zz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zwjsfdbb.top/2023/07/21/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90/suricata%E5%AD%A6%E4%B9%A0/" title="suricata 踩坑日记">http://zwjsfdbb.top/2023/07/21/流量分析/suricata学习/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90/" rel="tag"># 流量分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/07/20/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/curl_loader%E6%B3%9B%E6%B4%AA%E6%94%BB%E5%87%BB/" rel="prev" title="Curl_loader 泛洪攻击">
+      <i class="fa fa-chevron-left"></i> Curl_loader 泛洪攻击
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/07/31/%E9%80%86%E5%90%91/%E5%8A%A8%E6%80%81%E5%88%86%E6%9E%90%E5%BF%AB%E9%80%9F%E6%9F%A5%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="next" title="动态快速分析之查找字符串">
+      动态快速分析之查找字符串 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">一、基本概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">二、安装与配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.</span> <span class="nav-text">三、注意事项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E3%80%81Linux-%E4%B8%8B%E7%9A%84suricata-%E5%AE%89%E8%A3%85"><span class="nav-number">4.</span> <span class="nav-text">四、Linux 下的suricata 安装</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">hack_zz</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">128</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hack_zz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ba624f1112450ac0437d',
+      clientSecret: '815911bc627d433d1f233c833883b96e335ea413',
+      repo        : 'hexo_discuss',
+      owner       : 'scuzhangzhang',
+      admin       : ['scuzhangzhang'],
+      id          : '805792b5cdbfc123a59bdb3471b1d637',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

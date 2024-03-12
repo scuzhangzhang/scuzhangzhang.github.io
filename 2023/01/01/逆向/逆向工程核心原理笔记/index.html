@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1、大端序和小端序大端序：高地址存地位，低地址存高位 , 代表Unix RISC CPU 小端序：低地址存低位，高地址存高位，代表 Intel x86 CPU 2、IA32 寄存器 通用寄存器  EAX EBX ECX EDX ESP EBP ESI EDI 段寄存器   　CS 　DS 　SS 　ES  　FS　GS　 程序状态与控制寄存器　EFLAGS　初级阶段　ZF　OF　CF　 指令指针寄">
+<meta property="og:type" content="article">
+<meta property="og:title" content="逆向工程核心原理笔记">
+<meta property="og:url" content="http://zwjsfdbb.top/2023/01/01/%E9%80%86%E5%90%91/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="hack_zz">
+<meta property="og:description" content="1、大端序和小端序大端序：高地址存地位，低地址存高位 , 代表Unix RISC CPU 小端序：低地址存低位，高地址存高位，代表 Intel x86 CPU 2、IA32 寄存器 通用寄存器  EAX EBX ECX EDX ESP EBP ESI EDI 段寄存器   　CS 　DS 　SS 　ES  　FS　GS　 程序状态与控制寄存器　EFLAGS　初级阶段　ZF　OF　CF　 指令指针寄">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308011605296.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308011605659.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308111549773.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308161441068.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308211736099.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308291604730.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308291613813.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202309081810543.png">
+<meta property="article:published_time" content="2022-12-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-12T15:01:10.361Z">
+<meta property="article:author" content="hack_zz">
+<meta property="article:tag" content="逆向">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308011605296.png">
+
+<link rel="canonical" href="http://zwjsfdbb.top/2023/01/01/%E9%80%86%E5%90%91/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>逆向工程核心原理笔记 | hack_zz</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">hack_zz</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">每天进步一点点</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/01/01/%E9%80%86%E5%90%91/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          逆向工程核心原理笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-01-01 00:00:00" itemprop="dateCreated datePublished" datetime="2023-01-01T00:00:00+08:00">2023-01-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="1、大端序和小端序"><a href="#1、大端序和小端序" class="headerlink" title="1、大端序和小端序"></a>1、大端序和小端序</h4><p>大端序：高地址存地位，低地址存高位 , 代表Unix RISC CPU</p>
+<p>小端序：低地址存低位，高地址存高位，代表 Intel x86 CPU</p>
+<h4 id="2、IA32-寄存器"><a href="#2、IA32-寄存器" class="headerlink" title="2、IA32 寄存器"></a>2、IA32 寄存器</h4><ul>
+<li>通用寄存器  EAX EBX ECX EDX ESP EBP ESI EDI</li>
+<li>段寄存器   　CS 　DS 　SS 　ES  　FS　GS　</li>
+<li>程序状态与控制寄存器　EFLAGS　初级阶段　ZF　OF　CF　</li>
+<li>指令指针寄存器　EIP</li>
+</ul>
+<p>　</p>
+<h4 id="３、栈"><a href="#３、栈" class="headerlink" title="３、栈"></a>３、栈</h4><p>栈是一个高地址向低地址增长的数据结构。</p>
+<p>栈帧用EBP定位栈内元素，典型栈帧代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">push ebp</span><br><span class="line">mov ebp,esp</span><br><span class="line">....</span><br><span class="line">mov esp,ebp</span><br><span class="line">pop ebp</span><br><span class="line">retn</span><br></pre></td></tr></table></figure>
+
+<p>修改OD栈的相关设置，可比较直观的看到当前元素相对于（栈底）EBP的位置</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308011605296.png" alt="image-20230801160516200"></p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308011605659.png" alt="image-20230801160535604"></p>
+<p>涉及到函数调用约定：Cdecl Stdcall  fastcall  </p>
+<p>cdecl:   参数从右向左，调用者清理堆栈</p>
+<p>stdcall：参数从右向左，子程序清理</p>
+<p>fastcall:  参数ecx edx (R8 R9) ，剩下的参数从右向左，子程序清理</p>
+<p>thiscall:  参数从右向左，参数确定，this 通过ecx 传递，子程序清理，参数不定，this在所有参数入栈后压栈，调用者清理</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"> <span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line">    public:</span><br><span class="line">      <span class="type">int</span> <span class="title function_">function1</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>;</span><br><span class="line">      <span class="type">int</span> <span class="title function_">function2</span><span class="params">(<span class="type">int</span> a, ...)</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="type">int</span> <span class="title function_">A::function1</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> &#123;</span><br><span class="line">     <span class="keyword">return</span> a + b;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="type">int</span> <span class="title function_">A::function2</span><span class="params">(<span class="type">int</span> a, ...)</span> &#123;</span><br><span class="line">     va_list ap;</span><br><span class="line">     va_start(ap, a);</span><br><span class="line">     <span class="type">int</span> i;</span><br><span class="line">     <span class="type">int</span> result = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;a; i++) &#123;</span><br><span class="line">        result += va_arg(ap, <span class="type">int</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="type">void</span> <span class="title function_">callee</span><span class="params">()</span> &#123;</span><br><span class="line">     A a;</span><br><span class="line">     a.function1(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">     a.function2(<span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">// 反汇编结果</span></span><br><span class="line"><span class="number">00</span>AB45D8  push        <span class="number">2</span>  </span><br><span class="line"><span class="number">00</span>AB45DA  push        <span class="number">1</span>  </span><br><span class="line"><span class="number">00</span>AB45DC  lea         ecx,[a]  </span><br><span class="line"><span class="number">00</span>AB45DF  call        <span class="title function_">A::function1</span> <span class="params">(<span class="number">0</span>AB10AFh)</span>  </span><br><span class="line">	a.<span class="title function_">function2</span><span class="params">(<span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span>;</span><br><span class="line"><span class="number">00</span>AB45E4  push        <span class="number">3</span>  </span><br><span class="line"><span class="number">00</span>AB45E6  push        <span class="number">2</span>  </span><br><span class="line"><span class="number">00</span>AB45E8  push        <span class="number">1</span>  </span><br><span class="line"><span class="number">00</span>AB45EA  push        <span class="number">3</span>  </span><br><span class="line"><span class="number">00</span>AB45EC  lea         eax,[a]  </span><br><span class="line"><span class="number">00</span>AB45EF  push        eax  </span><br><span class="line"><span class="number">00</span>AB45F0  call        <span class="title function_">A::function2</span> <span class="params">(<span class="number">0</span>AB129Eh)</span>  </span><br><span class="line">00AB45F5  add         esp,14h  </span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+
+<p>在这里有个问题，为什么要从右向左？为什么C调用约定是调用者清理？</p>
+<p>为了支持可变参数，除了调用者谁也不知道参数有多少个，所以只能是调用者清理，而为什么从右边向左，因为针对可变参数，第一个固定参数的位置很重要，用于定位参数到哪结束，从ebp到第一个参数之间的位置是所有的参数，如果第一个参数先压栈，那么除非知道参数个数，不然无法确定其他的参数位置以及到哪才是结束。</p>
+<h4 id="4、PE结构"><a href="#4、PE结构" class="headerlink" title="4、PE结构"></a>4、PE结构</h4><p>PE 头（DOS Header+ DOS Stub + NT Header+节区头）</p>
+<p>RVA—RAW  公式   RVA-VirtualAddress + PointerToRawData &#x3D; RAW      VirtualAddress是对应节的相对虚拟地址</p>
+<p>IAT填充过程：读取IID的name成员获取库名称，加载库，读取IID中的OriginalFirstThunk 获取INT地址，逐一读取INT中的值获得IMAGE_BY_NAME, 使用Ordinal或者Name项获取相应的函数地址，读取IID中的FirstThunk（IAT）获取IAT地址，将函数地址填入IAT地址。</p>
+<h4 id="5、DLL注入"><a href="#5、DLL注入" class="headerlink" title="5、DLL注入"></a>5、DLL注入</h4><ul>
+<li><p>CreateRemoteThread(NtCreateThreadEx 可注入到服务进程)</p>
+<p>为什么CreateRemoteThread 传入的是目标进程的dll路径和当前进程的LoadLibrary地址？ 这是因为在windows系统中，Kernel32.dll 在每个进程的加载地址都是相同的。</p>
+<p>卸载模块可以给CreateRemoteThread 传递FreeLibrary地址和遍历模块得到的模块句柄</p>
+</li>
+<li><p>AppInit_DLLS  被user32.dll加载</p>
+</li>
+<li><p>SetWindowsHookEx 消息钩子</p>
+</li>
+</ul>
+<h4 id="6、代码注入"><a href="#6、代码注入" class="headerlink" title="6、代码注入"></a>6、代码注入</h4><p>原理：目标进程分配一段内存，写入代码以及数据，调用CreateRemoteThread 参数传入内存地址即可。执行更加隐蔽，比DLL注入更加流行。</p>
+<h4 id="7、API-Hook"><a href="#7、API-Hook" class="headerlink" title="7、API Hook"></a>7、API Hook</h4><ul>
+<li><p>调用调试器函数DebugActiveProcess函数附加调试器到运行的进程，随后调用DebugLoop函数处理调试时间，如修改API首字节为0xCC ,当调用到该API时，触发异常，控制权会交给调试器，此时可以做一些自定义的事情。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308111549773.png" alt="image-20230811154951680"></p>
+</li>
+<li><p>修改IAT中的API地址</p>
+</li>
+<li><p>InlineHook(热补丁) 长跳转+短跳转</p>
+</li>
+</ul>
+<h4 id="8、64位"><a href="#8、64位" class="headerlink" title="8、64位"></a>8、64位</h4><p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308161441068.png" alt="image-20230816144144961"></p>
+<ul>
+<li><p>Wow64  : </p>
+<p>Wow64 实现了在64位环境下运行32位程序，具体的原理是Wow64运行在用户模式下，把ntdll32位的API调用重定向到ntdll64位。</p>
+</li>
+<li><p>内存：理论上支持2^64 （16EB）,考虑到性能以及实际情况，实际的虚拟空间为16TB（2^44）</p>
+</li>
+<li><p>寄存器：</p>
+<p>通用寄存器 16个；RAX RBX RCX RDX RSP RBP RSI RDI R8~R15</p>
+</li>
+<li><p>函数调用约定</p>
+<p>FastCall  RCX RDX R8 R9   剩余的从右向左堆栈保存，但是栈中仍然给前四个参数保留了空间，调用者（caller）清理栈区空间</p>
+</li>
+<li><p>windbg 显示文件头的命令 !dh <module name or Loading address></p>
+</li>
+</ul>
+<h4 id="9、ASLR-地址空间随机化"><a href="#9、ASLR-地址空间随机化" class="headerlink" title="9、ASLR 地址空间随机化"></a>9、ASLR 地址空间随机化</h4><p>编译器启用&#x2F;DYNAMICBASE 即表示编译的程序开启地址空间随机化。PE文件发生以下变化，</p>
+<ul>
+<li>多一个”.reloc”的节</li>
+<li>IMAGE_FILE_HEADER\Characteristics  不包含IMAGE_FILE_RELOCS_STRIPPED(0001)标志</li>
+<li>IMAGE_OPTIONAL_HEADER\DLL Characteristics 包含IMAGE_CHARACTERISTICS_DYNAMIC_BASE(0040)标志  （删除这个即不支持ASLR，调试时可用）</li>
+</ul>
+<h4 id="10、Session机制"><a href="#10、Session机制" class="headerlink" title="10、Session机制"></a>10、Session机制</h4><p>Session 机制即每一个登陆的用户都有个一个不同的session，windows7以后第一个登陆的用户session ID为1，系统会话为0，这种机制被称为会话0隔离机制。系统进程和服务进程运行在Session 中，这使得一般的DLL注入CreateRemoteThread 失败，原始是win7以后该函数的底层逻辑发生了变化，调用ZwCreateTheadEx时，参数CreateSuspended 参数为1，若远程进程属于session 0 则不会恢复运行，返回错误, 如果改成0即可调用成功。因为针对session0 的进程进行注入需要直接调用ZwCreateThreadEx函数，传入参数CreateSuspended 为0即可。</p>
+<h4 id="11、TLS回调"><a href="#11、TLS回调" class="headerlink" title="11、TLS回调"></a>11、TLS回调</h4><p>所谓TLS回调函数是指每当创建&#x2F;终止进程的线程时会自动调用执行的函数，创建进程的主线程时也会自动调用回调函数，并且其调用执行先于EP代码，经常被用于反调试。</p>
+<p>Reason  一共有四个选项DLL_PROCESS_ATTACH、DLL_THREAD_ATTACH、DLL_THREAD_DETACH和DLL_PROCESS_DETACH</p>
+<p>示例程序如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &lt;Windows.h&gt;</span><br><span class="line">//告诉链接器在PE文件中要创建TLS目录</span><br><span class="line">#pragma comment(linker,&quot;/INCLUDE:__tls_used&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void print_console(char*szMsg)&#123;</span><br><span class="line">	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);</span><br><span class="line">	WriteConsoleA(hStdout, szMsg, strlen(szMsg), NULL, NULL);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void NTAPI TLS_CALLBACK1(PVOID DLLHandle, DWORD Reason, PVOID Reserved)&#123;</span><br><span class="line">	char szMsg[80] = &#123; 0, &#125;;</span><br><span class="line">	wsprintfA(szMsg, &quot;TLS_CALLBACK1()DLLHandle =%X,Reason %d\n&quot;, DLLHandle, Reason);</span><br><span class="line">	print_console(szMsg);</span><br><span class="line">&#125;</span><br><span class="line">void NTAPI TLS_CALLBACK2(PVOID DLLHandle, DWORD Reason, PVOID Reserved)</span><br><span class="line">&#123;</span><br><span class="line">	char szMsg[80]&#123;0, &#125;;</span><br><span class="line">	wsprintfA(szMsg, &quot;TLS_CALLBACK2():DlLHandle =%X,Reason %d\n&quot;,</span><br><span class="line">		DLLHandle, Reason);</span><br><span class="line">	print_console(szMsg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//创建一个tls section X represent random mark  L represents Tls callback section X can be B-Y</span><br><span class="line">#pragma data_seg(&quot;.CRT$XLX&quot;)</span><br><span class="line">// 定义多个回调函数</span><br><span class="line">PIMAGE_TLS_CALLBACK PTLS_CALLBACKs[]&#123;TLS_CALLBACK1, TLS_CALLBACK2,</span><br><span class="line">0&#125;;</span><br><span class="line">#pragma data_seg()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">DWORD WINAPI ThreadProc(LPVOID LParam)</span><br><span class="line">&#123;</span><br><span class="line">	print_console(&quot;ThreadProc()start\n&quot;);</span><br><span class="line">	print_console(&quot;ThreadProc()end\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(void)&#123;</span><br><span class="line">	HANDLE hThread=NULL;</span><br><span class="line">	print_console(&quot;main()start\n&quot;);</span><br><span class="line">	hThread = CreateThread(NULL, 0, ThreadProc, NULL, 0, NULL);</span><br><span class="line">	WaitForSingleObject(hThread, 60 * 1000);</span><br><span class="line">	CloseHandle(hThread);</span><br><span class="line">	print_console(&quot;main()end\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308211736099.png" alt="image-20230821173611939"></p>
+<h4 id="12、TEB"><a href="#12、TEB" class="headerlink" title="12、TEB"></a>12、TEB</h4><p>访问方法：</p>
+<ul>
+<li>Ntdll.NtCurrentTeb()</li>
+<li>FS:[0x18]</li>
+</ul>
+<p>FS:[0] &#x3D;SEH 起始地址</p>
+<h4 id="13、PEB"><a href="#13、PEB" class="headerlink" title="13、PEB"></a>13、PEB</h4><ul>
+<li>访问方法</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">方法<span class="number">1</span> FS:[<span class="number">0x30</span>]</span><br><span class="line">FS:[<span class="number">0x30</span>] = PEB 起始地址</span><br><span class="line">mov eax, DWORD PTR FS:[<span class="number">0x30</span>]</span><br><span class="line">方法<span class="number">2</span> FS:[<span class="number">0x18</span>] 找到TEB，再根据TEB的偏移找PEB</span><br><span class="line">mov eax,DWORD PRT FS:[<span class="number">0x18</span>]</span><br><span class="line">mov eax,DWPRD PTR DS:[EAX+<span class="number">0x30</span>]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>PEB的几个重点结构</p>
+<ul>
+<li><p>BeingDebugged 0x2  IsDebuggerPresent</p>
+</li>
+<li><p>ImageBaseAddress 0x8  </p>
+</li>
+<li><p>Ldr     0xc  指向 _PEB_LDR_DATA ，偏移0x0c，0x14，0x1c</p>
+<p>的位置有三个_LIST_ENTRY结构，双向链表保存着加载到进程的DLL模块对应的__LDR_DATA_ENTRY的地址，解析这个结构可以获取该DLL的加载信息。</p>
+</li>
+<li><p>ProcessHeap 0x18  GetProcessHeap() ，</p>
+<p>第三个flags成员和第四个ForceFlags成员被用作反调试<br>正常情况下flags的值为2 ForceFlags的值为0</p>
+</li>
+<li><p>NtGlobalFlag 0x68  调试被设置为0x70</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="13、SEH链"><a href="#13、SEH链" class="headerlink" title="13、SEH链"></a>13、SEH链</h4><p>链表的形式存在，链表的结构</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">EXCEPTION_REGISTRATION_RECORD</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">     PEXCEPTION_REGISTRATION_RECORD Next;</span><br><span class="line">     PEXCEPTION_DISPOSITION Handler;</span><br><span class="line">&#125; EXCEPTION_REGISTRATION_RECORD, *PEXCEPTION_REGISTRATION_RECORD;</span><br></pre></td></tr></table></figure>
+
+<p>next 成员是指向下一个_EXCEPTION_REGISTRATION_RECORD结构体的指针，handler是异常处理函数，next如果值为0xFFFFFFFF，代表是SEH链的最后一个节点。</p>
+<p>异常处理函数 EXCEPTION_DISPOSITION的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">EXCEPTION_DISPOSITION _except_handler(</span><br><span class="line">EXCEPTION_RECORD  *pRecord,</span><br><span class="line">EXCEPTION_REGISTRATION_RECORD *pFrame,</span><br><span class="line">CONTEXT *pContext,</span><br><span class="line">PVOID pValue</span><br><span class="line">)</span><br><span class="line"><span class="comment">//以上返回名为EXCEPTION_DISPOSITION的枚举类型</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> _<span class="title">EXCEPTION_DISPOSITION</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">         ExceptionContinueExecution = <span class="number">0</span>,<span class="comment">//继续执行异常代码</span></span><br><span class="line">         ExceptionContinueSearch = <span class="number">1</span>,  <span class="comment">//运行下一个异常处理器</span></span><br><span class="line">         ExceptionNestedException = <span class="number">2</span>, <span class="comment">// OS 内部使用</span></span><br><span class="line">         ExceptionCollidedUnwind = <span class="number">3</span>   <span class="comment">//OS 内部使用</span></span><br><span class="line">&#125; EXCEPTION_DISPOSITION;</span><br><span class="line">  </span><br><span class="line">    </span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">EXCEPTION_RECORD</span> &#123;</span></span><br><span class="line">  DWORD                    ExceptionCode;</span><br><span class="line">  DWORD                    ExceptionFlags;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">EXCEPTION_RECORD</span> *<span class="title">ExceptionRecord</span>;</span></span><br><span class="line">  PVOID                    ExceptionAddress;</span><br><span class="line">  DWORD                    NumberParameters;</span><br><span class="line">  ULONG_PTR                ExceptionInformation[EXCEPTION_MAXIMUM_PARAMETERS];</span><br><span class="line">&#125; EXCEPTION_RECORD;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>SEH的安装</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push handler </span><br><span class="line">push DWORD PTR FS:[0]</span><br><span class="line">mov DWORD PTR FS:[0],esp</span><br></pre></td></tr></table></figure>
+
+<p>SEH的删除</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pop DWORD PTR FS:[0]</span><br><span class="line">add esp,4</span><br></pre></td></tr></table></figure>
+
+<p>注意 OD 调试异常时，可通过shift+F9&#x2F;F8&#x2F;F7 使得异常抛给程序异常处理函数而不是调试器。</p>
+<h4 id="14、反调试技术"><a href="#14、反调试技术" class="headerlink" title="14、反调试技术"></a>14、反调试技术</h4><ul>
+<li><p>静态反调试技术</p>
+<ul>
+<li><p>PEB BeingDebugged (0x2) 值为 1 </p>
+</li>
+<li><p>PEB Ldr(0xC)  未使用的堆内存填充为0XFEEEFEEE</p>
+</li>
+<li><p>PEB ProcessHeap (0x18)  结构体中  Flag(0xC) 不等于2   Force Flags(0x10) 不等于0</p>
+</li>
+<li><p>PEB NtGlobalFlag(0x68) 值为0x70</p>
+</li>
+<li><p>NtQueryInformationProcess 函数的特定参数，</p>
+<ul>
+<li>第二个参数ProcessInformationClass 指定为ProcessDebugPort(0x7) 返回的第三个参数dwDebugPort 等于0xFFFFFFFF，CheckRemoteDebuggerPresent 内部调用了NtQueryInformationProcess（ProcessDebugPort(0x7) ）</li>
+<li>第二个参数ProcessInformationClass 指定为ProcessDebugObjectHandle(0x1E) 返回的第三个参数DebugObject 等于非NULL</li>
+<li>第二个参数ProcessInformationClass 指定为ProcessDebugFlags(0x1F) 返回的第三个参数为0</li>
+</ul>
+</li>
+<li><p>NtQuerySystemInformation函数 检测当前系统是否处于调试状态</p>
+<p>SystemInformationClass 传入SystemKernelDebuggerInformation(0x23), 第三个参数返回SYSTEM_KERNEL_DEBUGGER_INFORMATION 结构体地址，其中DebuggerEnabled 值被设置为1</p>
+</li>
+<li><p>NtQueryObject 检查调试对象的存在 第二个参数ObjectAllTypesInformation(3),遍历返回的链表对应的结构体（POBJECT_TYPE_INFORMATION）-&gt;TypeName.Buffer，对比”DebugObject”</p>
+</li>
+<li><p>ZwSetInformation  第二个参数ThreadInformationClass 设置为ThreadHideFromDebugger(0x11),调试器会终止，自身也会终止</p>
+</li>
+<li><p>TLS回调</p>
+</li>
+<li><p>ETC</p>
+<ul>
+<li>检测调试工具进程，窗口</li>
+<li>检测计算机名称</li>
+<li>检测程序运行路径</li>
+<li>检测虚拟机</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>动态反调试技术</p>
+<ul>
+<li><p>SEH异常</p>
+</li>
+<li><p>time check</p>
+<ul>
+<li>RDTSC</li>
+<li>NtQueryPerformanceCounter</li>
+<li>GetTickCount</li>
+</ul>
+</li>
+<li><p>EFlags 的TF（Trap Flag）TF&#x3D;1,CPU 进入单步中断模式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//修改方法</span><br><span class="line">PUSHFD</span><br><span class="line">OR DWORD PTR SS:[ESP],100</span><br><span class="line">POPFD</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>int2D 调试状态下不会运行SEH，而是跳过一个字节仅需运行。</p>
+</li>
+<li><p>0xCC 探测</p>
+</li>
+<li><p>比较代码区域的校验和</p>
+</li>
+<li><p>API 重定向技术</p>
+</li>
+<li><p>Debug Blocker(Self Debugging)</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="15、服务进程的调试"><a href="#15、服务进程的调试" class="headerlink" title="15、服务进程的调试"></a>15、服务进程的调试</h4><p><strong>服务的原理</strong></p>
+<p>服务程序由SCM管理，运行服务程序时，服务控制器向SCM提出控制请求，SCM向服务程序传递控制命令，并接收返回值。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308291604730.png" alt="image-20230829160404115"></p>
+<p><strong>服务启动的过程</strong></p>
+<ul>
+<li><p>服务控制器调用StartService()</p>
+<p>服务控制器调用StartService, SCM 创建服务进程，然后执行服务进程的EP代码。</p>
+</li>
+<li><p>服务进程调用StartServiceCtrlDispatcher()</p>
+<p>服务进程内部调用StartServiceCtrlDispatcher 注册服务主函数SvcMain的地址，随后返回StartService函数。接着SCM调用服务进程的SvcMain函数。</p>
+</li>
+<li><p>服务进程调用SetServiceStatus()</p>
+<p>服务进程运行SvcMain函数时，调用SetServiceStatus 使得服务状态从SERVICE_START_PENDING 变成SERVICE_RUNNING。</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202308291613813.png" alt="image-20230829161347750"></p>
+<p>服务调试方法</p>
+<ul>
+<li><p>直接调试，找到SvcMain函数，跳转到该位置，然后修改EIP，OD需要勾选Memory access violation。</p>
+</li>
+<li><p>附加方式</p>
+<ul>
+<li><p>安装服务</p>
+</li>
+<li><p>修改服务启动超时时间</p>
+<p>HKLM\SYSTEM\CurrentControlSet\Control ServicesPipeTimeout</p>
+<p>设置完成重启系统</p>
+</li>
+<li><p>修改服务程序，设置无限循环</p>
+<p>修改OEP代码前两个字节为EB FE（跳到自身） 也有一些通过设置映像劫持的方式在服务启动的时候挂载到调试器，此时需要设置服务允许桌面交互</p>
+</li>
+<li><p>启动服务</p>
+</li>
+<li><p>附加到调试器，跳转到EP，恢复EP</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="16、自我创建的进程调试"><a href="#16、自我创建的进程调试" class="headerlink" title="16、自我创建的进程调试"></a>16、自我创建的进程调试</h4><pre><code>父进程一个挂起方式创建子进程，然后修改子进程的context的eip，最后恢复运行。
+
+调试方法1：查找子进程的context 的eip位置，对应地址的内容修改为EB FE，从而无限循环。
+
+ 调试方案2： 设置OD为实时调试，然后修改context 的eip位置的内容为0xCC，触发异常，OD接管程序。
+</code></pre>
+<h4 id="17、PE映像切换调试"><a href="#17、PE映像切换调试" class="headerlink" title="17、PE映像切换调试"></a>17、PE映像切换调试</h4><p>A 启动B（挂起) -&gt; unmap  B -&gt; map C-&gt;exec c</p>
+<p>调试方法： 把C的入口点代码 修改为无限循环（EB FE）。 </p>
+<p>18、Debug Blocker 程序调试</p>
+<p>父进程作为调试器，子进程作为被调试程序，被调试进程的所有异常均由调试器处理，子进程故意触发异常，父进程接收异常，控制权转移，父进程进行修改代码，修改执行分支等。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/img/202309081810543.png" alt="image-20230907175246702"></p>
+<p>首先利用条件断点理清楚逻辑，父进程WaitForDebugEvent的位置，跳转的位置，子进程故意触发异常的位置，恢复运行的位置。</p>
+<p>随后开始OD附加到父进程一直执行到解密子进程代码完成后，设置子进程eip的位置内容为无限循环（EB FE），借助于process hacker修改内存也可以，父进程执行一段代码调用DebugActiveProcessStop 分离父子进程，OD再附加到子进程进行调试。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="hack_zz 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="hack_zz 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>hack_zz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zwjsfdbb.top/2023/01/01/%E9%80%86%E5%90%91/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0/" title="逆向工程核心原理笔记">http://zwjsfdbb.top/2023/01/01/逆向/逆向工程核心原理笔记/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"># 逆向</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/12/01/%E7%BC%96%E7%A8%8B/shellcode%E7%BC%96%E5%86%99/" rel="prev" title="通用shellcode编写">
+      <i class="fa fa-chevron-left"></i> 通用shellcode编写
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/02/%E9%80%86%E5%90%91/IDApython%E5%AD%A6%E4%B9%A0/" rel="next" title="IDA python 学习记录">
+      IDA python 学习记录 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E3%80%81%E5%A4%A7%E7%AB%AF%E5%BA%8F%E5%92%8C%E5%B0%8F%E7%AB%AF%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">1、大端序和小端序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%E3%80%81IA32-%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">2、IA32 寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EF%BC%93%E3%80%81%E6%A0%88"><span class="nav-number">3.</span> <span class="nav-text">３、栈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4%E3%80%81PE%E7%BB%93%E6%9E%84"><span class="nav-number">4.</span> <span class="nav-text">4、PE结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5%E3%80%81DLL%E6%B3%A8%E5%85%A5"><span class="nav-number">5.</span> <span class="nav-text">5、DLL注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6%E3%80%81%E4%BB%A3%E7%A0%81%E6%B3%A8%E5%85%A5"><span class="nav-number">6.</span> <span class="nav-text">6、代码注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7%E3%80%81API-Hook"><span class="nav-number">7.</span> <span class="nav-text">7、API Hook</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8%E3%80%8164%E4%BD%8D"><span class="nav-number">8.</span> <span class="nav-text">8、64位</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9%E3%80%81ASLR-%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4%E9%9A%8F%E6%9C%BA%E5%8C%96"><span class="nav-number">9.</span> <span class="nav-text">9、ASLR 地址空间随机化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10%E3%80%81Session%E6%9C%BA%E5%88%B6"><span class="nav-number">10.</span> <span class="nav-text">10、Session机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11%E3%80%81TLS%E5%9B%9E%E8%B0%83"><span class="nav-number">11.</span> <span class="nav-text">11、TLS回调</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12%E3%80%81TEB"><span class="nav-number">12.</span> <span class="nav-text">12、TEB</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13%E3%80%81PEB"><span class="nav-number">13.</span> <span class="nav-text">13、PEB</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13%E3%80%81SEH%E9%93%BE"><span class="nav-number">14.</span> <span class="nav-text">13、SEH链</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14%E3%80%81%E5%8F%8D%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF"><span class="nav-number">15.</span> <span class="nav-text">14、反调试技术</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15%E3%80%81%E6%9C%8D%E5%8A%A1%E8%BF%9B%E7%A8%8B%E7%9A%84%E8%B0%83%E8%AF%95"><span class="nav-number">16.</span> <span class="nav-text">15、服务进程的调试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16%E3%80%81%E8%87%AA%E6%88%91%E5%88%9B%E5%BB%BA%E7%9A%84%E8%BF%9B%E7%A8%8B%E8%B0%83%E8%AF%95"><span class="nav-number">17.</span> <span class="nav-text">16、自我创建的进程调试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#17%E3%80%81PE%E6%98%A0%E5%83%8F%E5%88%87%E6%8D%A2%E8%B0%83%E8%AF%95"><span class="nav-number">18.</span> <span class="nav-text">17、PE映像切换调试</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">hack_zz</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">128</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hack_zz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ba624f1112450ac0437d',
+      clientSecret: '815911bc627d433d1f233c833883b96e335ea413',
+      repo        : 'hexo_discuss',
+      owner       : 'scuzhangzhang',
+      admin       : ['scuzhangzhang'],
+      id          : 'fed7f7d331ce092f2ed0710fea1e6741',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

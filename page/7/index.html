@@ -184,7 +184,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/11/11/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/09/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86_new/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -198,7 +198,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/11/11/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="post-title-link" itemprop="url">树莓派搭建vpn服务器</a>
+            <a href="/2023/03/09/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86_new/" class="post-title-link" itemprop="url">路由器相关知识</a>
         </h2>
 
         <div class="post-meta">
@@ -208,273 +208,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-11-11 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-11T00:00:00+08:00">2017-11-11</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1.此篇是在前篇搭建树莓派透明代理的基础上完成的，</p>
-<p>2.树莓派尽量设置成静态ip，具体如下</p>
-<pre><code>sudo vim /etc/dhcpcd.conf
-填写以下内容
-
-interface eth0
-
-static ip_address=ip
-
-static routers=网关
-
-static domain_name_servers=223.5.5.5
-</code></pre>
-<p>3.安装openvpn</p>
-<pre><code>sudo apt-get install openvpn
-</code></pre>
-<p>4.下载easy-rsa</p>
-<pre><code>cd /etc/openvpn
-wget --no-check-certificate https://github.com/OpenVPN/easy-rsa/releases/download/2.2.2/EasyRSA-2.2.2.tgz
-tar -xzvf EasyRSA-2.2.2.tgz
-mv EasyRSA-2.2.2 easy-rsa
-</code></pre>
-<p>5.配置easy-rsa</p>
-<pre><code>cd /etc/openvpn/easy-rsa
-vim vars    # 打开easy-rsa配置文件
-修改一下内容
-export EASY_RSA=&quot;/etc/openvpn/easy-rsa&quot;
-export KEY_SIZE=1024 #默认的2048太大，要运算很久
-加载配置
-source ./vars
-</code></pre>
-<p>6.生成ca密钥</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/11/11/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BAvpn%E6%9C%8D%E5%8A%A1%E5%99%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/11/05/%E6%9D%82%E5%AD%A6/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/11/05/%E6%9D%82%E5%AD%A6/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/" class="post-title-link" itemprop="url">重装系统后hexo 博客恢复</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-11-05 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-05T00:00:00+08:00">2017-11-05</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="1-安装node-js和git"><a href="#1-安装node-js和git" class="headerlink" title="1.安装node.js和git"></a>1.安装node.js和git</h3><p> 这个不用多说，直接下载安装就行了。</p>
-<h3 id="2-配置-git-个人信息，生成新的-ssh-密钥："><a href="#2-配置-git-个人信息，生成新的-ssh-密钥：" class="headerlink" title="2.配置 git 个人信息，生成新的 ssh 密钥："></a>2.配置 git 个人信息，生成新的 ssh 密钥：</h3><p>git config –global user.name “xxxxxx”<br>git config –global user.email “xxxxxx”<br>ssh-keygen -t rsa -C “xxxxxxxx(邮箱)”</p>
-<h3 id="3-添加公钥"><a href="#3-添加公钥" class="headerlink" title="3.添加公钥"></a>3.添加公钥</h3><p>在用户文件夹.ssh 文件里面把公钥复制出来粘贴到github个人设置的ssh位置。</p>
-<h3 id="4-安装hexo"><a href="#4-安装hexo" class="headerlink" title="4.安装hexo"></a>4.安装hexo</h3><p>建议先<br>npm install cnpm -g –registry&#x3D;<a target="_blank" rel="noopener" href="https://registry.npm.taobao.org/">https://registry.npm.taobao.org</a><br>安装的时候 用cpm 代替npm<br>这样的话npm 安装比较快而且不容易失败<br>cnpm install hexo-cli -g</p>
-<h3 id="5-删除博客文件夹文件，保留部分"><a href="#5-删除博客文件夹文件，保留部分" class="headerlink" title="5.删除博客文件夹文件，保留部分"></a>5.删除博客文件夹文件，保留部分</h3><p>打开原来的博客文件夹,只需保留_config.yml，theme&#x2F;，source&#x2F;，scaffolds&#x2F;，package.json，.gitignore 这些项目，删除其他的文件。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/11/05/%E6%9D%82%E5%AD%A6/hexo%20%E5%8D%9A%E5%AE%A2%E6%81%A2%E5%A4%8D/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/22/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/10/22/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">对抗反汇编2</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-10-22 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-22T00:00:00+08:00">2017-10-22</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>一、 样本基本信息</p>
-<p>样本来源：恶意代码实战中的Lab15-03.exe。</p>
-<p>二、分析过程</p>
-<p>IDA 打开发现在00401016处有标红，IDA识别出了一些异常，仔细分析发现，把0x40148c写到了ebp+4的位置，而这个位置刚好是main函数返回地址的位置，通过改写此处的内容让main返回的时候执行0x40148c位置处的代码。</p>
-<p><img src="https://i.imgur.com/vd4KEI6.png" alt="xx1"></p>
-<p>由此可看出主函数应该是非常正常，不会看出有什么恶意的地方。分析0x40148c处的代码。你此处的代码在0x401496处，有明显标红，说明有反汇编异常，一般都是恶意代码作者故意制作的来影响反汇编的结果。此处是一个很明显的对抗反汇编，上一步是跳转到401497的位置，而这个位置是jmp 这条指令的中间，这显然是不可能的，在此处按d键，把代码转为数据显示，然后把401497后面的数据按c键再转回代码，注意对齐。然后把401496位置的数据改为nop,可以通过Edit-&gt;Patch Program-&gt;change word ,把E9改为90，然后按c转换为代码就可以了。效果如图</p>
-<p><img src="https://i.imgur.com/Qtl0ZFP.png"></p>
-<p>继续往下看，发现有一个除零异常出现 ，</p>
-<p><img src="https://i.imgur.com/ng6kIn0.png"></p>
-<p>显然恶意代码先把异常处理函数的地址存到FS寄存器，然后出发除零异常执行此处的函数。显此处显然异常处理函数的地址是0x4014c0，而0x4014c0位置处的IDA没有识别为代码。按c键来转换为代码，继续向下看，在0x4014D7位置处，又出现了一个与0x401496处的相似的异常，同样的方法进行处理，结果如图</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/22/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96%E5%88%86%E6%9E%90/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/iptables/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/10/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/iptables/" class="post-title-link" itemprop="url">iptables 基础</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-10-20 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-20T00:00:00+08:00">2017-10-20</time>
+              <time title="创建时间：2023-03-09 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-09T00:00:00+08:00">2023-03-09</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -497,687 +231,980 @@ source ./vars
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>&amp;emsp;&amp;emsp;当主机收到一个数据包后，数据包先在内核空间中处理，若发现目的地址是自身，则传到用户空间中交给对应的应用程序处理，若发现目的不是自身，则会将包丢弃或进行转发。</p>
-<p>&amp;emsp;&amp;emsp;iptables实现防火墙功能的原理是：在数据包经过内核的过程中有五处关键地方，分别是PREROUTING、INPUT、OUTPUT、FORWARD、POSTROUTING，称为钩子函数，iptables这款用户空间的软件可以在这5处地方写规则，对经过的数据包进行处理，规则一般的定义为“如果数据包头符合这样的条件，就这样处理数据包”。</p>
-<p>&amp;emsp;&amp;emsp;iptables中定义有表，分别表示提供的功能，有filter表（实现包过滤）、nat表（实现网络地址转换）、mangle表（实现包修改）、raw表（实现数据跟踪），这些表具有一定的优先级：raw–&gt;mangle–&gt;nat–&gt;filter</p>
-<p><img src="https://i.imgur.com/Fl0nfg8.png"></p>
-<p><img src="https://i.imgur.com/OHQyUMC.png"></p>
-<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><p>&amp;emsp常用操作命令	说明</p>
-<p>-A	在指定链尾部添加规则</p>
-<p>-D	删除匹配的规则</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/20/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/iptables/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E6%9D%82%E5%AD%A6/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">双系统安装（win10+ubuntu）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1.我选择的 是win10加ubuntu双系统。</p>
-<p>2.准备工作</p>
-<pre><code>      U盘一个16g
-      win10系统
-      ubuntu系统
-</code></pre>
-<p>3.备份好硬盘数据以后，空出一个分区，然后制作一个PE盘，然后进PE删除这个分区，使其处于未分配的空间状态，用于安装ubuntu ,然后安装win10，这个就不用多说了，大家都会。</p>
-<p>4.安装结束以后，用大白菜iso装机方式，把ubuntu系统直接写入U盘，然后U盘其启动即可进入装机状态。</p>
-<p>其他的跟一般装ubuntu一样，在分区那个位置，选择其他方式，选择手动分区，然后选择刚刚那个未分配空间，一般可以分4个分区。&#x2F;boot 200M,swap分区视内存定,一般可以和内存一样大，然后剩下分&#x2F;，15g-20g左右，剩下的可以全部给&#x2F;home。引导驱动器选择&#x2F;boot,然后继续安装正常方式来装就好了。</p>
-<p>4.此时两个系统都安好了，但是此时还是默认win10启动，此时最重要的来了，下载一个叫EasyBCD的软件，选择添加新条目，然后选择Linux，然后名称，驱动器选择&#x2F;boot对应的就好了。此时重启你就会发现有两个候选操作系统了。</p>
-<p><img src="https://i.imgur.com/prFcTXH.png"></p>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/" class="post-title-link" itemprop="url">树莓派透明代理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1.安装vim</p>
-<p>连网之后，首先安装vim,便于后面的配置文件的编写。</p>
-<pre><code> sudo apt-get install vim
-</code></pre>
-<p>2.静态ip  </p>
-<p>图形界面貌似会失败，建议在配置文件里改：</p>
-<pre><code>sudo vim /etc/dhcpcd.conf
-</code></pre>
-<p>填写以下内容</p>
-<pre><code>interface eth0
-
-static ip_address=ip
-
-static routers=网关
-
-static domain_name_servers=223.5.5.5
-</code></pre>
-<p>3.配置路由转发：</p>
-<pre><code>sudo vim  /etc/sysctl.conf
-</code></pre>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/10/16/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96/" class="post-title-link" itemprop="url">对抗反汇编1</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h5 id="方法总结如下："><a href="#方法总结如下：" class="headerlink" title="方法总结如下："></a>方法总结如下：</h5><h5 id="1、插入流氓字节，阻止真正的指令被反汇编"><a href="#1、插入流氓字节，阻止真正的指令被反汇编" class="headerlink" title="1、插入流氓字节，阻止真正的指令被反汇编"></a>1、插入流氓字节，阻止真正的指令被反汇编</h5><p>线性反汇编和面向代码流的反汇编：</p>
-<p>线性反汇编是遍历一个代码段，一次一条指令的线性反汇编，不考虑代码流的控制指令。而面向代码流的反汇编是会检查每一条指令。然后建立反汇编的地址列表，然后这样的反汇编算法会更加先进，而不易出错。比如：</p>
-<pre><code>    .text:00401035                 jz      short near ptr loc_401037+1
-    .text:00401037
-    .text:00401037 loc_401037:                             ; CODE XREF: .text:00401035j
-    .text:00401037                 call    near ptr 8B4C55C7h
-</code></pre>
-<p>观察以上的汇编代码，你会发现jz跳转到了call 指令中间，这显然是不可能的，所以call指令一定是一个数据而不是代码，在此处按d键，然后再观察</p>
-<blockquote>
-<pre><code>.text:00401035                 jz      short loc_401038
-</code></pre>
-<p>   .text:00401035 ; —————————————————————————<br>            .text:00401037                 db 0E8h<br>        .text:00401038 ; —————————————————————————<br>        .text:00401038<br>        .text:00401038 loc_401038:                             ; CODE XREF: .text:00401035j<br>        .text:00401038                 mov     eax, [ebp+0Ch]</p>
-</blockquote>
-<p>这样显然很正确了，对于call 指令而言，如果后面四个字节跟的是地址，它对应的机器码是0xe8，此处显然是把数据0xe8当成了call指令，才会出现这样的问题。</p>
-<h5 id="2、固定条件的跳转指令"><a href="#2、固定条件的跳转指令" class="headerlink" title="2、固定条件的跳转指令"></a>2、固定条件的跳转指令</h5><pre><code>                               xor     eax, eax
-.text:00401035                 jz      short loc_401038
-</code></pre>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/16/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E9%87%8D%E5%AE%9A%E5%90%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/10/16/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E9%87%8D%E5%AE%9A%E5%90%91/" class="post-title-link" itemprop="url">恶意代码重定向</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>&amp;emsp;1.首先用strings查看字符串，发现<a target="_blank" rel="noopener" href="http://www.practicalmalwareanalysis.com/start.htm%EF%BC%8CUser-Agent%E5%AD%97%E6%A0%B7%EF%BC%8C%E4%BB%A5%E5%8F%8AC:/autobat.exe%EF%BC%8C%E7%96%91%E4%BC%BC%E7%BC%96%E7%A0%81%E7%94%A8%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%9A">http://www.practicalmalwareanalysis.com/start.htm，User-Agent字样，以及C:\autobat.exe，疑似编码用的字符串：</a></p>
-<pre><code>/abcdefghijklmnopqrstuvwxyz0123456789:.以及CreateFile，CreateProcessA，
-InternetReadFile
-InternetCloseHandle
-InternetOpenUrlA
-InternetOpenA
-WININET.dll
-URLDownloadToCacheFileA 
-</code></pre>
-<p>&amp;emsp;&amp;emsp;显式调用高层API COM接口，以及Wininet 接口函数。<br><img src="https://i.imgur.com/qDJ4DI5.png"><br>这些函数，这些都是重要信息需要关注的。</p>
-<p>&amp;emsp;&amp;emsp;2.IDA加载程序分析，首先是401457函数，调用了CreateFileA和ReadFile函数，具体分析发现是打开’C:\autobat.exe’,失败了调用函数，分析可知是把’<a target="_blank" rel="noopener" href="http://www.practicalmalwareanalysis.com/start.htm',0%E5%86%99%E5%85%A5%E6%96%87%E4%BB%B6C:/autobat.exe%EF%BC%8C%E9%87%8D%E5%91%BD%E5%90%8D%E8%AF%A5%E5%87%BD%E6%95%B0%E4%B8%BAwrite_url,%E7%84%B6%E5%90%8E%E5%86%8D%E6%AC%A1%E8%B0%83%E7%94%A8401457%E5%87%BD%E6%95%B0%EF%BC%8C%E5%88%86%E6%9E%90%E5%8F%AF%E5%BE%97%E6%98%AF%E6%8A%8A%E8%AF%A5%E7%BD%91%E5%9D%80%E8%AF%BB%E5%88%B0%E7%BC%93%E5%86%B2%E5%8C%BAipbuffer,%E5%91%BD%E5%90%8D%E8%AF%A5%E5%87%BD%E6%95%B0%E4%B8%BAread_url,%E8%BF%94%E5%9B%9E%E5%80%BC%E4%B8%BA1%EF%BC%8C%E7%84%B6%E5%90%8E%E6%8E%A5%E4%B8%8B%E6%9D%A5%E8%B0%83%E7%94%A84011f3%E5%87%BD%E6%95%B0%EF%BC%8C%E9%A6%96%E5%85%88%E6%98%AF%E5%9C%A8szagent%E5%9C%B0%E5%9D%80%E5%AD%98%E6%94%BE%E7%A1%AC%E7%BC%96%E7%A0%81%E7%9A%84%E5%A4%B4%E9%83%A8%E4%BF%A1%E6%81%AF%EF%BC%8C%E4%BD%86%E6%98%AF%E9%94%99%E8%AF%AF%E7%9A%84%E5%A4%9A%E5%86%99%E4%BA%86User-Agent%EF%BC%9A%E8%BF%99%E6%A0%B7%E4%BC%9A%E5%AF%BC%E8%87%B4%E5%AE%9E%E9%99%85%E5%BE%97%E5%88%B0%E7%9A%84%E5%A4%B4%E9%83%A8%E4%BC%9A%E5%87%BA%E7%8E%B0User-Agent:User-Agent:%E7%9A%84%E6%83%85%E5%86%B5%E3%80%82%E7%84%B6%E5%90%8E%E4%B8%8B%E9%9D%A2%E6%98%AFInternetOpenA%E5%92%8CInternetOpenUrlA%E5%87%BD%E6%95%B0%E6%89%93%E5%BC%80http://www.practicalmalwareanalysis.com/start.htm%EF%BC%8C%E6%89%93%E5%BC%80%E6%88%90%E5%8A%9F%E5%90%8EInternetReadFile%E8%AF%BB%E5%8F%96%E9%A1%B5%E9%9D%A2%E4%BF%A1%E6%81%AF%EF%BC%8C">http://www.practicalmalwareanalysis.com/start.htm&#39;,0写入文件C:\autobat.exe，重命名该函数为write_url,然后再次调用401457函数，分析可得是把该网址读到缓冲区ipbuffer,命名该函数为read_url,返回值为1，然后接下来调用4011f3函数，首先是在szagent地址存放硬编码的头部信息，但是错误的多写了User-Agent：这样会导致实际得到的头部会出现User-Agent:User-Agent:的情况。然后下面是InternetOpenA和InternetOpenUrlA函数打开http://www.practicalmalwareanalysis.com/start.htm，打开成功后InternetReadFile读取页面信息，</a> 首先搜索&lt;no’字符串，然后调用401000函数，</p>
-<p><img src="https://i.imgur.com/ht0pUfZ.png"></p>
-<p>&amp;emsp;&amp;emsp;进去分析发现是对&lt;noscript标签的不规则比较，然后对判断是否后面会有<a target="_blank" rel="noopener" href="http://www.practicalmalwareanalysis.com,然后找到“96”的位置结束,然后把v7地址存放的内容赋到a3地址./">http://www.practicalmalwareanalysis.com，然后找到“96”的位置结束，然后把v7地址存放的内容赋到a3地址。</a></p>
-<p><img src="https://i.imgur.com/akX3WUw.png"></p>
-<p>&amp;emsp;&amp;emsp;函数401000成功返回1，然后4011f3也返回1，最后执行401684函数，函数有两个参数，一个是刚刚的a3，另一个是v6的地址。v6&#x3D;1,打开401684函数进行分析，是现实strtok函数，把字符串分为两部分，分别赋给两变量，然后是个case语句，当发现首字母为d时，执行401565函数，分析401565函数，首先是401147函数初步分析发现是个解码函数，然后后面是URLDownloadToCacheFileA，CreateProcessA函数，是把下载的程序运行起来。首字母为n时，v6置1，首字母为s时，sleep特定的时间，首字母为r时，运行401651函数，进去函数进行分析，发现又是刚刚那个解码函数401147，然后再次调用write_url函数，由此可以知道应该是个url重定向。到此整个样本就已经分析结束了。</p>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/16/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E9%87%8D%E5%AE%9A%E5%90%91/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/09/16/%E9%80%86%E5%90%91/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/09/16/%E9%80%86%E5%90%91/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/" class="post-title-link" itemprop="url">dll注入之APC注入</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-09-16T00:00:00+08:00">2017-09-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>APC注入的原理是利用当线程被唤醒时APC中的注册函数会被执行的机制，并以此去执行我们的DLL加载代码，进而完成DLL注入的目的，其具体流程如下：</p>
-<p>    1）当EXE里某个线程执行到SleepEx()或者WaitForSingleObjectEx()时，系统就会产生一个软中断（或者是Messagebox弹窗的时候不点OK的时候也能注入）。</p>
-<p>    2）当线程再次被唤醒时，此线程会首先执行APC队列中的被注册的函数。</p>
-<p>    3）利用QueueUserAPC()这个API可以在软中断时向线程的APC队列插入一个函数指针，如果我们插入的是Loadlibrary()执行函数的话，就能达到注入DLL的目的。<br>程序如下:</p>
-<pre><code>// TESTAPC2.cpp : 定义控制台应用程序的入口点。
-//
-
-#include &quot;stdafx.h&quot;
-#include &lt;string&gt;
-#include&lt;windows.h&gt;
-#include&lt;shlwapi.h&gt;
-#include&lt;tlhelp32.h&gt;
-#include&lt;winternl.h&gt;
-#pragma comment(lib,&quot;shlwapi.lib&quot;)
-#pragma comment(lib,&quot;ntdll.lib&quot;)
-using namespace std;
-//根据进程名获取PID
-DWORD GetPidFormName(wstring wsProcessname)
-&#123;
-    HANDLE hSnaoshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if (hSnaoshot == INVALID_HANDLE_VALUE)
-    &#123;
-        return false;
-    &#125;
-    PROCESSENTRY32W pe = &#123; sizeof(pe) &#125;;
-    BOOL bok;
-    for (bok = Process32FirstW(hSnaoshot, &amp;pe); bok; bok = Process32NextW(hSnaoshot,&amp;pe))
-    &#123;
-        wstring wsNowProcName = pe.szExeFile;
-        if (StrStrI(wsNowProcName.c_str(), wsProcessname.c_str()) != NULL)
-        &#123;
-            CloseHandle(hSnaoshot);
-            return pe.th32ProcessID;
-        &#125;
-    &#125;
-    CloseHandle(hSnaoshot);
-    return 0;
-&#125;
-//dll 文件注入到进程wsProcessname
-BOOL Injection_APC(const wstring &amp;wsProcessname, const WCHAR wcCacheInDllPath[])
-&#123;
-    DWORD dwProcessId = GetPidFormName(wsProcessname);
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwProcessId);
-    if (!hProcess)
-    &#123;
-        return FALSE;
-    &#125;
-    PVOID lpData = VirtualAllocEx(hProcess, NULL, 1024, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-    DWORD dwRet;
-    if (lpData)
-    &#123;
-        //在远程进程申请空间写入待注入dll 的路径
-        WriteProcessMemory(hProcess, lpData, (LPVOID)wcCacheInDllPath,MAX_PATH, &amp;dwRet);
-        CloseHandle(hProcess);
-    &#125;
-    //开始注入
-    THREADENTRY32 te = &#123; sizeof(te) &#125;;
-    HANDLE handleSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);//遍历系统中所有线程
-    if (handleSnap == INVALID_HANDLE_VALUE)
-    &#123;
-        return false;
-    &#125;
-    bool bstat = false;
-    if (Thread32First(handleSnap, &amp;te))
-    &#123;
-        do &#123;
-            if (te.th32OwnerProcessID == dwProcessId)
-            &#123;
-                HANDLE handleThread = OpenThread(THREAD_ALL_ACCESS, FALSE, te.th32ThreadID);
-                if (handleThread)
-                &#123;
-                    DWORD dwRet = QueueUserAPC((PAPCFUNC)LoadLibraryW, handleThread, (ULONG_PTR)lpData);
-                &#125;
-                if (dwRet &gt; 0)
-                &#123;
-                    bstat = TRUE;
-                &#125;
-                CloseHandle(handleThread);
-            &#125;
-        &#125; while (Thread32Next(handleSnap, &amp;te));
-        CloseHandle(handleSnap);
-        return bstat;
-    &#125;
-
-    &#125;
-    int main()
-    &#123;
-        Injection_APC(L&quot;testapc.exe&quot;, L&quot;testapcdll.dll&quot;);
-        return 0;
-    &#125;
-</code></pre>
-<p>测试exe程序：</p>
-<pre><code>    #include&lt;windows.h&gt;
-    int main()
-    &#123;
-        MessageBox(NULL, L&quot;start&quot;, L&quot;tit&quot;, MB_OK);
-        SleepEx(1000 * 60 * 5, true);
-        MessageBox(NULL, L&quot;end&quot;, L&quot;tit&quot;, MB_OK);
-        Sleep(-1);
-    &#125;
-</code></pre>
-<p>测试dll 程序：</p>
-<pre><code>#include&lt;windows.h&gt;
-#include&quot;dll.h&quot;
-BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, void* lpReserved)
-&#123;
-    switch (dwReason)
-    &#123;
-        // 动态链接库映射到某个进程的地址空间
-    case DLL_PROCESS_ATTACH:
-        MessageBox(NULL, L&quot;in apc ok~&quot;, L&quot;tit&quot;, MB_OK);
-        /**
-        * 当DLL刚被加载时触发（LoadLibrary），此处专门用来做初始化工作，
-        * 如果初始化失败可以返回 false 这样DLL就不会被继续加载了
-        **/
-        break;
-
-        // 应用程序创建新的线程
-    case DLL_THREAD_ATTACH:
-
-        break;
-
-        // 应用程序某个线程正常终止
-    case DLL_THREAD_DETACH:
-
-        break;
-
-        // 动态链接库将被卸载
-    case DLL_PROCESS_DETACH:
-        /**
-        * 当DLL将要被卸载时触发（FreeLibrary）,此处专门用来做清理工作
-        * 如关闭文件，释放内存空间等
-        **/
-        break;
-    &#125;
-    return 1;
-&#125;
-/*
-void helloDLL(void)
-&#123;
-//MessageBox(NULL, TEXT(&quot;Hello DLL~&quot;), TEXT(&quot;Title&quot;), MB_OK);
-&#125;*/
-</code></pre>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/09/16/%E9%80%86%E5%90%91/dll%E4%B9%8BAPC%E6%B3%A8%E5%85%A5/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/09/14/%E7%BC%96%E7%A8%8B/vs%E9%94%99%E8%AF%AF%E9%9B%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/09/14/%E7%BC%96%E7%A8%8B/vs%E9%94%99%E8%AF%AF%E9%9B%86/" class="post-title-link" itemprop="url">VS错误集</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2017-09-14T00:00:00+08:00">2017-09-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>一 .无法解析的外部符号 _main，该符号在函数 “int __cdecl invoke_main(void)” (?invoke_main@@YAHXZ) 中被引用window	F:\c\window\window\MSVCRTD.lib(exe_main.obj)	</p>
-<p>&amp;emsp;&amp;emsp;原因是c语言程序找不到适当的入口程序函数	<br>般情况下，</p>
-<p>&amp;emsp;&amp;emsp;如果是windows程序，那么WinMain是入口函数，在VS2017中新建项目为“win32项目”</p>
-<p>&amp;emsp;&amp;emsp;如果是dos控制台程序，那么main是入口函数，在VS2017中新建项目为“win32控制台应用程序”而如果入口函数指定不当，很显然c语言运行时找不到配合函数，它就会报告错误。修改设置适应你的需求</p>
-<p>&amp;emsp;&amp;emsp;如果是windows程序：</p>
+          <p>1、路由器相关知识</p>
 <ul>
-<li><p>1.菜单中选择 工程-&gt;属性, 弹出属性窗口</p>
+<li><p>三层设备</p>
 </li>
-<li><p>2.在左边栏中依次选择：配置属性-&gt;C&#x2F;C++-&gt;预处理器,然后在右边栏的预处理器定义对应的项中删除_CONSOLE, 添加_WINDOWS.</p>
+<li><p>网络层功能</p>
+<ul>
+<li>逻辑地址寻址，实现不同网络直接的路径选择</li>
+<li>查找目的是否可达，可达则选择最优路径</li>
+</ul>
 </li>
-<li><p>3.在左边栏中依次选择：配置属性-&gt;链接器-&gt;系统,然后在右边栏的SubSystem对应的项改为Windows(&#x2F;SUBSYSTEM:WINDOWS)<br>如果是控制台程序：</p>
-</li>
-<li><p>1.菜单中选择 工程-&gt;属性, 弹出弹出属性窗口</p>
-</li>
-<li><p>2.在左边栏中依次选择：配置属性-&gt;C&#x2F;C++-&gt;预处理器,然后在右边栏的预处理器定义对应的项中删除_WINDOWS, 添加_CONSOLE.</p>
-</li>
-<li><p>3.在左边栏中依次选择：配置属性-&gt;链接器-&gt;系统,然后在右边栏的SubSystem对应的项改为CONSOLE(&#x2F;SUBSYSTEM:CONSOLE)</p>
+<li><p>网络层传输的是PDU ,IP数据包</p>
 </li>
 </ul>
-<p>二  vs2015丢失msvcp140.dll 无法运行程序</p>
-<p>1.可以选择静态编译</p>
-<p><img src="https://i.imgur.com/hetjIa8.png"></p>
-<p>初始状态是这样的</p>
+<p>2、IP数据包的格式</p>
+<ul>
+<li><p>IPV4 数据包格式 </p>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230309102043979.png" alt="image-20230309102043979"></p>
+</li>
+</ul>
+<p>3、路由器的工作原理</p>
+<ul>
+<li><p>路由</p>
+<ul>
+<li>从源主机到目标主机的转发过程</li>
+<li>包含两个内容<ul>
+<li>确定最佳路径（手动绑定，根据动态路由协商方式）</li>
+<li>通过网络传输信息</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>路由表</p>
+<ul>
+<li>直接路由：当路由器的接口配置好对应的IP地址并开启接口后自动生成 </li>
+<li>非直接路由：需要手动配置静态路由或者使用动态路由协议学习</li>
+</ul>
+</li>
+</ul>
+<p>4、静态路由</p>
+<ul>
+<li><p>管理员配置、不灵活</p>
+</li>
+<li><p>特殊的静态路由：默认路由</p>
+<ul>
+<li>使用场景：一般应用于末节网络</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ip route 目标网络 下一跳地址或者接口</span><br><span class="line">ip route <span class="number">192.168</span>.<span class="number">10.0</span> <span class="number">255.255</span>.<span class="number">255.0</span> <span class="number">192.168</span>.<span class="number">30.2</span></span><br><span class="line">ip route <span class="number">192.168</span>.<span class="number">10.0</span> <span class="number">255.255</span>.<span class="number">255.0</span> f0/<span class="number">1</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>5、动态路由</p>
+<ul>
+<li>通过某种动态路由协议自动的去建立自己的路由表</li>
+<li>常见的动态路由协议，RIP OSPF</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/09/14/%E7%BC%96%E7%A8%8B/vs%E9%94%99%E8%AF%AF%E9%9B%86/#more" rel="contents">
+              <a class="btn" href="/2023/03/09/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86_new/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/08/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/08/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86_new/" class="post-title-link" itemprop="url">交换机的工作原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-08 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-08T00:00:00+08:00">2023-03-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1、数据链路层设备，传输数据帧，封装MAC头部，源MAC地址，目的MAC地址</p>
+<p>2、数据链路层的功能</p>
+<ul>
+<li>建立逻辑连接，进行物理地址寻址，差错校验</li>
+<li>数据链路的建立，维护和拆除</li>
+<li>数据帧的封装、传输、同步、差错校验、流量控制</li>
+</ul>
+<p>3、以太网</p>
+<p>  以太网&#x3D;&#x3D; 局域网</p>
+<ul>
+<li>有线局域网</li>
+<li>无线局域网</li>
+</ul>
+<p>4、交换机&#x3D;&#x3D;默认以太网交换机</p>
+<p>5、MAC地址</p>
+<ul>
+<li>用于标识以太网商的某个设备</li>
+<li>以太网中通信需要MAC地址</li>
+</ul>
+<p>6、以太网的帧格式</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/08/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86_new/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/04/%E6%9D%82%E5%AD%A6/%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9B%B8%E5%85%B3%E4%BF%AE%E6%94%B9%E5%B0%8F%E6%8A%80%E5%B7%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/04/%E6%9D%82%E5%AD%A6/%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9B%B8%E5%85%B3%E4%BF%AE%E6%94%B9%E5%B0%8F%E6%8A%80%E5%B7%A7/" class="post-title-link" itemprop="url">注册表相关修改小技巧</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-04T00:00:00+08:00">2023-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1、去除快捷方式左下角的小箭头</p>
+<p>HKEY—CLASS_ROOT\lnkfile  Isshortcut 删除</p>
+<p>2、禁用注册表</p>
+<p>HKCU\software\microsoft\windows\currentversion\policies\system [DisableRegistrytools]:1</p>
+<p>3、禁用状态下，如何恢复</p>
+<p>Registry WorkShop 来打开，改写禁用注册表的项</p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/04/%E6%9D%82%E5%AD%A6/%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9B%B8%E5%85%B3%E4%BF%AE%E6%94%B9%E5%B0%8F%E6%8A%80%E5%B7%A7/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/NTFS%E6%9D%83%E9%99%90_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/NTFS%E6%9D%83%E9%99%90_new/" class="post-title-link" itemprop="url">NTFS权限</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-04T00:00:00+08:00">2023-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>NTFS权限</p>
+<p>一、 NTFS权限</p>
+<ol>
+<li><p>文件系统</p>
+<ul>
+<li><p>windows</p>
+<ul>
+<li><p>早期windows使用FAT16，FAT32</p>
+</li>
+<li><p>NTFS</p>
+<ul>
+<li>ACL（访问控制列表）</li>
+<li>EFS(加密文件系统) BitLocker</li>
+<li>压缩及磁盘配额</li>
+</ul>
+</li>
+<li><p>ReFS  winserver2012</p>
+</li>
+</ul>
+</li>
+<li><p>Linux</p>
+<ul>
+<li>swap:交换文件系统，主要将磁盘的一部分空间划分给内存使用</li>
+<li>ext3&#x2F;ext4</li>
+</ul>
+</li>
+</ul>
+<p>可以用convert命令在不格式化的前提下，修改文件系统</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">convert H:/fs:ntfs   //H 是盘符</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>二、文件权限</p>
+<p>设置文件权限</p>
+<ul>
+<li>读取数据</li>
+<li>写入数据</li>
+<li>附加数据</li>
+<li>删除</li>
+<li>执行</li>
+</ul>
+<p>三、文件夹权限</p>
+<ol>
+<li>设置文件夹权限</li>
+</ol>
+<ul>
+<li>列出文件夹</li>
+<li>创建文佳佳</li>
+<li>创建文件</li>
+<li>删除</li>
+<li>删除子文件夹和文件</li>
+</ul>
+<p>四、权限的分类</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/NTFS%E6%9D%83%E9%99%90_new/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/NTFS%20%E6%9D%83%E9%99%90%E8%A7%84%E5%88%99_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/NTFS%20%E6%9D%83%E9%99%90%E8%A7%84%E5%88%99_new/" class="post-title-link" itemprop="url">NTFS 权限规则</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-04T00:00:00+08:00">2023-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>NTFS 权限规则</p>
+<p>一、权限规则</p>
+<ol>
+<li><p>权限的累加</p>
+<ul>
+<li><p>用户分配的有效权限是分配给用户所有权限的累加</p>
+<p>用户被分配的权限+所属组的权限</p>
+</li>
+</ul>
+</li>
+<li><p>拒绝权限</p>
+<ul>
+<li>拒绝的权限大于一切（在访问控制列表中，权限最高）</li>
+<li>出现权限冲突时，拒绝的权限优先级最高（用户所属组读取权限，用户拒绝读取，最终是拒绝读取权限）</li>
+</ul>
+</li>
+<li><p>继承权限</p>
+<ul>
+<li>文件或者文件夹默认集成上级文件夹的权限</li>
+</ul>
+</li>
+<li><p>特殊权限</p>
+<ul>
+<li><p>读取权限（和读取文件或者文件夹的内容无关）</p>
+<ul>
+<li>读取文件或者文件夹的访问控制列表  ，没有读取权限，点击文件-属性-安全，看不到ACL</li>
+<li>访问文件的内容，此权限必须勾选</li>
+</ul>
+</li>
+<li><p>更改权限（和修改文件、修改文件夹的内容无关）</p>
+<ul>
+<li>用户是否可以修改文件或者文件夹的访问控制列表，此权限可以为用户添加或者删除权限，会造成很多不安全因素，一般不给用户</li>
+<li>更改的前提是读取权限</li>
+</ul>
+</li>
+<li><p>取得所有权</p>
+<ul>
+<li><p>能够修改文件或者文件夹的所有者</p>
+</li>
+<li><p>前提是读取和更改</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/NTFS%20%E6%9D%83%E9%99%90%E8%A7%84%E5%88%99_new/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB_new/" class="post-title-link" itemprop="url">windows 文件共享</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-04T00:00:00+08:00">2023-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>windows 文件共享</p>
+<p>一、共享要求</p>
+<p>一般是局域网使用</p>
+<p>1、物理上处于同一局域网</p>
+<ul>
+<li>同一公司的网络</li>
+<li>同一家庭的网络</li>
+<li>同一个手机热点</li>
+</ul>
+<p>2、逻辑上处于同一局域网</p>
+<ul>
+<li>直接可以ping 对方主机</li>
+</ul>
+<p>二、共享权限</p>
+<p>1、共享权限</p>
+<ul>
+<li>everyone完全控制</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB_new/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86_new/" class="post-title-link" itemprop="url">windows 用户管理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-04T00:00:00+08:00">2023-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>windows 用户管理</p>
+<p>一. 用户账户</p>
+<ol>
+<li><p>什么是用户账户</p>
+<ul>
+<li><p>不同的用户身份拥有不同的权限</p>
+</li>
+<li><p>每个用户包含了一个名称和密码</p>
+</li>
+<li><p>每个用户账户具有唯一的安全标识符号 SID</p>
+</li>
+<li><p>查看系统中的用户</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net user</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看SID</p>
+<ul>
+<li>命令查看</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">whoami /user</span><br><span class="line">wmic useraccount get name,sid</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>注册表查看SID</p>
+<p>计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>进行用户管理</p>
+<ul>
+<li><p>创建用户</p>
+<ul>
+<li><p>用户名：系统的显示名</p>
+</li>
+<li><p>全名：用户登录时的显示名</p>
+</li>
+<li><p>密码：server版本有密码复杂性要求，本地安全策略</p>
+</li>
+<li><p>账户已锁定：如果开启账户锁定阈值，账户有可能输错多次被锁定</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 创建用户不指定密码</span><br><span class="line">net user 用户名 /add</span><br><span class="line"># 创建用户指定明文密码</span><br><span class="line">net user 用户名 密码 /add</span><br><span class="line"># 创建用户，手动输入密码</span><br><span class="line">net user 用户名 /add *</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>管理用户</p>
+</li>
+<li><p>设置密码</p>
+</li>
+<li><p>隐藏用户</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># net user 查看不到 wmic useraccount get name,sid ,以及计算机管理里面可以看到</span></span><br><span class="line">net user 用户名<span class="variable">$</span> 密码 /add</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加隐藏用户并提升为管理员权限</span></span><br><span class="line">net localgroup administrators 用户名 /add</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>二 、windows的内置用户</p>
+<p>1、与使用者关联的</p>
+<ul>
+<li>管理员：administrator使用者中具有最高的权限,没有其他管理员的情况下，不建议禁用</li>
+<li>普通用户：具有一定的读取权限，权限较低</li>
+<li>来宾用户：提供给访客使用，默认为禁用，权限最低</li>
+</ul>
+<p>2、与windows 组件相关</p>
+<ul>
+<li>system 本地系统：拥有最高权限</li>
+<li>local service 本地服务  :权限相对于普通用户组user 低一些</li>
+<li>netword service 网络服务：权限跟普通用户组user 一样</li>
+</ul>
+</li>
+</ol>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86_new/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E7%BB%84%E7%9A%84%E7%AE%A1%E7%90%86_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E7%BB%84%E7%9A%84%E7%AE%A1%E7%90%86_new/" class="post-title-link" itemprop="url">windows 组的管理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-04T00:00:00+08:00">2023-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>windows 组的管理</p>
+<p>一、用户组</p>
+<ol>
+<li><p>概念</p>
+<p>一组用户的集合，组中所有的用户具备组的权限</p>
+</li>
+<li><p>管理组</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新建组</span></span><br><span class="line">net localgroup 组名 /add</span><br><span class="line"><span class="comment"># 删除组</span></span><br><span class="line">net localgroup 组名 /<span class="built_in">del</span></span><br><span class="line"><span class="comment"># 添加成员到组</span></span><br><span class="line">net localgroup 组名 成员 /add</span><br><span class="line"><span class="comment"># 把用户从组里删除</span></span><br><span class="line">net localgroup 组名 成员 /<span class="built_in">del</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>二、内置组用户</p>
+<pre><code>   1. 需要认为添加的
+      - administrators:管理员组
+      - guests:来宾用户组
+      - power users:向下兼容的组
+      - users:标准用户组，创建用户后默认属于该组
+   2. 动态包含成员
+      - interactive:动态包含在本地登录的用户
+      - authenticated users:动态包含通过验证的用户
+      - everyone:所有人，包含了来宾用户
+</code></pre>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/windows%20%E7%BB%84%E7%9A%84%E7%AE%A1%E7%90%86_new/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%9C%AC%E5%9C%B0%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%9C%AC%E5%9C%B0%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5_new/" class="post-title-link" itemprop="url">本地安全策略大纲</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-04T00:00:00+08:00">2023-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本地安全策略大纲</p>
+<p>一、本地安全策略基本内容</p>
+<p>1、概念</p>
+<ul>
+<li>主要对登录到计算机的账户进行一些安全设置</li>
+<li>主要是影响本地计算机的安全</li>
+</ul>
+<p>2、打开方式</p>
+<ul>
+<li><p>开始菜单-管理工具-本地安全策略</p>
+</li>
+<li><p>使用命令</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">secpol.msc	</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从本地组策略进去</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpedit.msc</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>二、账户策略</p>
+<p>1、密码策略</p>
+<ul>
+<li>密码必须符合复杂性要求</li>
+</ul>
+<p>2、账户锁定策略</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%9C%AC%E5%9C%B0%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5_new/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BA%94%E5%B1%82%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BA%94%E5%B1%82%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">计算机网络五层协议</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-04T00:00:00+08:00">2023-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>应用层： 将原始数据转换为计算机的二进制，HTTP，FTP，SMTP</p>
+<p>传输层：将报文划分成较小的块，然后为每块加上传输层首部来生成传输层报文段。代表是TCP，UDP协议</p>
+<p>网络层：进行逻辑地址寻址，进行IP头部的封装，主要的字段，源IP和目的IP。</p>
+<p>数据链路层：建立逻辑链接，进行物理地址寻址，主要的字段源MAC地址，目的MAC地址</p>
+<p>物理层：将二进制数据转换为电信号通过网卡通过网线进行传输。</p>
+<p><img src="https://iknow-pic.cdn.bcebos.com/359b033b5bb5c9ea4701c08fda39b6003bf3b3e8" alt="img"></p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/04/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BA%94%E5%B1%82%E5%8D%8F%E8%AE%AE/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1200,7 +1227,7 @@ void helloDLL(void)
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1266,20 +1293,20 @@ void helloDLL(void)
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-count">128</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

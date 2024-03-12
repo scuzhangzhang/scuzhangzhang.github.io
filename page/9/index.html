@@ -184,7 +184,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/01/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%BA%8C%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2021/12/16/%E9%80%86%E5%90%91/%E8%B0%83%E8%AF%95VBS%E6%AD%A5%E9%AA%A4%E8%AE%B0%E5%BD%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -198,7 +198,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/08/01/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%BA%8C%E8%AE%B0/" class="post-title-link" itemprop="url">恶意代码分析第二记</a>
+            <a href="/2021/12/16/%E9%80%86%E5%90%91/%E8%B0%83%E8%AF%95VBS%E6%AD%A5%E9%AA%A4%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">调试VBS步骤记录</a>
         </h2>
 
         <div class="post-meta">
@@ -208,7 +208,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-08-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-01T00:00:00+08:00">2017-08-01</time>
+              <time title="创建时间：2021-12-16 00:00:00" itemprop="dateCreated datePublished" datetime="2021-12-16T00:00:00+08:00">2021-12-16</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -231,19 +231,22 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>一、样本基本信息</p>
-<p>.样本来源于恶意代码分析实战的第七章的实验样本lab07-03.exe,lab07-03.dll.</p>
-<p>二、分析过程</p>
-<p>首先查看下有什么关键字符串。strings.exe 程序查看lab07-03.exe 的字符串，发现有文件映射的一系列函数，CreateFileMappingA,UnmapViewOfFile,MapViewOfFile等，以及遍历文件的函数FindFirstFileA,FindNextFileA,FindClose,另外还有复制文件的函数和创建文件的函数等，没发现什么网络特征。再看下lab07-03.dll的字符串，首先是创建进程的函数CreateProcessA，然后是互斥体的函数CreateMutexA,OpenMutexA,等函数,此外发现了一些网络特征，ip地址 127.26.152.13，以及实现网络功能的库WS2_32.dll,还有一些字符串比较函数strcmp.</p>
-<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/wiWLOYN.png" alt="img"></p>
-<p><img src="C:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/3SglnDX.png" alt="img"></p>
-<p>然后查看lab07-03.exe的导入表，可以看到前面所叙述的函数，同时应注意到，导入表中并没有LoadLibrary或者GetProcAddress函数，说明dll文件并没有在运行时加载。查看lab07-03.dll文件发现很多网络特征，很多网络函数，包括WSAStartup,socket,send,connect,recv等。</p>
-<p><img src="http://i.imgur.com/NPtmzMv.png"></p>
-<p><img src="http://i.imgur.com/pa6CXX9.png"></p>
-<p>查看完这些后，心中稍微有点底，然后运行程序进行动态分析，配置网络环境ApateDNS,监控软件等。运行完程序发现秒退，什么也没有发生，process monitor和process explorer也什么没监控到，也没什么网络活动。猜测可能会有命令行参数。<br>对lab07-03.exe进行逆向分析。载入IDA，进入主函数，发现果然有验证，判断参数是否为2，并且第二个参数是否“WARNING_THIS_WILL_DESTROY_YOUR_MACHINE”然后下面就是文件映射的操作了，对’C:\Windows\System32\Kernel32.dll 和lab07-03.dll进行了一系列的文件读写操作，这部分详情分析有点困难，我们留到动态分析的时候再来做。最后把文件lab07-03.dll拷贝到’C:\Windows\System32\Kerne132.dll中。继续往下看，是一个函数4011e0,参数是c盘根目录，跟进去看一下发现是一个遍历文件夹的操作。判断是否是.exe文件，然后是进行内存映射，查找kernel32.dll字符串改为kerne132.dll字符串。意图很明显了，让c盘目录下的exe文件加载山寨的kerne132.dll。</p>
+          <p>1、步骤记录</p>
+<p>VBS来源于一个宏样本，释放了VBS并运行。</p>
+<p>调试环境 Visual studio 2013 </p>
+<ul>
+<li><p>设置实时调试</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20211216180423181.png" alt="image-20211216180423181"></p>
+</li>
+<li><p>windows +R 在运行框输入wscript &#x2F;x vbs文件路径，启动调试。</p>
+</li>
+<li><p>经常出现打开调试即运行，这时可以在脚本开头加入 MsgBox(“Hello world”) 以阻塞程序运行，然后下断点，再点击确定即可。</p>
+</li>
+</ul>
+
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/08/01/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%BA%8C%E8%AE%B0/#more" rel="contents">
+              <a class="btn" href="/2021/12/16/%E9%80%86%E5%90%91/%E8%B0%83%E8%AF%95VBS%E6%AD%A5%E9%AA%A4%E8%AE%B0%E5%BD%95/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -267,7 +270,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/01/%E9%80%86%E5%90%91/%E8%BF%B7%E8%B7%AF/">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2021/12/02/%E7%BC%96%E7%A8%8B/context%E7%BB%93%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -281,7 +284,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017/08/01/%E9%80%86%E5%90%91/%E8%BF%B7%E8%B7%AF/" class="post-title-link" itemprop="url">迷路CTF</a>
+            <a href="/2021/12/02/%E7%BC%96%E7%A8%8B/context%E7%BB%93%E6%9E%84/" class="post-title-link" itemprop="url">context结构</a>
         </h2>
 
         <div class="post-meta">
@@ -291,693 +294,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-08-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-01T00:00:00+08:00">2017-08-01</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>步骤如下</p>
-<p>1.这个题目是迄今遇到的最坑题目。话不多说，上题目。链接：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1hr5CtpU">http://pan.baidu.com/s/1hr5CtpU</a> 密码：r9wi</p>
-<p>2.首先运行题目，如下图所示，跟平常的题目没什么两样。随便输入字符串，发现弹出报错信息。咋一看，有关键字符串，好咧，这题不难，肯定可以找到关键挑战，然后问题就简单了。（太天真。。。）</p>
-<p><img src="http://i.imgur.com/60iDg8y.png"></p>
-<p>3  打开OD载入程序，搜索字符串，发现关键字符串，很高兴。</p>
-<p><img src="http://i.imgur.com/J9OcWmh.png"></p>
-<p>在字符串上方发现两个跳转都跳到失败处，猜想应该是二次验证，一个一个分析，分析第一个call crackme.00402e40 ，发现是对输入的字符串进行一系列处理，然后得到一个数值，在下面语句中发现是和0x92381221 进行比较。不等则跳转向失败，打开IDA，分析关键call ,发现0x92381221代表的十进制数2453148193刚好符合条件，心中顿感，我实在是太聪明了。</p>
-<p><img src="http://i.imgur.com/gT8tpJM.png"></p>
-<p>继续往下看下一个跳转，call crackme.00401DF0,发现是两个字符串比较，猜想是我们前面的字符串进行再次的运算得到一堆字符串然后比较，然后分析可得处理函数为call crackme.00401990,分析关键call 发现是把输入进行MD5运算得到的一堆字符串。沃日。。。这控制不了啊。。。然后感觉不太对，于是我尝试暴力把跳转改一下，看会出现什么情况。发现既弹出了成功，又弹出来失败，感觉不对。</p>
-<p>4.想着对消息框下个断点，F9运行，点击工具栏的W发现，竟然出现了两个输入Input,觉得肯定玄机在此，觉得其中一个按钮一定是被隐藏了，在command 位置下断点，输入 bp ShowWindow,寻找ShowWindow函数，重新运行程序，发现运行到了用户层，alt+f9运行出来，发现前面就是ShowWindow 窗口在此下断点，删除刚刚下的user32里的断点，发现参数信息为0时，为隐藏，为1时为显现，于是更改参数值如下图所示：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/08/01/%E9%80%86%E5%90%91/%E8%BF%B7%E8%B7%AF/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/22/%E6%9D%82%E5%AD%A6/%E6%8B%AF%E6%95%91%E6%88%91%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/22/%E6%9D%82%E5%AD%A6/%E6%8B%AF%E6%95%91%E6%88%91%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BA/" class="post-title-link" itemprop="url">Linux虚拟机无法开机</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-22 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-22T00:00:00+08:00">2017-07-22</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>具体描述：由于物理磁盘空间不够，而虚拟机系统越来越大，最终导致ubuntu系统无法开机。</p>
-<p>尝试方法1：找到虚拟机设置-&gt;选项-&gt;快照-&gt;恢复到快照。这个方法可以回到关机前的状态，这是你去删掉一些大文件，然后重新分配磁盘就可以了。<img src="http://i.imgur.com/JYajVBB.png"></p>
-<p>尝试方法2：另外新建一个虚拟机系统ubuntu,然后设置-&gt;硬盘-&gt;添加-&gt;硬盘-&gt;选择现有虚拟磁盘，然后找到你无法开机的虚拟机系统文件，确定然后开机。然后把你所需要的文件拷贝出来。然后我也删了一些东西，但是发现磁盘空间占用并没有缩小。所以此方法也只能用于拷贝重要资料而用。</p>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/22/%E6%9D%82%E5%AD%A6/%E6%8B%AF%E6%95%91%E6%88%91%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BA/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/22/%E9%80%86%E5%90%91/inetsim/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/22/%E9%80%86%E5%90%91/inetsim/" class="post-title-link" itemprop="url">搭建虚拟网络环境inetsim</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-22 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-22T00:00:00+08:00">2017-07-22</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p> 主要步骤详见</p>
-<p>1.inetsim 安装详见<a target="_blank" rel="noopener" href="http://www.inetsim.org/packages.html">http://www.inetsim.org/packages.html</a></p>
-<p>2.inetsim 配置详见<a target="_blank" rel="noopener" href="http://www.cnblogs.com/hyq20135317/p/5515675.html">http://www.cnblogs.com/hyq20135317/p/5515675.html</a></p>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/22/%E9%80%86%E5%90%91/inetsim/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/15/%E9%80%86%E5%90%91/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/15/%E9%80%86%E5%90%91/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/" class="post-title-link" itemprop="url">esp脱壳+文件大小自校验</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-15 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-15T00:00:00+08:00">2017-07-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="步骤如下"><a href="#步骤如下" class="headerlink" title="步骤如下"></a>步骤如下</h3><p>1.查壳<br>由图可见，显然有壳</p>
-<p><img src="http://i.imgur.com/56OEUZ6.png"></p>
-<p>2.找oep(ESP定律)</p>
-<p>程序加载进OD，F8单步运行，右边寄存器窗口发现只有esp的值在变，符合ESP定律。<br>在寄存器位置右键，点击HW-break下硬件断点。然后F9运行到断点处，到达跳转到oep 的前一步，单步运行，遇到如下图：右键分析点击在模块中删除分析，即得到OEP.在oep处右键用ollydump脱壳当前进程。复制当前oep.</p>
-<p><img src="http://i.imgur.com/7VfQh3T.png"><br><img src="http://i.imgur.com/CaYz7wj.png"></p>
-<p>3.脱壳(LordPE)</p>
-<p>在lordPE中打开样本程序，选中右键纠正镜像大小，再右键完全脱壳。<br><img src="http://i.imgur.com/o84YxcW.png"></p>
-<p>4.修复导入表(ImportREC)</p>
-<p> 在ImportREC中打开目标进程即样本进程，然后右边选项中输入之前在OD中选中的OEP，点击IAT自动搜索，然后点击获取导入表。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/15/%E9%80%86%E5%90%91/esp%E8%84%B1%E5%A3%B3+%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F%E8%87%AA%E6%A0%A1%E9%AA%8C/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/12/%E9%80%86%E5%90%91/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%BC%96%E5%86%99%E6%B3%A8%E5%86%8C%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/12/%E9%80%86%E5%90%91/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%BC%96%E5%86%99%E6%B3%A8%E5%86%8C%E6%9C%BA/" class="post-title-link" itemprop="url">第一次注册机</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-12 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-12T00:00:00+08:00">2017-07-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="步骤如下"><a href="#步骤如下" class="headerlink" title="步骤如下"></a>步骤如下</h4><p>1、破解样本 链接为 <a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1miA38A8">http://pan.baidu.com/s/1miA38A8</a></p>
-<p>2、首先打开样本程序，得到关键字符串“Incorrect!!,Try Again”，如下<br><img src="http://i.imgur.com/kQ9YJPI.png"></p>
-<p>3、打开IDA加载该样本程序。打开View-&gt;Open Subviws-&gt;Strings 字符串窗口，搜索关键字符串,得到关键字符串”Correct way to go,You Got It”.点击找到数据段的定义位置，按下Ctrl+x 找到它的引用位置，然后按下tab键，找到反编译的结果。</p>
-<p><img src="http://i.imgur.com/H0wjDEh.png"><br><img src="http://i.imgur.com/eLlL0cI.png"></p>
-<p>分析反编译的c程序，发现其首先进行字符串长度的比较，然后把字符串和一个常数进行了一系列的操作。</p>
-<p>4、打开od,载入程序定位到关键字符串的位置（在IDA中有具体地址），直接ctrl+G输入地址可以直接定位字符串位置，然后向上查找关键跳转，找到一个JNZ。。。。，直接断点，<br><img src="http://i.imgur.com/SGROWMU.png"><br>看下结果。然后发现跳转实现的话，直接后面单步执行，会弹出“Incorrect!!,Try Again”。尝试把跳转给改了，然后保存到文件，此时再随意输入，发现弹出“correct way to go”、<br><img src="http://i.imgur.com/COHLpMa.png"></p>
-<p>5、下面分析其算法逻辑。<br>JNZ 前面的call下断点，单步进入发现是一个字符串你的比较，一个字符串是我们输入的第二个字，另一个是一个长字符串，猜测应该是第一个字符串经过一系列运算所得。向上分析，查找算法：找到GetDlgItemTextA_3097，为获取输入的字符串，然后后面是字符串长度的比较。<img src="http://i.imgur.com/ougupiX.png"> </p>
-<p>再后面就是其具体的算法了：</p>
-<p><img src="http://i.imgur.com/37qWSuL.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/12/%E9%80%86%E5%90%91/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%BC%96%E5%86%99%E6%B3%A8%E5%86%8C%E6%9C%BA/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/11/%E9%80%86%E5%90%91/cuckoo%E7%9C%9F%E6%9C%BA%E5%88%86%E6%9E%90%E7%8E%AF%E5%A2%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/11/%E9%80%86%E5%90%91/cuckoo%E7%9C%9F%E6%9C%BA%E5%88%86%E6%9E%90%E7%8E%AF%E5%A2%83/" class="post-title-link" itemprop="url">cuckoo真机分析环境(clonezilla)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-11 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-11T00:00:00+08:00">2017-07-11</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>序言介绍：为了应对层出不穷的反虚拟机技术，本文实现一种真机搭建cuckoo的方式，结合国家网路中心的clonezila来实现分析机器的还原。</p>
-<h5 id="一、硬件准备"><a href="#一、硬件准备" class="headerlink" title="一、硬件准备"></a>一、硬件准备</h5><pre><code>*ubuntu16.04服务器一台(可在虚拟机中实现）
-*win7或者winxp一台
-*交换机一台
-</code></pre>
-<h5 id="二-服务器搭建"><a href="#二-服务器搭建" class="headerlink" title="二 .服务器搭建"></a>二 .服务器搭建</h5><p>我选择的目前最新的ubuntu16.04，内置python2.7比较方便,当然也可以选择其他版本的系统，或者centos应该也可以，不过最好用ubuntu,因为资料较多，cuckoo官方资料也是用cuckoo搭建的。</p>
-<p><strong>1）.安装python2.7</strong></p>
-<p>这是cuckoo所需要的，如果你的系统内置了python2.7那就不用安装了，安装步骤网上教程一大堆，不再赘述。查看python版本 python -V，一般内置pip安装工具，没有的话另外安装一下。</p>
-<p><strong>2）.安装依赖库</strong></p>
-<p>1.安装相关的依赖库</p>
-<pre><code>    sudo apt-get install python python-pip python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev libjpeg-dev
-</code></pre>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/11/%E9%80%86%E5%90%91/cuckoo%E7%9C%9F%E6%9C%BA%E5%88%86%E6%9E%90%E7%8E%AF%E5%A2%83/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/10/%E9%80%86%E5%90%91/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/10/%E9%80%86%E5%90%91/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="post-title-link" itemprop="url">栈基础知识</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-10 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-10T00:00:00+08:00">2017-07-10</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="1-C语言变量的分布-："><a href="#1-C语言变量的分布-：" class="headerlink" title="1.C语言变量的分布 ："></a>1.C语言变量的分布 ：</h3><p>C 语言有全局变量(Global)、本地变量(Local)，静态变量(Static)、寄存器变量(Regeister)。每种变量都有不同的分配方式。先来看下面这段代码： </p>
-<pre><code>#include &lt;stdio.h&gt; 
-int g1=0, g2=0, g3=0; 
-int main() 
-&#123; 
-static int s1=0, s2=0, s3=0; 
-int v1=0, v2=0, v3=0; 
-
-//打印出各个变量的内存地址 
-
-printf(&quot;0x%08x\n&quot;,&amp;v1); //打印各本地变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;v2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;v3); 
-printf(&quot;0x%08x\n&quot;,&amp;g1); //打印各全局变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;g2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;g3); 
-printf(&quot;0x%08x\n&quot;,&amp;s1); //打印各静态变量的内存地址 
-printf(&quot;0x%08x\n&quot;,&amp;s2); 
-printf(&quot;0x%08x\n\n&quot;,&amp;s3); 
-system(&quot;pause&quot;);
-return 0; 
-&#125; 
-</code></pre>
-<p>可以看出本地变量和全局&#x2F;静态变量的分布完全不同，相差甚远，这是因为他们分布在不同类型的区域。<br>进程的内存空间分为：代码区，静态数据区和动态数据区。全局和静态变量分配在静态数据区，本地变量分配在动态数据区，即”堆栈“，<br><img src="http://i.imgur.com/Pbbtyit.png"></p>
-<h3 id="2-栈的存储"><a href="#2-栈的存储" class="headerlink" title="2. 栈的存储"></a>2. 栈的存储</h3><pre><code>    #include &lt;stdio.h&gt; 
-    void __stdcall func(int param1,int param2,int param3) 
-    &#123; 
-    int var1=param1; 
-    int var2=param2; 
-    int var3=param3; 
-    printf(&quot;0x%08x\n&quot;,&amp;parameter1); //打印出各个变量的内存地址 
-    printf(&quot;0x%08x\n&quot;,&amp;parameter2); 
-    printf(&quot;0x%08x\n\n&quot;,&amp;parameter3); 
-    printf(&quot;0x%08x\n&quot;,&amp;var1); 
-    printf(&quot;0x%08x\n&quot;,&amp;var2); 
-    printf(&quot;0x%08x\n\n&quot;,&amp;var3); 
-    return; 
-    &#125; 
-    int main() 
-    &#123; 
-    func(1,2,3); 
-    return 0; 
-    &#125; 
-</code></pre>
-<p><img src="http://i.imgur.com/kFjeO8n.png"></p>
-<p>函数的参数是从右向左传递，即先压栈parameter 3，然后parameter 2，最后才是parameter 1，然后是函数的返回地址，然后就是本地变量var1，var2,var3</p>
-<h3 id="3-程序进入main-函数-，栈帧的保存和关闭"><a href="#3-程序进入main-函数-，栈帧的保存和关闭" class="headerlink" title="3.程序进入main()函数 ，栈帧的保存和关闭"></a>3.程序进入main()函数 ，栈帧的保存和关闭</h3><p>例如：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/10/%E9%80%86%E5%90%91/%E6%A0%88%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/06/%E6%9D%82%E5%AD%A6/%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/06/%E6%9D%82%E5%AD%A6/%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95/" class="post-title-link" itemprop="url">win10添加右键菜单</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-06 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-06T00:00:00+08:00">2017-07-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>1.win +R 打开运行窗口，输入regedit，进入注册表。</p>
-<p>2.打开HKEY_CLASSES_ROOT*\shell，右键新建项，输入项名，比如sublime，点击默认输入数值数据为你的程序名比如sublime。</p>
-<p>3.点击新建项sublime,右键新建项，命名为command,必须为这个名字，然后点击默认，在数值数据那里输入你要添加的程序路径，比如我的sublime 为”E:\Sublime Text 3\sublime_text.exe” “%1”<br>确定即可。<br> <img src="http://i.imgur.com/nQzB0OO.png"></p>
-<p>后续：<br>邮件发送到菜单</p>
-<p>1.运行  shell:sendto</p>
-<p>2.新建你要添加到发送到的程序快捷方式即可</p>
-
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/06/%E6%9D%82%E5%AD%A6/%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/07/06/%E7%BC%96%E7%A8%8B/spider/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="hack_zz">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="hack_zz">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/07/06/%E7%BC%96%E7%A8%8B/spider/" class="post-title-link" itemprop="url">简单爬虫</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2017-07-06 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-06T00:00:00+08:00">2017-07-06</time>
+              <time title="创建时间：2021-12-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-12-02T00:00:00+08:00">2021-12-02</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1000,54 +317,881 @@ return 0;
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>-<em>- coding: utf-8 -</em>-    #可解决诸多编码问题，建议程序加上</p>
-<pre><code># import urllib2
-# import urllib
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">CONTEXT（线程结构体）</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">CONTEXT</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    DWORD           ContextFlags    <span class="comment">// -|               +00h</span></span><br><span class="line">    DWORD           Dr0             <span class="comment">//  |               +04h</span></span><br><span class="line">    DWORD           Dr1             <span class="comment">//  |               +08h</span></span><br><span class="line">    DWORD           Dr2             <span class="comment">//  &gt;调试寄存器     +0Ch</span></span><br><span class="line">    DWORD           Dr3             <span class="comment">//  |               +10h</span></span><br><span class="line">    DWORD           Dr6             <span class="comment">//  |               +14h</span></span><br><span class="line">    DWORD           Dr7             <span class="comment">// -|               +18h</span></span><br><span class="line"></span><br><span class="line">    FLOATING_SAVE_AREA FloatSave;   <span class="comment">//浮点寄存器区      +1Ch~~~88h</span></span><br><span class="line"></span><br><span class="line">    DWORD           SegGs           <span class="comment">//-|                +8Ch</span></span><br><span class="line">    DWORD           SegFs           <span class="comment">// |\段寄存器       +90h</span></span><br><span class="line">    DWORD           SegEs           <span class="comment">// |/               +94h</span></span><br><span class="line">    DWORD           SegDs           <span class="comment">//-|                +98h</span></span><br><span class="line"></span><br><span class="line">    DWORD           Edi             <span class="comment">//________          +9Ch</span></span><br><span class="line">    DWORD           Esi             <span class="comment">// |  通用          +A0h</span></span><br><span class="line">    DWORD           Ebx             <span class="comment">// |   寄           +A4h</span></span><br><span class="line">    DWORD           Edx             <span class="comment">// |   存           +A8h</span></span><br><span class="line">    DWORD           Ecx             <span class="comment">// |   器           +ACh</span></span><br><span class="line">    DWORD           Eax             <span class="comment">//_|___组_          +B0h</span></span><br><span class="line"></span><br><span class="line">    DWORD           Ebp             <span class="comment">//++++++            +B4h</span></span><br><span class="line">    DWORD           Eip             <span class="comment">// |控制            +B8h</span></span><br><span class="line">    DWORD           SegCs           <span class="comment">// |寄存            +BCh</span></span><br><span class="line">    DWORD           EFlag           <span class="comment">// |器组            +C0h</span></span><br><span class="line">    DWORD           Esp             <span class="comment">// |                +C4h</span></span><br><span class="line">    DWORD           SegSs           <span class="comment">//++++++            +C8h</span></span><br><span class="line"></span><br><span class="line">    BYTE    ExtendedRegisters[MAXIMUM_SUPPORTED_EXTENSION];</span><br><span class="line">&#125; CONTEXT;</span><br><span class="line">    <span class="keyword">typedef</span>     CONTEXT     *PCONTEXT;</span><br><span class="line">    <span class="meta">#<span class="keyword">define</span>     MAXIMUM_SUPPORTED_EXTENSION     512</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/02/%E7%BC%96%E7%A8%8B/context%E7%BB%93%E6%9E%84/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2021/11/25/%E9%80%86%E5%90%91/JSE%20-VBE%20%E8%BD%ACJS%20VB%E5%B7%A5%E5%85%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/11/25/%E9%80%86%E5%90%91/JSE%20-VBE%20%E8%BD%ACJS%20VB%E5%B7%A5%E5%85%B7/" class="post-title-link" itemprop="url">JSE -VBE 转JS VB工具</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-11-25 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-25T00:00:00+08:00">2021-11-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1、JSE -VBE 转JS VB工具</p>
+<p>工具链接 <a target="_blank" rel="noopener" href="https://github.com/SanseoLab/ejExtractor">https://github.com/SanseoLab/ejExtractor</a></p>
+<p>JSE是JS经过编码后的类型，可直接通过Wscript.exe运行。为了将JSE转成JS原始代码，查找了不少工具，发现ejExtractor是最好用的。这个工具是一个集成工具箱，可反编译以下的类型的样本，其他的我还没有试过</p>
+<p>AutoIt, AutoHotKey, InnoSetup, NSIS executables, MSI and JSE&#x2F;VBE, powershell Encoding&#x2F;Decoding</p>
+<p>下面介绍使用方式：</p>
+<p>该工具需要python2 才能运行，我的是python3 然后仔细分析了一下，发现其实是调用的Decide.vbs文件来执行的，因此可以直接用这个VBS脚本来解析，直接运行，显示如下结果，竟然失败，难道作者在扯淡。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20211125163604874.png" alt="image-20211125163604874"></p>
+<p>带着疑问，我查找了一下相关报错的未知，发现 只有检测vbe 没得检测jse的未知，这个脚本还是有点缺陷哈。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20211125163911940.png" alt="image-20211125163911940"></p>
+<p>将脚本更改如下：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/25/%E9%80%86%E5%90%91/JSE%20-VBE%20%E8%BD%ACJS%20VB%E5%B7%A5%E5%85%B7/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2021/11/17/%E9%80%86%E5%90%91/JavaScript%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/11/17/%E9%80%86%E5%90%91/JavaScript%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">javascript 病毒分析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-11-17 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-17T00:00:00+08:00">2021-11-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="1-初始分析"><a href="#1-初始分析" class="headerlink" title="1 初始分析"></a>1 初始分析</h3><p>javascript样本来源于一个exe文件，该文件是通过NSIS打包而成，释放了javascript文件，拿到javascript文件，无论我用什么编辑器打开都是这个样子：</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20211117155715402.png" alt="image-20211117155715402"></p>
+<p>非常奇怪，最后我用Cerbero.Suite工具打开，发现神奇的被解析了，</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20211117155820278.png" alt="image-20211117155820278"></p>
+<p>好评好评，推荐这个工具，可以用来解析一些神奇的格式文件，针对包含了宏代码的office文件特别有用。</p>
+<h3 id="2-调试分析"><a href="#2-调试分析" class="headerlink" title="2 调试分析"></a>2 调试分析</h3><p>采用visual studio 进行脚本调试，设置如下</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/CP_img/master/imgimage-20211117160056042.png" alt="image-20211117160056042"></p>
+<p>随后win+R 运行，即可调出visual studio的调试界面。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/17/%E9%80%86%E5%90%91/JavaScript%E7%97%85%E6%AF%92%E5%88%86%E6%9E%90/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E6%9D%82%E5%AD%A6/ubuntu%20%E6%97%A0%E6%B3%95%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/12/%E6%9D%82%E5%AD%A6/ubuntu%20%E6%97%A0%E6%B3%95%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6/" class="post-title-link" itemprop="url">ubuntu 无法安装软件</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>apt-get install package 时出现以下问题</p>
+<p>E: Could not get lock &#x2F;var&#x2F;lib&#x2F;dpkg&#x2F;lock - open (11: Resource temporarily unavailable)<br>E: Unable to lock the administration directory (&#x2F;var&#x2F;lib&#x2F;dpkg&#x2F;), is another process using it?</p>
+<h3 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h3><p> sudo rm &#x2F;var&#x2F;lib&#x2F;dpkg&#x2F;lock<br> sudo dpkg –configure -a</p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/12/%E6%9D%82%E5%AD%A6/ubuntu%20%E6%97%A0%E6%B3%95%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E6%9D%82%E5%AD%A6/windows%20%E6%9B%B4%E6%96%B0%E4%BB%A5%E5%90%8E%E6%97%A0%E6%B3%95%E5%AE%9A%E4%BD%8Dmsvcp_win.dll/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/12/%E6%9D%82%E5%AD%A6/windows%20%E6%9B%B4%E6%96%B0%E4%BB%A5%E5%90%8E%E6%97%A0%E6%B3%95%E5%AE%9A%E4%BD%8Dmsvcp_win.dll/" class="post-title-link" itemprop="url">windows 更新以后无法定位msvcp_win.dll</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="问题描述："><a href="#问题描述：" class="headerlink" title="问题描述："></a>问题描述：</h3><p>win10更新以后出现 无法定位程序输入点_uncaught_exceptions 于动态链接库 C:\windows\system32\msvcp_win.dll上。</p>
+<h3 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h3><p>命令行下：输入sfc &#x2F;scannow</p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/12/%E6%9D%82%E5%AD%A6/windows%20%E6%9B%B4%E6%96%B0%E4%BB%A5%E5%90%8E%E6%97%A0%E6%B3%95%E5%AE%9A%E4%BD%8Dmsvcp_win.dll/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E7%BC%96%E7%A8%8B/windows%20%E7%BC%96%E7%A8%8B%E8%8E%B7%E5%8F%96%E7%BD%91%E5%8D%A1%E5%92%8Cip/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/12/%E7%BC%96%E7%A8%8B/windows%20%E7%BC%96%E7%A8%8B%E8%8E%B7%E5%8F%96%E7%BD%91%E5%8D%A1%E5%92%8Cip/" class="post-title-link" itemprop="url">windows 编程获取网卡和ip</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>一台机器上可能不只有一个网卡，但每一个网卡只有一个MAC地址，而每一个网卡可能配置有多个IP地址；如平常的笔记本电脑中，就会有无线网卡和有线网卡（网线接口）两种；因此，如果要获得本机所有网卡的IP和MAC地址信息，则必须顺序获得每个网卡，再依次获取其信息等；在windows sdk中，用IP_ADAPTER_INFO结构体存储网卡信息，包括网卡名、网卡描述、网卡MAC地址、网卡IP等，该结构体的主要描述如下所示：</p>
+<pre><code>            typedef struct _IP_ADAPTER_INFO &#123;
+            struct _IP_ADAPTER_INFO* Next;//指向链表中下一个适配器信息的指针
+            DWORD ComboIndex;//预留值
+            char AdapterName[MAX_ADAPTER_NAME_LENGTH + 4];//使用ANSI字符串表示的适配器名称
+            char Description[MAX_ADAPTER_DESCRIPTION_LENGTH + 4];//使用ANSI字符串表示的适配器描述
+            UINT AddressLength;//适配器硬件地址以字节计算的长度
+            BYTE Address[MAX_ADAPTER_ADDRESS_LENGTH];//硬件地址以BYTE数组所表示
+            DWORD Index;//适配器索引
+                    UINT Type;//适配器类型,主要有以下几种：
+                    /*
+                    *   MIB_IF_TYPE_OTHER     1
+                    *   MIB_IF_TYPE_ETHERNET     6
+                    *   MIB_IF_TYPE_TOKENRING     9
+                    *   MIB_IF_TYPE_FDDI     15
+                    *   MIB_IF_TYPE_PPP     23
+                    *   MIB_IF_TYPE_LOOPBACK      24
+                    *   MIB_IF_TYPE_SLIP      28
+                    */
+            UINT DhcpEnabled;//指定这个适配器是否开启DHCP
+            PIP_ADDR_STRING CurrentIpAddress;//预留值
+            IP_ADDR_STRING IpAddressList;//该适配器的IPv4地址链表
+            IP_ADDR_STRING GatewayList;//该适配器的网关IPv4地址链表
+            IP_ADDR_STRING DhcpServer;//该适配器的DHCP服务器的IPv4 地址链表
+            BOOL HaveWins;
+            IP_ADDR_STRING PrimaryWinsServer;
+            IP_ADDR_STRING SecondaryWinsServer;
+            time_t LeaseObtained;
+            time_t LeaseExpires;
+            &#125; IP_ADAPTER_INFO,*PIP_ADAPTER_INFO;
+
+由于可能有多个网卡，因此struct _IP_ADAPTER_INFO* Next字段为一个链表结构指针，由于一个网卡可能有多个IP，因此IP_ADDR_STRING字段应该也是一个链表结构，其信息如下所示：
+
+    typedef struct _IP_ADDR_STRING
+    &#123;
+            struct _IP_ADDR_STRING* Next;  //指向同类型节点，即下一个IP（如果有多IP的话）
+            IP_ADDRESS_STRING IpAddress;  //IP地址信息
+            IP_MASK_STRING IpMask; //IP子网掩码
+            DWORD Context;// 网络表入口。这个值对应着AddIPAddredd和DeleteIPAddress函数中的NTEContext参数
+    &#125; IP_ADDR_STRING;
 </code></pre>
-<h3 id="1-直接传输数据。利用urllib2"><a href="#1-直接传输数据。利用urllib2" class="headerlink" title="1 .直接传输数据。利用urllib2"></a>1 .直接传输数据。利用urllib2</h3><pre><code># response =urllib2.urlopen(&#39;http://www.baidu.com&#39;)
-# print response.read()
-#首先建立一个request实例，可以在构建请求的时候加入其他内容，比如data和header
-#request=urllib2.request(url)
-#response=urllib2.urlopen(request)
-#print response.read()
+<p>在基本了解以上信息后，就可以调用GetAdaptersInfo函数来获取相关网卡信息了，其通用的代码如下所示：</p>
+<pre><code>                    #include &lt;WinSock2.h&gt;
+                    #include &lt;Iphlpapi.h&gt;
+                    #include &lt;iostream&gt;
+                    using namespace std;
+                    #pragma comment(lib,&quot;Iphlpapi.lib&quot;) //需要添加Iphlpapi.lib库
+                    int main(int argc, char* argv[])
+                    &#123;
+                            //PIP_ADAPTER_INFO结构体指针存储本机网卡信息
+                            PIP_ADAPTER_INFO pIpAdapterInfo = new IP_ADAPTER_INFO();
+                            //得到结构体大小,用于GetAdaptersInfo参数
+                            unsigned long stSize = sizeof(IP_ADAPTER_INFO);
+                            //调用GetAdaptersInfo函数,填充pIpAdapterInfo指针变量;其中stSize参数既是一个输入量也是一个输出量
+                            int nRel = GetAdaptersInfo(pIpAdapterInfo,&amp;stSize);
+                            //记录网卡数量
+                            int netCardNum = 0;
+                            //记录每张网卡上的IP地址数量
+                            int IPnumPerNetCard = 0;
+                            if (ERROR_BUFFER_OVERFLOW == nRel)
+                            &#123;
+                                    //如果函数返回的是ERROR_BUFFER_OVERFLOW
+                                    //则说明GetAdaptersInfo参数传递的内存空间不够,同时其传出stSize,表示需要的空间大小
+                                    //这也是说明为什么stSize既是一个输入量也是一个输出量
+                                    //释放原来的内存空间
+                                    delete pIpAdapterInfo;
+                                    //重新申请内存空间用来存储所有网卡信息
+                                    pIpAdapterInfo = (PIP_ADAPTER_INFO)new BYTE[stSize];
+                                    //再次调用GetAdaptersInfo函数,填充pIpAdapterInfo指针变量
+                                    nRel=GetAdaptersInfo(pIpAdapterInfo,&amp;stSize);    
+                            &#125;
+                            if (ERROR_SUCCESS == nRel)
+                            &#123;
+                                    //输出网卡信息
+                                    //可能有多网卡,因此通过循环去判断
+                            while (pIpAdapterInfo)
+                            &#123;
+                                    cout&lt;&lt;&quot;网卡数量：&quot;&lt;&lt;++netCardNum&lt;&lt;endl;
+                                    cout&lt;&lt;&quot;网卡名称：&quot;&lt;&lt;pIpAdapterInfo-&gt;AdapterName&lt;&lt;endl;
+                                    cout&lt;&lt;&quot;网卡描述：&quot;&lt;&lt;pIpAdapterInfo-&gt;Description&lt;&lt;endl;
+                                    switch(pIpAdapterInfo-&gt;Type)
+                                    &#123;
+                                    case MIB_IF_TYPE_OTHER:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;OTHER&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_ETHERNET:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;ETHERNET&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_TOKENRING:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;TOKENRING&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_FDDI:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;FDDI&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_PPP:
+                                            printf(&quot;PP\n&quot;);
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;PPP&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_LOOPBACK:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;LOOPBACK&quot;&lt;&lt;endl;
+                                            break;
+                                    case MIB_IF_TYPE_SLIP:
+                                            cout&lt;&lt;&quot;网卡类型：&quot;&lt;&lt;&quot;SLIP&quot;&lt;&lt;endl;
+                                            break;
+                                    default:
+                    break;
+                                    &#125;
+                                    cout&lt;&lt;&quot;网卡MAC地址：&quot;;
+                                    for (DWORD i = 0; i &lt; pIpAdapterInfo-&gt;AddressLength; i++)
+                                            if (i &lt; pIpAdapterInfo-&gt;AddressLength-1)
+                                            &#123;
+                                                    printf(&quot;%02X-&quot;, pIpAdapterInfo-&gt;Address[i]);
+                                            &#125;
+                                            else
+                                            &#123;
+                                                    printf(&quot;%02X\n&quot;, pIpAdapterInfo-&gt;Address[i]);
+                                            &#125;
+                                            cout&lt;&lt;&quot;网卡IP地址如下：&quot;&lt;&lt;endl;
+                                            //可能网卡有多IP,因此通过循环去判断
+                                            IP_ADDR_STRING *pIpAddrString =&amp;(pIpAdapterInfo-&gt;IpAddressList);
+                                            do 
+                                            &#123;
+                                                    cout&lt;&lt;&quot;该网卡上的IP数量：&quot;&lt;&lt;++IPnumPerNetCard&lt;&lt;endl;
+                                                    cout&lt;&lt;&quot;IP 地址：&quot;&lt;&lt;pIpAddrString-&gt;IpAddress.String&lt;&lt;endl;
+                                                    cout&lt;&lt;&quot;子网地址：&quot;&lt;&lt;pIpAddrString-&gt;IpMask.String&lt;&lt;endl;
+                                                    cout&lt;&lt;&quot;网关地址：&quot;&lt;&lt;pIpAdapterInfo-&gt;GatewayList.IpAddress.String&lt;&lt;endl;
+                                                    pIpAddrString=pIpAddrString-&gt;Next;
+                                            &#125; while (pIpAddrString);
+                                            pIpAdapterInfo = pIpAdapterInfo-&gt;Next;
+                                            cout&lt;&lt;&quot;--------------------------------------------------------------------&quot;&lt;&lt;endl;
+                            &#125;
+                            
+                            &#125;
+                            //释放内存空间
+                            if (pIpAdapterInfo)
+                            &#123;
+                                    delete pIpAdapterInfo;
+                            &#125;
+                    
+                            return 0;
+                    &#125;
 </code></pre>
-<h3 id="2-post方式传递数据和get方式"><a href="#2-post方式传递数据和get方式" class="headerlink" title="2.post方式传递数据和get方式"></a>2.post方式传递数据和get方式</h3><pre><code># post方式传送数据
-# values=&#123;&#39;username&#39;:&#39;1265616844@qq.com&#39;,&#39;password&#39;:&#39;scu123456&#39;&#125;
-# data=urllib.urlencode(values)
-# request=urllib2.request(&#39;http://www.baidu.com&#39;,data)
-# response=urllib2.urlopen(request)
-# print response.read()
-#get方式出传送数据
-# values=&#123;&#39;username&#39;:&#39;1265616844@qq.com&#39;,&#39;password&#39;:&#39;scu123456&#39;&#125;
-# data=urllib.urlencode(values)
-# url=&quot;http://www.baidu.com&quot;+&quot;?&quot;+data
-# request=urllib2.request(url)
-# response=urllib2.urlopen(request)
-# print response.read()
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/12/%E7%BC%96%E7%A8%8B/windows%20%E7%BC%96%E7%A8%8B%E8%8E%B7%E5%8F%96%E7%BD%91%E5%8D%A1%E5%92%8Cip/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E9%80%86%E5%90%91/IDA%E5%88%9B%E5%BB%BA%E7%BB%93%E6%9E%84%E4%BD%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/12/%E9%80%86%E5%90%91/IDA%E5%88%9B%E5%BB%BA%E7%BB%93%E6%9E%84%E4%BD%93/" class="post-title-link" itemprop="url">IDA创建结构体</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>1.在IDA中打开Structures，快捷键是shifr+ F9 ,然后按insert键，进行插入</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/5ad5559c1b1dc.png" alt="5ad5559c1b1dc"></p>
+<p> 2.在ends 后按d键，添加相应的成员，然后选中成员名，按N进行修改，选中类型，按d 进行更改类型，构造完结构题以后，回到代码窗口</p>
+<p><img src="https://i.loli.net/2018/04/17/5ad555a742e37.png" alt="5ad555a742e37"></p>
+<p>  3  在代码窗口找到相应的变量，右键选择Convert to struct ，然后选择刚刚你定义的结构体即可。</p>
+
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/12/%E9%80%86%E5%90%91/IDA%E5%88%9B%E5%BB%BA%E7%BB%93%E6%9E%84%E4%BD%93/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%881%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%881%EF%BC%89/" class="post-title-link" itemprop="url">获取打开文件的全路径（1）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="1、获取打开文件的全路径（1）"><a href="#1、获取打开文件的全路径（1）" class="headerlink" title="1、获取打开文件的全路径（1）"></a>1、获取打开文件的全路径（1）</h4><p>方法：获取进程PEB中的命令行参数信息（问题：如果先打开文件比如word.exe再打开文件，会出现获取不到的情况）<br>步骤：</p>
+<ul>
+<li><h5 id="遍历进程获取打开文件的可执行文件的进程"><a href="#遍历进程获取打开文件的可执行文件的进程" class="headerlink" title="遍历进程获取打开文件的可执行文件的进程"></a>遍历进程获取打开文件的可执行文件的进程</h5><p>  HANDLE hSnapProcess &#x3D; CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);<br>  if (hSnapProcess &#x3D;&#x3D; INVALID_HANDLE_VALUE)<br>  {<br>  return;<br>  }<br>  PROCESSENTRY32W ProcessEntry;<br>  ProcessEntry.dwSize &#x3D; sizeof(ProcessEntry);<br>  BOOL bret &#x3D; Process32FirstW(hSnapProcess, &amp;ProcessEntry);<br>  WCHAR wszProcessInfo[MAX_PATH] &#x3D; { 0 };</p>
+<p>  do<br>  {<br>  WCHAR Name[MAX_PATH] &#x3D; { 0 };<br><br>  if (!lstrcmp(ProcessEntry.szExeFile, L”POWERPNT.EXE”)| !lstrcmp(ProcessEntry.szExeFile, L”WINWORD.EXE”))<br>  {<br>      HANDLE hProcess &#x3D; OpenProcess(PROCESS_ALL_ACCESS, false, ProcessEntry.th32ProcessID);<br>      do something<br>      CloseHandle(hProcess);<br><br>  }<br>  } while (Process32NextW(hSnapProcess, &amp;ProcessEntry));</p>
+</li>
+<li><h5 id="利用ntdll-dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory-函数原型如下："><a href="#利用ntdll-dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory-函数原型如下：" class="headerlink" title="利用ntdll.dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory,函数原型如下："></a>利用ntdll.dll中一个未公开的函数NtQueryInformationProcess，获取进程信息然后去读对方进程ReadProcessMemory,函数原型如下：</h5><p> NTSTATUS WINAPI NtQueryInformationProcess(<br>   <em>In</em>      HANDLE           ProcessHandle,<br>   <em>In</em>      PROCESSINFOCLASS ProcessInformationClass,<br>   <em>Out</em>     PVOID            ProcessInformation,<br>   <em>In</em>      ULONG            ProcessInformationLength,<br>   <em>Out_opt</em> PULONG           ReturnLength<br> );</p>
+</li>
+</ul>
+<p>第一个参数是进程句柄，第二个参数是获取的进程的信息类型，这里我们选择ProcessBasicInformation,<br>msdn 的声明如下，会返回一个PEB结构体。</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230704222649697.png" alt="image-20230704222649697"></p>
+<p>第三个参数是输出参数，当参数2是ProcessBasicInformation时，会返回一个<br>PROCESS_BASIC_INFORMATION 结构，结构如下，</p>
+<p><img src="https://raw.githubusercontent.com/scuzhangzhang/pic/main/img/image-20230704222723161.png" alt="image-20230704222723161"></p>
+<pre><code>status = NtQueryInformationProcess(hProcess,
+                ProcessBasicInformation,
+                &amp;pbi,
+                sizeof(PROCESS_BASIC_INFORMATION),
+                &amp;ReturnLength);
 </code></pre>
-<h3 id="3-模拟登陆"><a href="#3-模拟登陆" class="headerlink" title="3 .模拟登陆"></a>3 .模拟登陆</h3><pre><code># 构建request实例的时候，加入header模拟登陆
-# values=&#123;&#39;username&#39;:&#39;1265616844@qq.com&#39;,&#39;password&#39;:&#39;scu123456&#39;&#125;
-# data=urllib.urlencode(values)
-# headers=&#123;&#39;User-Agent&#39;:&#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36&#39;,&#39;Referer&#39;:&#39;https://www.baidu.com/link?url=E3phPx1eObXAfu4bCGSc2YVs58W76-YCXkEtiAN51lC&amp;wd=&amp;eqid=8815b85d0006fca2000000035915d702&#39;&#125;
-# request=urllib2.request(&#39;http://www.baidu.com&#39;,data,headers)
-# response=urllib2.urlopen(request)
-# print response.read()
+<ul>
+<li><h5 id="获取到PROCESS-BASIC-INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，"><a href="#获取到PROCESS-BASIC-INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，" class="headerlink" title="获取到PROCESS_BASIC_INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，"></a>获取到PROCESS_BASIC_INFORMATION结构体以后，由上可以看出的它的第二个成员就是指向进程PEB结构体的指针，此时调用ReadProcessMemory，获取进程PEB，</h5><p>   ReadProcessMemory(hProcess, pbi.PebBaseAddress, &amp;peb, sizeof(PEB), 0)  ReadProcessMemory的函数原型如下：</p>
+<p>   BOOL WINAPI ReadProcessMemory(<br> <em>In</em>  HANDLE  hProcess,<br> <em>In</em>  LPCVOID lpBaseAddress,<br> <em>Out</em> LPVOID  lpBuffer,<br> <em>In</em>  SIZE_T  nSize,<br> <em>Out</em> SIZE_T  *lpNumberOfBytesRead<br>   );</p>
+</li>
+<li><h5 id="通过ReadProcessMemory-获取进程的PEB以后，PEB的结构如下："><a href="#通过ReadProcessMemory-获取进程的PEB以后，PEB的结构如下：" class="headerlink" title="通过ReadProcessMemory 获取进程的PEB以后，PEB的结构如下："></a>通过ReadProcessMemory 获取进程的PEB以后，PEB的结构如下：</h5><p>  typedef struct _PEB {<br>  BOOLEAN                 InheritedAddressSpace;<br>  BOOLEAN                 ReadImageFileExecOptions;<br>  BOOLEAN                 BeingDebugged;<br>  BOOLEAN                 Spare;<br>  HANDLE                  Mutant;<br>  PVOID                   ImageBaseAddress;<br>  PPEB_LDR_DATA           LoaderData;<br>  PRTL_USER_PROCESS_PARAMETERS ProcessParameters;<br>  PVOID                   SubSystemData;<br>  PVOID                   ProcessHeap;<br>  PVOID                   FastPebLock;<br>  PPEBLOCKROUTINE         FastPebLockRoutine;<br>  PPEBLOCKROUTINE         FastPebUnlockRoutine;<br>  ULONG                   EnvironmentUpdateCount;<br>  PVOID*                  KernelCallbackTable;<br>  PVOID                   EventLogSection;<br>  PVOID                   EventLog;<br>  PPEB_FREE_BLOCK         FreeList;<br>  ULONG                   TlsExpansionCounter;<br>  PVOID                   TlsBitmap;<br>  ULONG                   TlsBitmapBits[0x2];<br>  PVOID                   ReadOnlySharedMemoryBase;<br>  PVOID                   ReadOnlySharedMemoryHeap;<br>  PVOID*                  ReadOnlyStaticServerData;<br>  PVOID                   AnsiCodePageData;<br>  PVOID                   OemCodePageData;<br>  PVOID                   UnicodeCaseTableData;<br>  ULONG                   NumberOfProcessors;<br>  ULONG                   NtGlobalFlag;<br>  BYTE                    Spare2[0x4];<br>  LARGE_INTEGER           CriticalSectionTimeout;<br>  ULONG                   HeapSegmentReserve;<br>  ULONG                   HeapSegmentCommit;<br>  ULONG                   HeapDeCommitTotalFreeThreshold;<br>  ULONG                   HeapDeCommitFreeBlockThreshold;<br>  ULONG                   NumberOfHeaps;<br>  ULONG                   MaximumNumberOfHeaps;<br>  PVOID*                  *ProcessHeaps;<br>  PVOID                   GdiSharedHandleTable;<br>  PVOID                   ProcessStarterHelper;<br>  PVOID                   GdiDCAttributeList;<br>  PVOID                   LoaderLock;<br>  ULONG                   OSMajorVersion;<br>  ULONG                   OSMinorVersion;<br>  ULONG                   OSBuildNumber;<br>  ULONG                   OSPlatformId;<br>  ULONG                   ImageSubSystem;<br>  ULONG                   ImageSubSystemMajorVersion;<br>  ULONG                   ImageSubSystemMinorVersion;<br>  ULONG                   GdiHandleBuffer[0x22];<br>  ULONG                   PostProcessInitRoutine;<br>  ULONG                   TlsExpansionBitmap;<br>  BYTE                    TlsExpansionBitmapBits[0x80];<br>  ULONG                   SessionId;<br>  } PEB, *PPEB;</p>
+</li>
+</ul>
+<p>如图标红位置为进程的参数信息，再次调用ReadProcessMemory  获取参数信息，<br>ReadProcessMemory(hProcess, peb.ProcessParameters, &amp;upps, sizeof(RTL_USER_PROCESS_PARAMETERS), 0))<br> 其中upps是一个RTL_USER_PROCESS_PARAMETERS 的结构体，定义如下：<br>    typedef struct _RTL_USER_PROCESS_PARAMETERS<br>    {<br>        ULONG MaximumLength;<br>        ULONG Length;</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%881%EF%BC%89/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%882)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="hack_zz">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hack_zz">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%882)/" class="post-title-link" itemprop="url">获取打开的文件的全路径（2）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="1、获取打开文件的全路径（2）"><a href="#1、获取打开文件的全路径（2）" class="headerlink" title="1、获取打开文件的全路径（2）"></a>1、获取打开文件的全路径（2）</h4><p>搜索进程空间中的所有句柄，获取句柄的文件名即可。</p>
+<ul>
+<li><h5 id="首先遍历进程寻找打开文件的进程，比如-word-exe-和PowerPoint-exe"><a href="#首先遍历进程寻找打开文件的进程，比如-word-exe-和PowerPoint-exe" class="headerlink" title="首先遍历进程寻找打开文件的进程，比如 word.exe 和PowerPoint.exe"></a>首先遍历进程寻找打开文件的进程，比如 word.exe 和PowerPoint.exe</h5><p>  HANDLE hSnapProcess &#x3D; CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);<br>  if (hSnapProcess &#x3D;&#x3D; INVALID_HANDLE_VALUE)<br>  {<br>  return 1;<br>  }<br>  PROCESSENTRY32W ProcessEntry;<br>  ProcessEntry.dwSize &#x3D; sizeof(ProcessEntry);<br>  BOOL bret &#x3D; Process32FirstW(hSnapProcess, &amp;ProcessEntry);<br>  WCHAR wszProcessInfo[MAX_PATH] &#x3D; { 0 };</p>
+<p>  do<br>  {<br>  WCHAR Name[MAX_PATH] &#x3D; { 0 };<br><br>  if (!lstrcmp(ProcessEntry.szExeFile, L”POWERPNT.EXE”) | !lstrcmp(ProcessEntry.szExeFile, L”WINWORD.EXE”))<br>  {<br>      …….<br>  }</p>
+</li>
+<li><h5 id="寻找到目标进程以后，获取进程中的句柄"><a href="#寻找到目标进程以后，获取进程中的句柄" class="headerlink" title="寻找到目标进程以后，获取进程中的句柄"></a>寻找到目标进程以后，获取进程中的句柄</h5></li>
+</ul>
+<p> 这里利用了未文档化的一个函数</p>
+<p>ZwQuerySystemInformation，这是ntdll.dll中的函数</p>
+<pre><code>HMODULE hNtDLL = LoadLibrary(L&quot;NTDLL.DLL&quot;);
+if (!hNtDLL)
+&#123;
+    return 1;
+&#125;
+ZwQuerySystemInformation = (ZWQUERYSYSTEMINFORMATION)GetProcAddress(hNtDLL, &quot;ZwQuerySystemInformation&quot;);
+
+typedef NTSTATUS(WINAPI *ZWQUERYSYSTEMINFORMATION)(unsigned long, PVOID, ULONG, PULONG);
+ZWQUERYSYSTEMINFORMATION ZwQuerySystemInformation;
 </code></pre>
-<h3 id="4-设置代理服务器"><a href="#4-设置代理服务器" class="headerlink" title="4.设置代理服务器"></a>4.设置代理服务器</h3><pre><code># 设置代理服务器解决ip频繁访问被封问题
-# import urllib2
-# enable_proxy=True
-# proxy_handler=urllib2.ProxyHander(&#123;&quot;http&quot;:&#39;http://some-proxy.com:8080&#39;&#125;)
-# null_proxy_handler=urllib2.build_opener(proxy_handler)
-# if enable_proxy:
-#   opener=urllib2.build_opener(proxy_handler)
-# else:
-#   opener=urllib2.build_opener(null_proxy_handler)
-#urllib2.install_opener(opener)
-#
+<p>函数原型如下：</p>
+<pre><code>NTSTATUS WINAPI ZwQuerySystemInformation(
+  _In_      SYSTEM_INFORMATION_CLASS SystemInformationClass,
+  _Inout_   PVOID                    SystemInformation,
+  _In_      ULONG                    SystemInformationLength,
+  _Out_opt_ PULONG                   ReturnLength
+);
+</code></pre>
+<p> SYSTEM_INFORMATION_CLASS结构体如下：</p>
+<pre><code>typedef enum _SYSTEMINFOCLASS
+&#123;
+    SystemBasicInformation,             // 0x002C
+    SystemProcessorInformation,         // 0x000C
+    SystemPerformanceInformation,       // 0x0138
+    SystemTimeInformation,              // 0x0020
+    SystemPathInformation,              // not implemented
+    SystemProcessInformation,           // 0x00C8+ per process
+    SystemCallInformation,              // 0x0018 + (n * 0x0004)
+    SystemConfigurationInformation,     // 0x0018
+    SystemProcessorCounters,            // 0x0030 per cpu
+    SystemGlobalFlag,                   // 0x0004 (fails if size != 4)
+    SystemCallTimeInformation,          // not implemented
+    SystemModuleInformation,            // 0x0004 + (n * 0x011C)
+    SystemLockInformation,              // 0x0004 + (n * 0x0024)
+    SystemStackTraceInformation,        // not implemented
+    SystemPagedPoolInformation,         // checked build only
+    SystemNonPagedPoolInformation,      // checked build only
+    SystemHandleInformation,            // 0x0004  + (n * 0x0010)
+    SystemObjectTypeInformation,        // 0x0038+ + (n * 0x0030+)
+    SystemPageFileInformation,          // 0x0018+ per page file
+    SystemVdmInstemulInformation,       // 0x0088
+    SystemVdmBopInformation,            // invalid info class
+    SystemCacheInformation,             // 0x0024
+    SystemPoolTagInformation,           // 0x0004 + (n * 0x001C)
+    SystemInterruptInformation,         // 0x0000, or 0x0018 per cpu
+    SystemDpcInformation,               // 0x0014
+    SystemFullMemoryInformation,        // checked build only
+    SystemLoadDriver,                   // 0x0018, set mode only
+    SystemUnloadDriver,                 // 0x0004, set mode only
+    SystemTimeAdjustmentInformation,    // 0x000C, 0x0008 writeable
+    SystemSummaryMemoryInformation,     // checked build only
+    SystemNextEventIdInformation,       // checked build only
+    SystemEventIdsInformation,          // checked build only
+    SystemCrashDumpInformation,         // 0x0004
+    SystemExceptionInformation,         // 0x0010
+    SystemCrashDumpStateInformation,    // 0x0004
+    SystemDebuggerInformation,          // 0x0002
+    SystemContextSwitchInformation,     // 0x0030
+    SystemRegistryQuotaInformation,     // 0x000C
+    SystemAddDriver,                    // 0x0008, set mode only
+    SystemPrioritySeparationInformation,// 0x0004, set mode only
+    SystemPlugPlayBusInformation,       // not implemented
+    SystemDockInformation,              // not implemented
+    SystemPowerInfo,             // 0x0060 (XP only!)
+    SystemProcessorSpeedInformation,    // 0x000C (XP only!)
+    SystemTimeZoneInformation,          // 0x00AC
+    SystemLookasideInformation,         // n * 0x0020
+    SystemSetTimeSlipEvent,
+    SystemCreateSession,    // set mode only
+    SystemDeleteSession,    // set mode only
+    SystemInvalidInfoClass1,   // invalid info class
+    SystemRangeStartInformation,   // 0x0004 (fails if size != 4)
+    SystemVerifierInformation,
+    SystemAddVerifier,
+    SystemSessionProcessesInformation, // checked build only
+    MaxSystemInfoClass
+&#125; SYSTEMINFOCLASS, *PSYSTEMINFOCLASS;
 </code></pre>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/07/06/%E7%BC%96%E7%A8%8B/spider/#more" rel="contents">
+              <a class="btn" href="/2018/04/12/%E7%BC%96%E7%A8%8B/%E8%8E%B7%E5%8F%96%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%EF%BC%882)/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1070,7 +1214,7 @@ return 0;
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1136,20 +1280,20 @@ return 0;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">94</span>
+          <span class="site-state-item-count">128</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
