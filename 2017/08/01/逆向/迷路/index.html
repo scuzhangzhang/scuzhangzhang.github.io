@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="步骤如下 1.这个题目是迄今遇到的最坑题目。话不多说，上题目。链接：http:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1hr5CtpU 密码：r9wi 2.首先运行题目，如下图所示，跟平常的题目没什么两样。随便输入字符串，发现弹出报错信息。咋一看，有关键字符串，好咧，这题不难，肯定可以找到关键挑战，然后问题就简单了。（太天真。。。）  3  打开OD载入程序，搜索字符串，发现关键字符串，很高兴。  在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="迷路CTF">
+<meta property="og:url" content="http://zwjsfdbb.top/2017/08/01/%E9%80%86%E5%90%91/%E8%BF%B7%E8%B7%AF/index.html">
+<meta property="og:site_name" content="fengchuiguo">
+<meta property="og:description" content="步骤如下 1.这个题目是迄今遇到的最坑题目。话不多说，上题目。链接：http:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1hr5CtpU 密码：r9wi 2.首先运行题目，如下图所示，跟平常的题目没什么两样。随便输入字符串，发现弹出报错信息。咋一看，有关键字符串，好咧，这题不难，肯定可以找到关键挑战，然后问题就简单了。（太天真。。。）  3  打开OD载入程序，搜索字符串，发现关键字符串，很高兴。  在">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://i.imgur.com/60iDg8y.png">
+<meta property="og:image" content="http://i.imgur.com/J9OcWmh.png">
+<meta property="og:image" content="http://i.imgur.com/gT8tpJM.png">
+<meta property="og:image" content="http://i.imgur.com/k7dqhuI.png">
+<meta property="og:image" content="http://i.imgur.com/EoKNATC.png">
+<meta property="og:image" content="http://i.imgur.com/HQGVXkP.png">
+<meta property="og:image" content="http://i.imgur.com/O2ZMscC.png">
+<meta property="og:image" content="http://i.imgur.com/bvyHkdm.png">
+<meta property="og:image" content="http://i.imgur.com/B0LOlTZ.png">
+<meta property="og:image" content="http://i.imgur.com/IbfwZCz.png">
+<meta property="article:published_time" content="2017-07-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-12T09:46:21.082Z">
+<meta property="article:author" content="fengchuiguo">
+<meta property="article:tag" content="逆向">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://i.imgur.com/60iDg8y.png">
+
+<link rel="canonical" href="http://zwjsfdbb.top/2017/08/01/%E9%80%86%E5%90%91/%E8%BF%B7%E8%B7%AF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>迷路CTF | fengchuiguo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fengchuiguo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/08/01/%E9%80%86%E5%90%91/%E8%BF%B7%E8%B7%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          迷路CTF
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-01T00:00:00+08:00">2017-08-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%80%86%E5%90%91/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>步骤如下</p>
+<p>1.这个题目是迄今遇到的最坑题目。话不多说，上题目。链接：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1hr5CtpU">http://pan.baidu.com/s/1hr5CtpU</a> 密码：r9wi</p>
+<p>2.首先运行题目，如下图所示，跟平常的题目没什么两样。随便输入字符串，发现弹出报错信息。咋一看，有关键字符串，好咧，这题不难，肯定可以找到关键挑战，然后问题就简单了。（太天真。。。）</p>
+<p><img src="http://i.imgur.com/60iDg8y.png"></p>
+<p>3  打开OD载入程序，搜索字符串，发现关键字符串，很高兴。</p>
+<p><img src="http://i.imgur.com/J9OcWmh.png"></p>
+<p>在字符串上方发现两个跳转都跳到失败处，猜想应该是二次验证，一个一个分析，分析第一个call crackme.00402e40 ，发现是对输入的字符串进行一系列处理，然后得到一个数值，在下面语句中发现是和0x92381221 进行比较。不等则跳转向失败，打开IDA，分析关键call ,发现0x92381221代表的十进制数2453148193刚好符合条件，心中顿感，我实在是太聪明了。</p>
+<p><img src="http://i.imgur.com/gT8tpJM.png"></p>
+<p>继续往下看下一个跳转，call crackme.00401DF0,发现是两个字符串比较，猜想是我们前面的字符串进行再次的运算得到一堆字符串然后比较，然后分析可得处理函数为call crackme.00401990,分析关键call 发现是把输入进行MD5运算得到的一堆字符串。沃日。。。这控制不了啊。。。然后感觉不太对，于是我尝试暴力把跳转改一下，看会出现什么情况。发现既弹出了成功，又弹出来失败，感觉不对。</p>
+<p>4.想着对消息框下个断点，F9运行，点击工具栏的W发现，竟然出现了两个输入Input,觉得肯定玄机在此，觉得其中一个按钮一定是被隐藏了，在command 位置下断点，输入 bp ShowWindow,寻找ShowWindow函数，重新运行程序，发现运行到了用户层，alt+f9运行出来，发现前面就是ShowWindow 窗口在此下断点，删除刚刚下的user32里的断点，发现参数信息为0时，为隐藏，为1时为显现，于是更改参数值如下图所示：</p>
+<p><img src="http://i.imgur.com/k7dqhuI.png"></p>
+<p>复制到可执行文件，保存文件。再次运行发现果然出现了两个输入按钮。</p>
+<p>5.修改后的程序重新加载进OD，此时发现感觉没什么思路，对获取输入字符串的函数进行下断点，在IDA中发现有GetWindowText函数，双加该函数，ctrl+x 获取其引用的位置，记下地址，在OD中ctrl+g 查找，找到该函数位置下断点，重新运行程序，输入字符串，点击左边的Input,程序运行到断点处，F8单步运行，发现下面有一个call ,F7进去看看，发现是获取字符串的长度，感觉好多Crackme都会对字符串的长度进行检查，于是对存字符串的位置下一个内存访问断点，看看是否有什么意外的惊喜，F9运行程序，发现程序到了这，IDA查看此位置的反编译结果，发现果然是对字符串的长度进行了检查，0x27u说明字符串长度为39,79，79,67,84,70,123,125刚好是题目所说的格式00CTF{},继续运行寻找返回的地方。最后回到401f96的位置，此处果然为一个调用，检查长度和格式。如果不符合返回值为0，跳到失败的位置。符合的话返回值为1，继续往下进行。</p>
+<p><img src="http://i.imgur.com/EoKNATC.png"></p>
+<p><img src="http://i.imgur.com/HQGVXkP.png"></p>
+<p>6 继续往下分析，分析各个call 的作用，发现call 1.00401860 位置的call 有很大的嫌疑，里面有各种循环，猜测为算法处理过程，IDA定位此处位置分析基本确定此位置，继续向下运行，查找字符串比较的过程，发现地址为401fca的调用，是弹出错错误的位置，此处下断点，重新运行程序到这个位置，F7进去分析，同时打开IDA，定位此函数，辅助分析，果然发现了两个MessageBOXA函数。分析不同的弹框结果发现前面是一个字符串比较函数，IDA按table键定位此函数的位置。</p>
+<p><img src="http://i.imgur.com/O2ZMscC.png">	</p>
+<p>进去发现是一个一个进行字符的比较，比较字符串b5h760h64R867618bBwB48BrW92H4w5r  错误的话最后函数返回值为1，弹出错误对话框。</p>
+<p>7.现在的问题就只剩下解决算法出路的问题了。IDA反编译出的代码如下</p>
+<p><img src="http://i.imgur.com/bvyHkdm.png"></p>
+<p>分析可知其对数字不做变换，大写字母减去65然后再进行关键操作，<br>V9&#x3D;(V6+V5<em>V7)%26+((V6+V5</em>V7)%26&lt;0?0X1a:0)<br>v6在调试的时候会出现32-2-2&#x3D;28，v5情况有点复杂，可能是3或者5，待会再说为什么，小写字母减去97然后进行关键操作，这样就进行了字符串的变换。<br>关于v6的问题：该数值最早是函数0041458e 的返回值，返回值为-1的时候就赋值为3，否则为原数。我用3进行测试的时候发现是错误的，那这个函数0041458e 就很有问题。<br>在此处下断点，F7进去发现是再次调用了函数41459c,继续跟进去同时观察IDA的结果，</p>
+<p><img src="http://i.imgur.com/B0LOlTZ.png"></p>
+<p>发现其实就是判断_mbschr((const unsigned __int8 *)(a3 + *(_DWORD *)this),a2))的结果，点击该函数进去，OD定位该位置，单步运行会发现，其实是检查输入字符串的第六位是否为0，如果为0则返回 值为0的地址，后面是字符串的地址减去该地址为5，即为v6,否则的话返回值为-1，在后面的判断中赋值为3.此为v6的具体赋值过程。</p>
+<p><img src="http://i.imgur.com/IbfwZCz.png"></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="fengchuiguo 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="fengchuiguo 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>fengchuiguo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zwjsfdbb.top/2017/08/01/%E9%80%86%E5%90%91/%E8%BF%B7%E8%B7%AF/" title="迷路CTF">http://zwjsfdbb.top/2017/08/01/逆向/迷路/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"># 逆向</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/07/22/%E6%9D%82%E5%AD%A6/%E6%8B%AF%E6%95%91%E6%88%91%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="prev" title="Linux虚拟机无法开机">
+      <i class="fa fa-chevron-left"></i> Linux虚拟机无法开机
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/01/%E9%80%86%E5%90%91/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%AC%AC%E4%B8%80%E8%AE%B0/" rel="next" title="恶意代码分析第一记">
+      恶意代码分析第一记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">fengchuiguo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fengchuiguo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ba624f1112450ac0437d',
+      clientSecret: '815911bc627d433d1f233c833883b96e335ea413',
+      repo        : 'hexo_discuss',
+      owner       : 'scuzhangzhang',
+      admin       : ['scuzhangzhang'],
+      id          : '6332fe6207cf9fbbfd965c6fb77fe75e',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

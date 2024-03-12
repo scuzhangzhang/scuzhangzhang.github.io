@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="动态路由协议 动态路由协议  RIP：路由信息协议，距离矢量路由协议  OSPF：开放式最短路径优先  BGP：外部网关路由协议    特点  减少管理员的工作量  增加了网络带宽    什么是内部，什么是外部  AS：运行相同的路由协议的路由器属于同一个自治系统 通过自治系统连接外部的路由器，需要经过外部网关 内部网关路由协议（IGP）：用于在单一自治系统中去决策路由，RIP，OSPF 外部网关">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态路由协议">
+<meta property="og:url" content="http://zwjsfdbb.top/2023/03/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE_new/index.html">
+<meta property="og:site_name" content="fengchuiguo">
+<meta property="og:description" content="动态路由协议 动态路由协议  RIP：路由信息协议，距离矢量路由协议  OSPF：开放式最短路径优先  BGP：外部网关路由协议    特点  减少管理员的工作量  增加了网络带宽    什么是内部，什么是外部  AS：运行相同的路由协议的路由器属于同一个自治系统 通过自治系统连接外部的路由器，需要经过外部网关 内部网关路由协议（IGP）：用于在单一自治系统中去决策路由，RIP，OSPF 外部网关">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230311225105486.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230311230625611.png">
+<meta property="article:published_time" content="2023-03-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-12T10:10:40.440Z">
+<meta property="article:author" content="fengchuiguo">
+<meta property="article:tag" content="系统基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230311225105486.png">
+
+<link rel="canonical" href="http://zwjsfdbb.top/2023/03/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE_new/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>动态路由协议 | fengchuiguo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fengchuiguo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2023/03/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE_new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          动态路由协议
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-11 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-11T00:00:00+08:00">2023-03-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">系统基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="动态路由协议"><a href="#动态路由协议" class="headerlink" title="动态路由协议"></a>动态路由协议</h2><ul>
+<li><p>动态路由协议</p>
+<ul>
+<li><p>RIP：路由信息协议，距离矢量路由协议</p>
+</li>
+<li><p>OSPF：开放式最短路径优先</p>
+</li>
+<li><p>BGP：外部网关路由协议</p>
+</li>
+</ul>
+</li>
+<li><p>特点</p>
+<ul>
+<li><p>减少管理员的工作量</p>
+</li>
+<li><p>增加了网络带宽</p>
+</li>
+</ul>
+</li>
+<li><p>什么是内部，什么是外部</p>
+<ul>
+<li>AS：运行相同的路由协议的路由器属于同一个自治系统</li>
+<li>通过自治系统连接外部的路由器，需要经过外部网关</li>
+<li>内部网关路由协议（IGP）：用于在单一自治系统中去决策路由，RIP，OSPF</li>
+<li>外部网关路由协议：用于连接不同自治系统，BGP</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230311225105486.png" alt="image-20230311225105486"></p>
+<ul>
+<li><p>动态路由协议需要考虑的内容</p>
+<ul>
+<li>度量值：跳数、带宽、时延、成本</li>
+<li>收敛：所有路由器的路由表达到一致的状态</li>
+</ul>
+</li>
+<li><p>RIP协议</p>
+<ul>
+<li><p>基本概念</p>
+<ul>
+<li><p>一种内部网关协议，在单一自治系统内的路由器去传递路由信息</p>
+</li>
+<li><p>靠跳数来衡量到达目标的距离</p>
+<ul>
+<li>最大15跳，16代表不可达</li>
+</ul>
+</li>
+<li><p>每隔30秒向相邻的路由器发送路由更新消息，采用UDP 520端口</p>
+</li>
+<li><p>从相邻的路由器去学习路由条目</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/scuzhangzhang/pic/img/image-20230311230625611.png" alt="image-20230311230625611"></p>
+<p>不同颜色代表不同周期，C代表直连，R代表路由器，第二列代表网段，第三列代表端口号，第四列代表距离</p>
+<ul>
+<li><p>OSPF 动态路由协议</p>
+<ul>
+<li><p>概念</p>
+<ul>
+<li><p>开放式最短路径优先路由协议，内部网关路由协议</p>
+</li>
+<li><p>链路状态路由协议：在单一区域内的路由器可以向相邻路由器发送链路状态信息</p>
+</li>
+<li><p>工作过程</p>
+<ul>
+<li><p>相邻的路由器建立邻接关系</p>
+</li>
+<li><p>根据链路信息，建立链路状态数据库</p>
+</li>
+<li><p>最短路径树计算</p>
+</li>
+<li><p>路由表</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>OSPF区域</p>
+<ul>
+<li><p>划分区域</p>
+<ul>
+<li>适应大型网络</li>
+<li>每个ospf 路由器只维护自己所在区域的链路状态信息</li>
+<li>每个区域有一个区域ID，用十进制或者IP地址表示</li>
+<li>骨干区域：区域之间的路由信息传播<ul>
+<li>区域ID：0，0.0.0.0</li>
+</ul>
+</li>
+<li>非骨干区域：普通区域</li>
+</ul>
+</li>
+<li><p>单区域内容</p>
+<ul>
+<li><p>在同一个区域当中通过选举DR和BDR来节省网络中的流量</p>
+<p>区域中的其他路由器只会和DR和BDR建立邻接关系  </p>
+</li>
+<li><p>DR 选举</p>
+<ul>
+<li>通过routeID进行选举，最大的作为DR，第二大作为 BDR</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>度量值</p>
+<ul>
+<li>cost值（代价）</li>
+</ul>
+</li>
+<li><p>邻接关系建立</p>
+<ul>
+<li><p>以组播方式发送</p>
+<ul>
+<li>224.0.0.5 代表所有OSPF</li>
+<li>224.0.0.6 代表DR BDR</li>
+</ul>
+</li>
+<li><p>报文类型</p>
+<ul>
+<li>hello保温</li>
+<li>数据库描述包</li>
+<li>链路状态请求包</li>
+<li>链路状态更新包</li>
+<li>链路状态确认包</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>RIP 和OSPF对比</p>
+<ul>
+<li><p>RIP１　不支持可变长子网掩码，使用广播更新</p>
+</li>
+<li><p>RIP 2 使用组播更新</p>
+</li>
+<li><p>跳数限制15跳</p>
+</li>
+<li><p>不能划分区域，网络收敛慢</p>
+</li>
+<li><p>OSPF 使用组播更新</p>
+</li>
+<li><p>网络收敛快，通过区域划分</p>
+</li>
+<li><p>支持可变长子网掩码，携带子网掩码</p>
+</li>
+</ul>
+</li>
+<li><p>ospf 配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">route ospf 10</span><br><span class="line">netword 192.168.10.0 0.0.0.255 area 0</span><br><span class="line">192.168.10.0 宣告的网段 0.0.0.255 反码  area 表示宣告的区域</span><br><span class="line">show ip ospf  查看ospf 基本配置信息</span><br><span class="line">show ip ospf neighbor  查看邻接关系</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ospf 多区域概念</p>
+<ul>
+<li><p>目的  实现大型网络环境，实现单区域网络快速收敛，改善网络，减小路由表</p>
+</li>
+<li><p>通信</p>
+<ul>
+<li>域内通信量</li>
+<li>域外通信量- ABR</li>
+<li>外部通信量-与其他自治系统  ASBR</li>
+</ul>
+</li>
+<li><p>区域</p>
+<ul>
+<li>骨干区域</li>
+<li>非骨干区域<ul>
+<li>标准区域</li>
+<li>末梢区域</li>
+<li>完全末梢</li>
+<li>非纯末梢</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>OSPF 高级配置</p>
+<ul>
+<li><p>路由重分发</p>
+<p>在大型网络中，可能在同一网络中用到多种路由协议，为了协同工作，路由器通过路由重分发将其学习到的一种路由协议的路由通过另一种路由协议广播出去。</p>
+</li>
+<li><p>NSSA</p>
+<p>非纯末梢区域，在此区域内会有一个ASBR路由器，需要在ASBR上配置重分发</p>
+<ul>
+<li>多了一种类型LSA，类型7LSA在一个  NSSA区域内携带外部信息</li>
+<li>在NSSA的ABR上转换位5LSA </li>
+<li>N1 N2类型</li>
+<li>通过NSSA的ABR之后转换为E1、E2</li>
+</ul>
+</li>
+<li><p>虚链路</p>
+<ul>
+<li>在两台ABR之间建立，穿越一个非骨干区域</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="fengchuiguo 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="fengchuiguo 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>fengchuiguo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zwjsfdbb.top/2023/03/11/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE_new/" title="动态路由协议">http://zwjsfdbb.top/2023/03/11/系统基础/动态路由协议_new/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" rel="tag"># 系统基础</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/03/10/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E7%83%AD%E5%A4%87%E4%BB%BD%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E5%8D%8F%E8%AE%AE_new/" rel="prev" title="热备份路由选择协议">
+      <i class="fa fa-chevron-left"></i> 热备份路由选择协议
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/03/15/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/NAT_new/" rel="next" title="NAT">
+      NAT <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text">动态路由协议</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">fengchuiguo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fengchuiguo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ba624f1112450ac0437d',
+      clientSecret: '815911bc627d433d1f233c833883b96e335ea413',
+      repo        : 'hexo_discuss',
+      owner       : 'scuzhangzhang',
+      admin       : ['scuzhangzhang'],
+      id          : 'e7827c08c8f86376aab66b550b3736a9',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

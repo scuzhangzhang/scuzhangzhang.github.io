@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zwjsfdbb.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1.安装vim 连网之后，首先安装vim,便于后面的配置文件的编写。  sudo apt-get install vim  2.静态ip   图形界面貌似会失败，建议在配置文件里改： sudo vim &#x2F;etc&#x2F;dhcpcd.conf  填写以下内容 interface eth0  static ip_address&#x3D;ip  static routers&#x3D;网关  static domain_nam">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树莓派透明代理">
+<meta property="og:url" content="http://zwjsfdbb.top/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/index.html">
+<meta property="og:site_name" content="fengchuiguo">
+<meta property="og:description" content="1.安装vim 连网之后，首先安装vim,便于后面的配置文件的编写。  sudo apt-get install vim  2.静态ip   图形界面貌似会失败，建议在配置文件里改： sudo vim &#x2F;etc&#x2F;dhcpcd.conf  填写以下内容 interface eth0  static ip_address&#x3D;ip  static routers&#x3D;网关  static domain_nam">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-10-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-12T10:06:17.346Z">
+<meta property="article:author" content="fengchuiguo">
+<meta property="article:tag" content="杂学">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zwjsfdbb.top/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>树莓派透明代理 | fengchuiguo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">fengchuiguo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zwjsfdbb.top/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="fengchuiguo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fengchuiguo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          树莓派透明代理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">杂学</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>1.安装vim</p>
+<p>连网之后，首先安装vim,便于后面的配置文件的编写。</p>
+<pre><code> sudo apt-get install vim
+</code></pre>
+<p>2.静态ip  </p>
+<p>图形界面貌似会失败，建议在配置文件里改：</p>
+<pre><code>sudo vim /etc/dhcpcd.conf
+</code></pre>
+<p>填写以下内容</p>
+<pre><code>interface eth0
+
+static ip_address=ip
+
+static routers=网关
+
+static domain_name_servers=223.5.5.5
+</code></pre>
+<p>3.配置路由转发：</p>
+<pre><code>sudo vim  /etc/sysctl.conf
+</code></pre>
+<p>设置：</p>
+<pre><code>net.ipv4.ip_forward=1
+</code></pre>
+<p>4.ssh开机自启动</p>
+<p>&amp;emsp;&amp;emsp;ssh 连接树莓派还是很放方面的，不用每次都去接键盘之类的<br>但是树莓派的ssh 默认是不自启动的，在&#x2F;etc&#x2F;rc.local中添加</p>
+<pre><code>sudo /etc/init.d/ssh start (exit 之前)
+</code></pre>
+<p>5.shadowssocks 安装</p>
+<p>建议pip 安装</p>
+<blockquote>
+<p>sudo pip install  shadowsocks<br>就可以了然后就是配置文件的编写</p>
+</blockquote>
+<blockquote>
+<p>sudo mkdir &#x2F;etc&#x2F;shadowsocks<br>sudo touch &#x2F;etc&#x2F;shadowsocks&#x2F;shadowsocks.json</p>
+</blockquote>
+<p>添加以下内容</p>
+<pre><code>&#123; 
+    &quot;server&quot;:&quot;127.0.0.1&quot;,
+    &quot;server_port&quot;:ss服务器端口,
+    &quot;local_address&quot;:&quot;0.0.0.0&quot;,
+    &quot;local_port&quot;:1080,
+    &quot;password&quot;:&quot;ss密码&quot;,
+    &quot;timeout&quot;:600,
+    &quot;method&quot;:&quot;aes-256-cfb&quot;
+&#125;
+</code></pre>
+<p>6.redsocks安装</p>
+<pre><code>git clone git@github.com:darkk/redsocks.git（克隆失败可以在其他地方下载后传过来） 
+
+sudo apt-get install libevent-dev 
+
+cd redsocks
+
+make
+</code></pre>
+<p>在redsocks 文件夹中有redsocks.conf.example<br>把它复制出来，重命名为 redsocks.conf<br>我习惯放在&#x2F;etc目录下即&#x2F;etc&#x2F;redsocks.conf<br>然后编辑配置文件</p>
+<pre><code>local_ip =0.0.0.0 ;
+local_port = 12345; 自己定义后面iptables要用
+ip = 127.0.0.1;
+port = 1080;
+</code></pre>
+<p>7.kcptun 加速器的安装</p>
+<p>Kcptun的作用主要是配合SS用来做加速。</p>
+<p>下载地址</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/xtaci/kcptun/releases/latest">https://github.com/xtaci/kcptun/releases/latest</a></p>
+</blockquote>
+<p>选择kcptun-linux-arm 那一个下载解压</p>
+<blockquote>
+<p>tar -zxf kcptun-linux-arm*.tar.gz<br>选择适合你的树莓派的二进制文件我选择的是client_linux_arm7 。</p>
+</blockquote>
+<p>创建配置文件如下：</p>
+<pre><code>&#123;
+  &quot;localaddr&quot;: &quot;:8888&quot;,
+  &quot;remoteaddr&quot;: &quot;服务器ip:端口&quot;,
+  &quot;key&quot;: &quot;very fast&quot;,
+  &quot;crypt&quot;: &quot;aes-128&quot;,
+  &quot;mode&quot;: &quot;fast2&quot;,
+  &quot;mtu&quot;: 1400,
+  &quot;sndwnd&quot;: 256,
+  &quot;rcvwnd&quot;: 2048,
+  &quot;datashard&quot;: 10,
+  &quot;parityshard&quot;: 3,
+  &quot;dscp&quot;: 46,
+  &quot;nocomp&quot;: false
+&#125;
+</code></pre>
+<p>然后把client_linux_arm7放到&#x2F;usr&#x2F;local&#x2F;bin 里面<br>运行</p>
+<blockquote>
+<p>sudo client_linux_arm7 -c 配置文件<br>就可以了。</p>
+</blockquote>
+<p>8.iptabels </p>
+<pre><code>sudo sslocal -c /etc/shadowsocks/shadowsocks.json &amp; &gt; /dev/null 2&gt;&amp;1 
+sudo redsocks -c /etc/redsocks/redsocks.conf &amp; &gt; /dev/null 2&gt;&amp;1 
+sudo iptables -t nat -N REDSOCKS 
+sudo iptables -t nat -A REDSOCKS -d 0.0.0.0 -j RETURN 
+sudo iptables -t nat -A REDSOCKS -d 127.0.0.0/8 -j RETURN 
+sudo iptables -t nat -A REDSOCKS -d 192.168.0.0/16 -j RETURN 
+sudo iptables -t nat -A REDSOCKS -d 10.0.0.0/16 -j RETURN 
+sudo iptables -t nat -A REDSOCKS -d 服务器IP -j RETURN 
+sudo iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345 
+sudo iptables -t nat -A OUTPUT -p tcp -j REDSOCKS 
+sudo iptables -t nat -A PREROUTING -i eth0 -p tcp -j REDSOCKS
+</code></pre>
+<p>9.此时你把局域网其他电脑设置成它还是不能上网，因为存在dns 问题通过安装dnsmasq来解决</p>
+<pre><code>sudo apt-get install dnsmasq
+</code></pre>
+<p>配置文件在 &#x2F;etc&#x2F;dnsmasq.conf<br>编辑配置文件<br>取消no-resolv前面的注释<br>加入 </p>
+<pre><code>    server=202.38.93.153 
+    server=202.141.162.123
+</code></pre>
+<p>保存重启dnsmasq  </p>
+<pre><code>    sudo service dnsmasq restart
+</code></pre>
+<p>此时不出意外的话应该是可以把局域网内的其他主机网关s设置成 树莓派的ip ,然后实现透明上网。<br>建议dns 设置成</p>
+<pre><code>    server=202.38.93.153 
+    server=202.141.162.123
+</code></pre>
+<p>10 .善后工作<br>把上述的配置加入启动项</p>
+<pre><code>    sudo /etc/init.d/ssh start
+    sudo client_linux_arm7 -c /home/pi/Desktop/configus.txt  &amp; &gt; /dev/null 2&gt;&amp;1
+    sudo sslocal -c /etc/shadowsocks-libev/ss.conf &amp; &gt; /dev/null 2&gt;&amp;1
+    sudo redsocks -c /etc/redsocks.conf &amp; &gt; /dev/null 2&gt;&amp;1
+    sudo service dnsmasq restart
+</code></pre>
+<p>附加：<br>热点配置<br>安装hostapd </p>
+<pre><code>sudo apt-get install hostapd
+</code></pre>
+<p>配置文件&#x2F;etc&#x2F;hostapd&#x2F;hostapd.conf </p>
+<pre><code>    interface=wlan0 
+    hw_mode=g 
+    channel=10 
+    auth_algs=1 
+    wpa=2 
+    wpa_key_mgmt=WPA-PSK 
+    wpa_pairwise=CCMP 
+    rsn_pairwise=CCMP 
+    wpa_passphrase=wifi密码 
+    ssid=wifi名字
+</code></pre>
+<p>dnsmasq 配置文件&#x2F;etc&#x2F;dnsmasq.conf 中修改</p>
+<pre><code>    interface=wlan0
+    dhcp-range=10.0.0.2,10.0.0.255,255.255.255.0,12h
+</code></pre>
+<p>在启动项中&#x2F;etc&#x2F;rc.local 增加：</p>
+<pre><code>    sudo ifconfig wlan0 down 
+    sudo ifconfig wlan0 10.0.0.1 netmask 255.255.255.0 up 
+    sudo rm -rf /dev/random 
+    sudo ln -s /dev/urandom /dev/random 
+    sudo service dnsmasq restart 
+    sudo hostapd -B /etc/hostapd/hostapd.conf &amp; &gt; /dev/null 2&gt;&amp;1
+    sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE 
+    sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
+</code></pre>
+<p>以及在&#x2F;etc&#x2F;iptables 中增加</p>
+<pre><code>    sudo iptables -t nat -A PREROUTING -i wlan0 -p tcp -j REDSOCKS
+</code></pre>
+<p>参考网址：<br><a target="_blank" rel="noopener" href="http://fishedee.com/%E5%90%8E%E7%AB%AF/2016/11/30/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%81%9A%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86.html">http://fishedee.com/%E5%90%8E%E7%AB%AF/2016/11/30/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%81%9A%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86.html</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/05d32b4e8fc0">http://www.jianshu.com/p/05d32b4e8fc0</a></p>
+<p><a target="_blank" rel="noopener" href="http://blog.uiideas.com/2016/09/16/Kcptun%E4%BD%BF%E7%94%A8/">http://blog.uiideas.com/2016/09/16/Kcptun%E4%BD%BF%E7%94%A8/</a></p>
+<p><a target="_blank" rel="noopener" href="https://story.tonylee.name/2016/03/31/yong-shu-mei-pai-da-zao-wu-xian-zhong-ji-ke-xue-shang-wang-lu-you-qi/">https://story.tonylee.name/2016/03/31/yong-shu-mei-pai-da-zao-wu-xian-zhong-ji-ke-xue-shang-wang-lu-you-qi/</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="fengchuiguo 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="fengchuiguo 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>fengchuiguo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zwjsfdbb.top/2017/10/16/%E6%9D%82%E5%AD%A6/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/" title="树莓派透明代理">http://zwjsfdbb.top/2017/10/16/杂学/树莓派透明代理/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9D%82%E5%AD%A6/" rel="tag"># 杂学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/10/16/%E9%80%86%E5%90%91/%E5%AF%B9%E6%8A%97%E5%8F%8D%E6%B1%87%E7%BC%96/" rel="prev" title="对抗反汇编1">
+      <i class="fa fa-chevron-left"></i> 对抗反汇编1
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/10/16/%E6%9D%82%E5%AD%A6/%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/" rel="next" title="双系统安装（win10+ubuntu）">
+      双系统安装（win10+ubuntu） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">fengchuiguo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fengchuiguo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ba624f1112450ac0437d',
+      clientSecret: '815911bc627d433d1f233c833883b96e335ea413',
+      repo        : 'hexo_discuss',
+      owner       : 'scuzhangzhang',
+      admin       : ['scuzhangzhang'],
+      id          : '791694b95510d0eda368a23e37381f84',
+        language: 'zh-CN',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
